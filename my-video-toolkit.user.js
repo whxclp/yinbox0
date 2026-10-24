@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         我的视频工具箱
+// @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      1.5.5
+// @version      2.0.0
 // @description  自研轻量视频增强：倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -789,7 +789,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '1.5.4');
+    bar.setAttribute('data-mvt-ver', '2.0.0');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -799,7 +799,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v1.5.4';
+    ver.textContent = 'v2.0.0';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
