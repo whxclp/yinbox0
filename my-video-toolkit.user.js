@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.0
+// @version      2.0.1
 // @description  自研轻量视频增强：倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -361,7 +361,8 @@
       'set "YTDLP=%TOOLS%\\yt-dlp.exe"',
       'if not exist "%YTDLP%" (',
       '  echo [mvt] 首次运行：下载 yt-dlp ...',
-      '  curl.exe -L --noproxy "*" -o "%YTDLP%" "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"',
+      '  curl.exe -L --ssl-no-revoke -o "%YTDLP%" "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"',
+      "  if not exist \"%YTDLP%\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe' -OutFile '%YTDLP%' -UseBasicParsing\"",
       '  del /f /q "%YTDLP%:Zone.Identifier" 2>nul',
       ')',
       'if not exist "%YTDLP%" (',
@@ -373,7 +374,8 @@
       'if not exist "%FFDIR%\\ffmpeg.exe" (',
       '  echo [mvt] 首次运行：下载 ffmpeg（约 70MB，请稍候）...',
       '  set "FFZIP=%TOOLS%\\ffmpeg.zip"',
-      '  curl.exe -L --noproxy "*" -o "!FFZIP!" "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip"',
+      '  curl.exe -L --ssl-no-revoke -o "!FFZIP!" "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip"',
+      "  if not exist \"!FFZIP!\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip' -OutFile '!FFZIP!' -UseBasicParsing\"",
       '  if exist "!FFZIP!" (',
       '    echo [mvt] 解压 ffmpeg ...',
       '    if not exist "%TOOLS%\\ffmpeg_extract" mkdir "%TOOLS%\\ffmpeg_extract"',
@@ -452,7 +454,8 @@
       'set "YTDLP=%TOOLS%\\yt-dlp.exe"',
       'if not exist "%YTDLP%" (',
       '  echo [mvt] 首次运行：下载 yt-dlp ...',
-      '  curl.exe -L --noproxy "*" -o "%YTDLP%" "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"',
+      '  curl.exe -L --ssl-no-revoke -o "%YTDLP%" "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"',
+      "  if not exist \"%YTDLP%\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe' -OutFile '%YTDLP%' -UseBasicParsing\"",
       '  del /f /q "%YTDLP%:Zone.Identifier" 2>nul',
       ')',
       'if not exist "%YTDLP%" (',
@@ -464,7 +467,8 @@
       'if not exist "%FFDIR%\\ffmpeg.exe" (',
       '  echo [mvt] 首次运行：下载 ffmpeg（约 70MB，请稍候）...',
       '  set "FFZIP=%TOOLS%\\ffmpeg.zip"',
-      '  curl.exe -L --noproxy "*" -o "!FFZIP!" "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip"',
+      '  curl.exe -L --ssl-no-revoke -o "!FFZIP!" "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip"',
+      "  if not exist \"!FFZIP!\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip' -OutFile '!FFZIP!' -UseBasicParsing\"",
       '  if exist "!FFZIP!" (',
       '    echo [mvt] 解压 ffmpeg ...',
       '    if not exist "%TOOLS%\\ffmpeg_extract" mkdir "%TOOLS%\\ffmpeg_extract"',
@@ -789,7 +793,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.0');
+    bar.setAttribute('data-mvt-ver', '2.0.1');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -799,7 +803,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.0';
+    ver.textContent = 'v2.0.1';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
