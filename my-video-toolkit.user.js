@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.2
+// @version      2.0.3
 // @description  自研轻量视频增强：倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -391,6 +391,7 @@
       ')',
       'if not exist "%FFDIR%\\ffmpeg.exe" (',
       '  echo [mvt] ffmpeg 下载/解压失败，请检查网络后重试。',
+      '  del /f /q "!FFZIP!" >nul 2>nul',
       '  pause & exit /b 1',
       ')',
       '',
@@ -486,6 +487,7 @@
       ')',
       'if not exist "%FFDIR%\\ffmpeg.exe" (',
       '  echo [mvt] ffmpeg 下载/解压失败，请检查网络后重试。',
+      '  del /f /q "!FFZIP!" >nul 2>nul',
       '  pause & exit /b 1',
       ')',
       '',
@@ -797,7 +799,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.2');
+    bar.setAttribute('data-mvt-ver', '2.0.3');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -807,7 +809,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.2';
+    ver.textContent = 'v2.0.3';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
