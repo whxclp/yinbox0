@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.6
-// @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
+// @version      2.0.7
+// @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
 // @run-at       document-start
@@ -358,67 +358,68 @@
     var UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36';
     var L = [
       '@echo off',
-      'chcp 65001 >nul',
-      'setlocal EnableDelayedExpansion',
+      'rem This .bat is intentionally ASCII-only (English prompts). cmd.exe has a 4KB read-buffer',
+      'rem bug with chcp 65001 + UTF-8: a multi-byte char straddling the boundary splits a Chinese',
+      'rem echo line and runs the tail as a command. ASCII avoids the bug entirely.',
       '',
       'set "TOOLS=%LOCALAPPDATA%\\mvt\\bin"',
       'if not exist "%TOOLS%" mkdir "%TOOLS%" >nul 2>nul',
       'set "YTDLP=%TOOLS%\\yt-dlp.exe"',
       'if not exist "%YTDLP%" (',
-      '  echo [mvt] 首次运行：下载 yt-dlp ...',
+      '  echo [mvt] First run: downloading yt-dlp ...',
       '  curl.exe -L --ssl-no-revoke -o "%YTDLP%" "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"',
       '  for %%F in ("%YTDLP%") do if %%~zF LSS 1000000 del /f /q "%YTDLP%" >nul 2>nul',
       "  if not exist \"%YTDLP%\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe' -OutFile '%YTDLP%' -UseBasicParsing\"",
       '  del /f /q "%YTDLP%:Zone.Identifier" 2>nul',
       ')',
       'if not exist "%YTDLP%" (',
-      '  echo [mvt] yt-dlp 下载失败，请检查网络后重试。',
+      '  echo [mvt] yt-dlp download failed, check your network and retry.',
       '  pause & exit /b 1',
       ')',
       '',
       'set "FFDIR=%TOOLS%\\ffmpeg\\bin"',
+      'set "FFZIP=%TOOLS%\\ffmpeg.zip"',
       'if not exist "%FFDIR%\\ffmpeg.exe" (',
-      '  echo [mvt] 首次运行：下载 ffmpeg（约 190MB，请稍候）...',
-      '  set "FFZIP=%TOOLS%\\ffmpeg.zip"',
-      '  curl.exe -L --ssl-no-revoke -o "!FFZIP!" "https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip"',
-      '  for %%F in ("!FFZIP!") do if %%~zF LSS 1000000 del /f /q "!FFZIP!" >nul 2>nul',
-      "  if not exist \"!FFZIP!\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip' -OutFile '!FFZIP!' -UseBasicParsing\"",
-      '  if exist "!FFZIP!" (',
-      '    echo [mvt] 解压 ffmpeg ...',
+      '  echo [mvt] First run: downloading ffmpeg (~190MB, please wait) ...',
+      '  curl.exe -L --ssl-no-revoke -o "%FFZIP%" "https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip"',
+      '  for %%F in ("%FFZIP%") do if %%~zF LSS 1000000 del /f /q "%FFZIP%" >nul 2>nul',
+      "  if not exist \"%FFZIP%\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip' -OutFile '%FFZIP%' -UseBasicParsing\"",
+      '  if exist "%FFZIP%" (',
+      '    echo [mvt] Extracting ffmpeg ...',
       '    if not exist "%TOOLS%\\ffmpeg_extract" mkdir "%TOOLS%\\ffmpeg_extract"',
-      '    tar -xf "!FFZIP!" -C "%TOOLS%\\ffmpeg_extract"',
+      '    tar -xf "%FFZIP%" -C "%TOOLS%\\ffmpeg_extract"',
       '    for /d %%D in ("%TOOLS%\\ffmpeg_extract\\ffmpeg-*") do (',
       '      if exist "%%D\\bin\\ffmpeg.exe" xcopy /E /Y "%%D\\*" "%TOOLS%\\ffmpeg\\" >nul',
       '    )',
       '    rd /s /q "%TOOLS%\\ffmpeg_extract" >nul 2>nul',
-      '    del /f /q "!FFZIP!" >nul 2>nul',
+      '    del /f /q "%FFZIP%" >nul 2>nul',
       '  )',
       ')',
       'if not exist "%FFDIR%\\ffmpeg.exe" (',
-      '  echo [mvt] ffmpeg 下载/解压失败，请检查网络后重试。',
-      '  del /f /q "!FFZIP!" >nul 2>nul',
+      '  echo [mvt] ffmpeg download/extract failed, check your network and retry.',
+      '  del /f /q "%FFZIP%" >nul 2>nul',
       '  pause & exit /b 1',
       ')',
       '',
-      'set "OUTDIR=%USERPROFILE%\\Desktop\\视频下载"',
+      'set "OUTDIR=%USERPROFILE%\\Desktop\\VideoDownloads"',
       'if not exist "%OUTDIR%" mkdir "%OUTDIR%" >nul 2>nul',
       ''
     ];
     if (bakedUrl) {
       L.push('set "URL=' + bakedUrl + '"');
       L.push('if "%URL%"=="" (');
-      L.push('  echo  [mvt] 链接为空。');
+      L.push('  echo  [mvt] URL is empty.');
       L.push('  pause & exit /b 1');
       L.push(')');
     } else {
       L.push('set "URL=%~1"');
       L.push('if "%URL%"=="" (');
       L.push('  echo.');
-      L.push('  echo  [mvt] 粘贴视频链接（支持 B站/YouTube 等 yt-dlp 站点）后回车：');
+      L.push('  echo  [mvt] Paste video URL (Bilibili/YouTube/etc via yt-dlp) then Enter:');
       L.push('  set /p "URL=> "');
       L.push(')');
       L.push('if "%URL%"=="" (');
-      L.push('  echo  [mvt] 未输入链接。');
+      L.push('  echo  [mvt] No URL entered.');
       L.push('  pause & exit /b 1');
       L.push(')');
     }
@@ -426,12 +427,12 @@
     L.push('set "UA=' + UA + '"');
     L.push('set "REFERER=' + ref + '"');
     L.push('echo.');
-    L.push('echo  [mvt] 下载中 ... 输出目录：%OUTDIR%');
+    L.push('echo  [mvt] Downloading ... output dir: %OUTDIR%');
     L.push('echo.');
     L.push('"%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --user-agent "%UA%" --referer "%REFERER%" -P "%OUTDIR%" --no-mtime "%URL%"');
     L.push('');
     L.push('echo.');
-    L.push('if errorlevel 1 ( echo  [mvt] 下载失败，见上方信息。 ) else ( echo  [mvt] 完成，文件在：%OUTDIR% )');
+    L.push('if errorlevel 1 ( echo  [mvt] Download failed, see info above. ) else ( echo  [mvt] Done, file in: %OUTDIR% )');
     L.push('pause');
     return L.join('\r\n') + '\r\n';
   }
@@ -460,56 +461,57 @@
       sec = Math.max(0, Math.floor(sec || 0));
       return pad(Math.floor(sec / 3600)) + pad(Math.floor((sec % 3600) / 60)) + pad(sec % 60);
     }
-    var outName = '片段_' + fn(startSec) + '-' + fn(endSec) + '.mp4';
+    var outName = 'clip_' + fn(startSec) + '-' + fn(endSec) + '.mp4';
     var L = [
       '@echo off',
-      'chcp 65001 >nul',
-      'setlocal EnableDelayedExpansion',
+      'rem This .bat is intentionally ASCII-only (English prompts). cmd.exe has a 4KB read-buffer',
+      'rem bug with chcp 65001 + UTF-8: a multi-byte char straddling the boundary splits a Chinese',
+      'rem echo line and runs the tail as a command. ASCII avoids the bug entirely.',
       '',
       'set "TOOLS=%LOCALAPPDATA%\\mvt\\bin"',
       'if not exist "%TOOLS%" mkdir "%TOOLS%" >nul 2>nul',
       'set "YTDLP=%TOOLS%\\yt-dlp.exe"',
       'if not exist "%YTDLP%" (',
-      '  echo [mvt] 首次运行：下载 yt-dlp ...',
+      '  echo [mvt] First run: downloading yt-dlp ...',
       '  curl.exe -L --ssl-no-revoke -o "%YTDLP%" "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"',
       '  for %%F in ("%YTDLP%") do if %%~zF LSS 1000000 del /f /q "%YTDLP%" >nul 2>nul',
       "  if not exist \"%YTDLP%\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe' -OutFile '%YTDLP%' -UseBasicParsing\"",
       '  del /f /q "%YTDLP%:Zone.Identifier" 2>nul',
       ')',
       'if not exist "%YTDLP%" (',
-      '  echo [mvt] yt-dlp 下载失败，请检查网络后重试。',
+      '  echo [mvt] yt-dlp download failed, check your network and retry.',
       '  pause & exit /b 1',
       ')',
       '',
       'set "FFDIR=%TOOLS%\\ffmpeg\\bin"',
+      'set "FFZIP=%TOOLS%\\ffmpeg.zip"',
       'if not exist "%FFDIR%\\ffmpeg.exe" (',
-      '  echo [mvt] 首次运行：下载 ffmpeg（约 190MB，请稍候）...',
-      '  set "FFZIP=%TOOLS%\\ffmpeg.zip"',
-      '  curl.exe -L --ssl-no-revoke -o "!FFZIP!" "https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip"',
-      '  for %%F in ("!FFZIP!") do if %%~zF LSS 1000000 del /f /q "!FFZIP!" >nul 2>nul',
-      "  if not exist \"!FFZIP!\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip' -OutFile '!FFZIP!' -UseBasicParsing\"",
-      '  if exist "!FFZIP!" (',
-      '    echo [mvt] 解压 ffmpeg ...',
+      '  echo [mvt] First run: downloading ffmpeg (~190MB, please wait) ...',
+      '  curl.exe -L --ssl-no-revoke -o "%FFZIP%" "https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip"',
+      '  for %%F in ("%FFZIP%") do if %%~zF LSS 1000000 del /f /q "%FFZIP%" >nul 2>nul',
+      "  if not exist \"%FFZIP%\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip' -OutFile '%FFZIP%' -UseBasicParsing\"",
+      '  if exist "%FFZIP%" (',
+      '    echo [mvt] Extracting ffmpeg ...',
       '    if not exist "%TOOLS%\\ffmpeg_extract" mkdir "%TOOLS%\\ffmpeg_extract"',
-      '    tar -xf "!FFZIP!" -C "%TOOLS%\\ffmpeg_extract"',
+      '    tar -xf "%FFZIP%" -C "%TOOLS%\\ffmpeg_extract"',
       '    for /d %%D in ("%TOOLS%\\ffmpeg_extract\\ffmpeg-*") do (',
       '      if exist "%%D\\bin\\ffmpeg.exe" xcopy /E /Y "%%D\\*" "%TOOLS%\\ffmpeg\\" >nul',
       '    )',
       '    rd /s /q "%TOOLS%\\ffmpeg_extract" >nul 2>nul',
-      '    del /f /q "!FFZIP!" >nul 2>nul',
+      '    del /f /q "%FFZIP%" >nul 2>nul',
       '  )',
       ')',
       'if not exist "%FFDIR%\\ffmpeg.exe" (',
-      '  echo [mvt] ffmpeg 下载/解压失败，请检查网络后重试。',
-      '  del /f /q "!FFZIP!" >nul 2>nul',
+      '  echo [mvt] ffmpeg download/extract failed, check your network and retry.',
+      '  del /f /q "%FFZIP%" >nul 2>nul',
       '  pause & exit /b 1',
       ')',
       '',
-      'set "OUTDIR=%USERPROFILE%\\Desktop\\视频下载"',
+      'set "OUTDIR=%USERPROFILE%\\Desktop\\VideoDownloads"',
       'if not exist "%OUTDIR%" mkdir "%OUTDIR%" >nul 2>nul',
       'set "URL=' + bakedUrl + '"',
       'if "%URL%"=="" (',
-      '  echo  [mvt] 链接为空。',
+      '  echo  [mvt] URL is empty.',
       '  pause & exit /b 1',
       ')',
       '',
@@ -519,25 +521,31 @@
       'set "REF1=' + REF1 + '"',
       'set "REF2=' + REF2 + '"',
       'echo.',
-      'echo  [mvt] 步骤1/2：下载完整视频到临时目录...',
+      'echo  [mvt] Step 1/2: downloading full video to temp dir...',
       '"%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --user-agent "%UA%" --referer "%REF1%" -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"',
       'set "FULL="',
       'for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "FULL=%%~fF"',
       'if not defined FULL (',
-      '  echo  [mvt] 首次尝试失败（可能是防盗链），换用 Referer=' + REF2 + ' 重试 ...',
+      '  echo  [mvt] First attempt failed (maybe hotlink-protected); retrying with Referer=' + REF2 + ' ...',
       '  "%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --user-agent "%UA%" --referer "%REF2%" -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"',
       '  for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "FULL=%%~fF"',
       ')',
+      /* 第三招：奇艺/腾讯/优酷这类必须登录才给视频，用浏览器已登录的 cookie 再试一次 */
       'if not defined FULL (',
-      '  echo  [mvt] 完整视频下载失败，见上方信息。',
-      '  echo  [mvt] 若链接带签名参数(deadline/e=)，可能已过期：回网页重新播放一下，再重新生成脚本。',
+      '  echo  [mvt] Still failing; retrying with browser login state (Edge cookies) ...',
+      '  "%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --cookies-from-browser edge -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"',
+      '  for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "FULL=%%~fF"',
+      ')',
+      'if not defined FULL (',
+      '  echo  [mvt] Full video download failed, see info above.',
+      '  echo  [mvt] If link has signed params (deadline/e=), it may have expired: replay it on the page then regenerate the script.',
       '  pause & exit /b 1',
       ')',
       'echo.',
-      'echo  [mvt] 步骤2/2：ffmpeg 精确裁剪 ' + S + ' ~ ' + E + ' -> ' + outName,
-      '"%FFDIR%\\ffmpeg.exe" -ss ' + S + ' -to ' + E + ' -i "!FULL!" -c:v libx264 -c:a aac -preset veryfast "%OUTDIR%\\' + outName + '"',
+      'echo  [mvt] Step 2/2: ffmpeg precise cut ' + S + ' ~ ' + E + ' -> ' + outName,
+      '"%FFDIR%\\ffmpeg.exe" -ss ' + S + ' -to ' + E + ' -i "%FULL%" -c:v libx264 -c:a aac -preset veryfast "%OUTDIR%\\' + outName + '"',
       'echo.',
-      'if errorlevel 1 ( echo  [mvt] 裁剪失败，完整视频已保留在 %TMPD% ) else ( echo  [mvt] 完成：%OUTDIR%\\' + outName + ' )',
+      'if errorlevel 1 ( echo  [mvt] Cut failed, full video kept in %TMPD% ) else ( echo  [mvt] Done: %OUTDIR%\\' + outName + ' )',
       'del /f /q "%TMPD%\\full.*" 2>nul',
       'rd /s /q "%TMPD%" 2>nul',
       'pause'
@@ -626,7 +634,7 @@
       sec = Math.max(0, Math.floor(sec || 0));
       return pad(Math.floor(sec / 3600)) + pad(Math.floor((sec % 3600) / 60)) + pad(sec % 60);
     }
-    var outName = '去广告_' + fn(skipSec) + '起' + (fast ? '_极速' : '') + '.mp4';
+    var outName = 'no_ad_' + fn(skipSec) + (fast ? '_fast' : '') + '.mp4';
     var isCdn = /bilivideo\.com|bilivod\.com|bilicdn/i.test(bakedUrl || '');
     var pg = (pageUrl && /^https?:/i.test(pageUrl)) ? String(pageUrl).split('#')[0] : 'https://www.bilibili.com/';
     var REF1 = isCdn ? 'https://www.bilibili.com/' : pg;
@@ -634,49 +642,50 @@
     var UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36';
     var L = [
       '@echo off',
-      'chcp 65001 >nul',
-      'setlocal EnableDelayedExpansion',
+      'rem This .bat is intentionally ASCII-only (English prompts). cmd.exe has a 4KB read-buffer',
+      'rem bug with chcp 65001 + UTF-8: a multi-byte char straddling the boundary splits a Chinese',
+      'rem echo line and runs the tail as a command. ASCII avoids the bug entirely.',
       '',
       'set "TOOLS=%LOCALAPPDATA%\\mvt\\bin"',
       'if not exist "%TOOLS%" mkdir "%TOOLS%" >nul 2>nul',
       'set "YTDLP=%TOOLS%\\yt-dlp.exe"',
       'if not exist "%YTDLP%" (',
-      '  echo [mvt] 首次运行：下载 yt-dlp ...',
+      '  echo [mvt] First run: downloading yt-dlp ...',
       '  curl.exe -L --ssl-no-revoke -o "%YTDLP%" "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"',
       '  for %%F in ("%YTDLP%") do if %%~zF LSS 1000000 del /f /q "%YTDLP%" >nul 2>nul',
       "  if not exist \"%YTDLP%\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe' -OutFile '%YTDLP%' -UseBasicParsing\"",
       '  del /f /q "%YTDLP%:Zone.Identifier" 2>nul',
       ')',
       'if not exist "%YTDLP%" (',
-      '  echo [mvt] yt-dlp 下载失败，请检查网络后重试。',
+      '  echo [mvt] yt-dlp download failed, check your network and retry.',
       '  pause & exit /b 1',
       ')',
       '',
       'set "FFDIR=%TOOLS%\\ffmpeg\\bin"',
+      'set "FFZIP=%TOOLS%\\ffmpeg.zip"',
       'if not exist "%FFDIR%\\ffmpeg.exe" (',
-      '  echo [mvt] 首次运行：下载 ffmpeg（约 190MB，请稍候）...',
-      '  set "FFZIP=%TOOLS%\\ffmpeg.zip"',
-      '  curl.exe -L --ssl-no-revoke -o "!FFZIP!" "https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip"',
-      '  for %%F in ("!FFZIP!") do if %%~zF LSS 1000000 del /f /q "!FFZIP!" >nul 2>nul',
-      "  if not exist \"!FFZIP!\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip' -OutFile '!FFZIP!' -UseBasicParsing\"",
-      '  if exist "!FFZIP!" (',
-      '    echo [mvt] 解压 ffmpeg ...',
+      '  echo [mvt] First run: downloading ffmpeg (~190MB, please wait) ...',
+      '  curl.exe -L --ssl-no-revoke -o "%FFZIP%" "https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip"',
+      '  for %%F in ("%FFZIP%") do if %%~zF LSS 1000000 del /f /q "%FFZIP%" >nul 2>nul',
+      "  if not exist \"%FFZIP%\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip' -OutFile '%FFZIP%' -UseBasicParsing\"",
+      '  if exist "%FFZIP%" (',
+      '    echo [mvt] Extracting ffmpeg ...',
       '    if not exist "%TOOLS%\\ffmpeg_extract" mkdir "%TOOLS%\\ffmpeg_extract"',
-      '    tar -xf "!FFZIP!" -C "%TOOLS%\\ffmpeg_extract"',
+      '    tar -xf "%FFZIP%" -C "%TOOLS%\\ffmpeg_extract"',
       '    for /d %%D in ("%TOOLS%\\ffmpeg_extract\\ffmpeg-*") do (',
       '      if exist "%%D\\bin\\ffmpeg.exe" xcopy /E /Y "%%D\\*" "%TOOLS%\\ffmpeg\\" >nul',
       '    )',
       '    rd /s /q "%TOOLS%\\ffmpeg_extract" >nul 2>nul',
-      '    del /f /q "!FFZIP!" >nul 2>nul',
+      '    del /f /q "%FFZIP%" >nul 2>nul',
       '  )',
       ')',
       'if not exist "%FFDIR%\\ffmpeg.exe" (',
-      '  echo [mvt] ffmpeg 下载/解压失败，请检查网络后重试。',
-      '  del /f /q "!FFZIP!" >nul 2>nul',
+      '  echo [mvt] ffmpeg download/extract failed, check your network and retry.',
+      '  del /f /q "%FFZIP%" >nul 2>nul',
       '  pause & exit /b 1',
       ')',
       '',
-      'set "OUTDIR=%USERPROFILE%\\Desktop\\视频下载"',
+      'set "OUTDIR=%USERPROFILE%\\Desktop\\VideoDownloads"',
       'if not exist "%OUTDIR%" mkdir "%OUTDIR%" >nul 2>nul',
       'set "SKIP=' + skip + '"',
       'set "UA=' + UA + '"',
@@ -691,48 +700,55 @@
       L.push('set "URL="');
     }
     L.push('set "SRC="');
-    L.push('if exist "!INPUT!" set "SRC=!INPUT!"');
+    L.push('if exist "%INPUT%" set "SRC=%INPUT%"');
     L.push('if defined SRC (');
     L.push('  echo.');
-    L.push('  echo  [mvt] 直接处理本地文件：!SRC!');
+    L.push('  echo  [mvt] Processing local file directly: %SRC%');
     L.push(') else (');
-    L.push('  if "!URL!"=="" (');
+    L.push('  if "%URL%"=="" (');
     L.push('    echo.');
-    L.push('    echo  [mvt] 粘贴视频链接（或把本地视频文件拖到本 bat 上）后回车：');
+    L.push('    echo  [mvt] Paste video URL (or drag a local video file onto this .bat) then Enter:');
     L.push('    set /p "URL=> "');
     L.push('  )');
-    L.push('  if "!URL!"=="" (');
-    L.push('    echo  [mvt] 既没有本地文件也没有链接，退出。');
+    L.push('  if "%URL%"=="" (');
+    L.push('    echo  [mvt] Neither local file nor URL given, exiting.');
     L.push('    pause & exit /b 1');
     L.push('  )');
     L.push('  set "TMPD=%OUTDIR%\\__ad_tmp"');
     L.push('  if not exist "%TMPD%" mkdir "%TMPD%"');
     L.push('  echo.');
-    L.push('  echo  [mvt] 步骤1/2：下载完整视频到临时目录...');
+    L.push('  echo  [mvt] Step 1/2: downloading full video to temp dir...');
     L.push('  "%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --user-agent "%UA%" --referer "%REF1%" -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"');
     L.push('  for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "SRC=%%~fF"');
     L.push('  if not defined SRC (');
-    L.push('    echo  [mvt] 首次尝试失败（可能是防盗链），换用 Referer=' + REF2 + ' 重试 ...');
+    L.push('    echo  [mvt] First attempt failed (maybe hotlink-protected); retrying with Referer=' + REF2 + ' ...');
     L.push('    "%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --user-agent "%UA%" --referer "%REF2%" -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"');
+    L.push('    for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "SRC=%%~fF"');
+    L.push('  )');
+    /* 第三招：奇艺/腾讯/优酷这类必须登录才给视频，用浏览器已登录的 cookie 再试一次 */
+    L.push('  if not defined SRC (');
+    L.push('    echo  [mvt] Still failing; retrying with browser login state (Edge cookies) ...');
+    L.push('    "%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --cookies-from-browser edge -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"');
     L.push('    for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "SRC=%%~fF"');
     L.push('  )');
     L.push(')');
     L.push('if not defined SRC (');
-    L.push('  echo  [mvt] 拿不到视频源，见上方信息。');
-    L.push('  echo  [mvt] 爱奇艺/腾讯/优酷等有 DRM 的站点 yt-dlp 抓不到，请换源或改用录屏。');
+    L.push('  echo  [mvt] Could not get video source, see info above.');
+    L.push('  echo  [mvt] iQiyi/Tencent/Youku need Edge login; the script retries with login state.');
+    L.push('  echo  [mvt] If still failing, use 5) live-record (it auto-skips ads while recording).');
     L.push('  pause & exit /b 1');
     L.push(')');
     L.push('echo.');
     if (fast) {
-      L.push('echo  [mvt] 步骤2/2：跳过片头 ' + skip + '（不重编码，秒级完成）...');
-      L.push('"%FFDIR%\\ffmpeg.exe" -i "!SRC!" -ss ' + skip + ' -c copy -avoid_negative_ts make_zero -movflags +faststart "%OUTDIR%\\' + outName + '"');
+      L.push('echo  [mvt] Step 2/2: skip intro ' + skip + '(no re-encode, instant)...');
+      L.push('"%FFDIR%\\ffmpeg.exe" -i "%SRC%" -ss ' + skip + ' -c copy -avoid_negative_ts make_zero -movflags +faststart "%OUTDIR%\\' + outName + '"');
     } else {
-      L.push('echo  [mvt] 步骤2/2：跳过片头 ' + skip + '（重编码，精确到帧，长片请耐心）...');
-      L.push('"%FFDIR%\\ffmpeg.exe" -ss ' + skip + ' -i "!SRC!" -c:v libx264 -preset veryfast -crf 20 -c:a aac -b:a 192k -avoid_negative_ts make_zero -movflags +faststart "%OUTDIR%\\' + outName + '"');
+      L.push('echo  [mvt] Step 2/2: skip intro ' + skip + '(re-encode, frame-accurate, please wait for long videos)...');
+      L.push('"%FFDIR%\\ffmpeg.exe" -ss ' + skip + ' -i "%SRC%" -c:v libx264 -preset veryfast -crf 20 -c:a aac -b:a 192k -avoid_negative_ts make_zero -movflags +faststart "%OUTDIR%\\' + outName + '"');
     }
     L.push('echo.');
-    L.push('if errorlevel 1 ( echo  [mvt] 处理失败，见上方信息。 ) else ( echo  [mvt] 完成：%OUTDIR%\\' + outName + ' )');
-    L.push('if defined TMPD rd /s /q "!TMPD!" 2>nul');
+    L.push('if errorlevel 1 ( echo  [mvt] Failed, see info above. ) else ( echo  [mvt] Done: %OUTDIR%\\' + outName + ' )');
+    L.push('if defined TMPD rd /s /q "%TMPD%" 2>nul');
     L.push('pause');
     return L.join('\r\n') + '\r\n';
   }
@@ -924,6 +940,8 @@
       iv = setInterval(function () {
         if (!mvtRecording) { clearInterval(iv); return; }
         var t = v.currentTime;
+        /* 录制时同步跳广告：检测到广告就 seek 过去，被录的流里就不会有广告画面/声音 */
+        try { adSkipForRecord(v); } catch (e) {}
         if (dur > 0) {
           toast('合成中 ' + Math.min(100, Math.round(t / dur * 100)) + '%（原速录制，请勿切后台/关页面）');
         } else {
@@ -1011,7 +1029,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.6');
+    bar.setAttribute('data-mvt-ver', '2.0.7');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1021,7 +1039,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.6';
+    ver.textContent = 'v2.0.7';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
@@ -1093,7 +1111,7 @@
     mDl.appendChild(mItem('② 通用下载脚本（粘链接）', function () { genDownBatGeneric(); }));
     mDl.appendChild(mItem('③ 智能下载（部分站点）', function () { downloadVideo(); }));
     mDl.appendChild(mItem('④ 分片合并（仅部分站点）', function () { segDownload(); }));
-    mDl.appendChild(mItem('⑤ 边播边录（兜底·慢）', function () { mergeRecord(cur); }));
+    mDl.appendChild(mItem('⑤ 边播边录（兜底·自动去广告）', function () { mergeRecord(cur); }));
     mDl.appendChild(mItem('⑥ 片段下载（整段下完再剪）', function () { genSegBat(); }));
     mDl.appendChild(mItem('⑦ 去片头广告（跳过前 N 秒）', function () { genAdBat(); }));
     mDl.appendChild(mSep());
@@ -1470,12 +1488,33 @@
     /* 兜一层：定时器里抛异常会每 800ms 刷一次控制台，还拖慢页面 */
     try {
       if (!AD.on) { if (AD.active) adOff(AD.active); return; }
-      if (mvtRecording) return;   /* 录制中绝不动倍速，否则录制会错乱 */
+      if (mvtRecording) return;   /* 录制中绝不动倍速，否则录制会错乱（录制时跳广告见 adSkipForRecord） */
       var v = adPickVideo();
       if (!v) return;
       if (adLook(v)) { adHit(v); adOn(v); }
       else { adOff(v); }
     } catch (e) { /* 静默：广告模块绝不能影响主功能 */ }
+  }
+
+  /* 录制中跳过广告：被录的是 captureStream 实时画面，所以不能用 16 倍速（只会录成快进残影），
+     也不能改倍速。唯一干净的做法是 seek 到广告末尾 —— 被录的流里直接不含广告帧和声音。
+     点不到也跳不动时退而求其次：静音，至少别让广告声音进录制（广告结束后恢复）。 */
+  function adSkipForRecord(v) {
+    if (!AD.on) return false;
+    if (!adLook(v)) {
+      if (AD.recMuted) { AD.recMuted = false; try { v.muted = false; } catch (e) {} }
+      return false;
+    }
+    var clicked = adHit(v);
+    var src = v.currentSrc || v.src || '';
+    if (v.duration && v.duration <= 180 && v.currentTime < 5 && AD.lastJump !== src) {
+      AD.lastJump = src;
+      try { v.currentTime = Math.max(0, v.duration - 0.2); } catch (e) {}
+      toast('录制中：已跳过广告', 2600);
+      return true;
+    }
+    if (!v.muted) { AD.recMuted = true; try { v.muted = true; } catch (e) {} }
+    return clicked;
   }
 
   /* ================= 启动 ================= */
