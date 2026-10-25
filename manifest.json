@@ -1,7 +1,7 @@
 {
   "name": "我的视频工具箱 v2",
   "description": "自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机yt-dlp脚本（①当前页/②任意链接/⑥整段下完再剪/⑦去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。",
-  "version": "2.0.15",
+  "version": "2.0.16",
   "author": "whxclp",
   "update_url": "https://whxclp.github.io/yinbox/my-video-toolkit.user.js",
   "download_url": "https://whxclp.github.io/yinbox/my-video-toolkit.user.js",
