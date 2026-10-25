@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.8
+// @version      2.0.9
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -533,6 +533,10 @@
       /* 第三招：奇艺/腾讯/优酷这类必须登录才给视频，用浏览器已登录的 cookie 再试一次 */
       'if not defined FULL (',
       '  echo  [mvt] Still failing; retrying with browser login state ^(Edge cookies^) ...',
+      '  echo  [mvt] Force-closing Edge to unlock its cookie DB ^(your open tabs will close; Edge offers to restore them on next launch^) ...',
+      '  taskkill /F /IM msedge.exe >nul 2>nul',
+      '  ping -n 2 127.0.0.1 >nul',
+      '  taskkill /F /IM msedge.exe >nul 2>nul',
       '  "%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --cookies-from-browser edge -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"',
       '  for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "FULL=%%~fF"',
       ')',
@@ -728,6 +732,10 @@
     /* 第三招：奇艺/腾讯/优酷这类必须登录才给视频，用浏览器已登录的 cookie 再试一次 */
     L.push('  if not defined SRC (');
     L.push('    echo  [mvt] Still failing; retrying with browser login state ^(Edge cookies^) ...');
+    L.push('    echo  [mvt] Force-closing Edge to unlock its cookie DB ^(your open tabs will close; Edge offers to restore them on next launch^) ...');
+    L.push('    taskkill /F /IM msedge.exe >nul 2>nul');
+    L.push('    ping -n 2 127.0.0.1 >nul');
+    L.push('    taskkill /F /IM msedge.exe >nul 2>nul');
     L.push('    "%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --cookies-from-browser edge -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"');
     L.push('    for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "SRC=%%~fF"');
     L.push('  )');
@@ -1029,7 +1037,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.8');
+    bar.setAttribute('data-mvt-ver', '2.0.9');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1039,7 +1047,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.8';
+    ver.textContent = 'v2.0.9';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
