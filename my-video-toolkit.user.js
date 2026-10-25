@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.20
+// @version      2.0.21
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -78,12 +78,260 @@
     if (buf) CAP.bytes += buf.byteLength || 0;
   }
 
+  /* ============================================================
+   * 抖音：页面上下文内提取视频直链（零 cookie）
+   * 背景：Edge 156 的 ABE（App-Bound Encryption）把 cookie 值加密成
+   * v20 格式，SQLite 里 value 列全空，DPAPI 解不开；而带
+   * --remote-debugging-port 启动 Edge 会让 ABE 校验失败、Edge 直接把
+   * 「解不开」的 cookie 从库里物理删掉（2026-10-25 实测 1853→25，
+   * 不可恢复）。所以任何「自动读浏览器 cookie」的方案都既不可行
+   * 也不安全。
+   * 可行思路（参考 WhiteSevs「抖音优化」greasyfork #494643）：
+   * 页面自己登录着，页面自己的 /aweme/ 接口响应里就带
+   * video.play_addr.url_list —— 自带签名查询参数的 CDN 直链，
+   * yt-dlp 带上 Referer 直接下，完全不需要 cookie。
+   * 数据来源（按可靠性排序）：
+   *   1) 网络钩子抓到的 /aweme/ 接口响应（document-start 就装好钩子）
+   *   2) 页面 SSR 数据 window._ROUTER_DATA
+   *   3) <script id="RENDER_DATA">（URL 编码或纯 JSON）
+   *   4) React fiber 上挂的 awemeInfo（当前播放视频）
+   * ============================================================ */
+  var DY = { map: {}, last: null };   // aweme_id -> aweme 详情对象
+
+  function dyIsAwemeApi(u) {
+    var s = String(u || '');
+    if (!/\/aweme\/v\d+\/web\//.test(s)) return false;
+    /* 绝对 URL 时校验主机必须含 douyin，避免误伤其它站点同路径接口 */
+    var m = s.match(/^https?:\/\/([^\/]+)/i);
+    if (m) return /douyin/i.test(m[1]);
+    return true;   /* 相对路径：页面内只可能请求自家接口 */
+  }
+
+  /* aweme ID：网络/SSR 源是 aweme_id（snake），DOM/fiber 源是 awemeId（camel） */
+  function dyAwemeId(a) {
+    if (!a || typeof a !== 'object') return '';
+    if (a.aweme_id) return String(a.aweme_id);
+    if (a.awemeId) return String(a.awemeId);
+    return '';
+  }
+
+  /* 从 aweme 详情对象里挑最优直链：bit_rate 数组按码率降序，取第一个。
+     双 schema 兼容：
+       网络/SSR 源：aweme_id / video.bit_rate[].play_addr.url_list / video.play_addr
+       DOM/fiber 源：awemeId / video.bitRateList[].playApi / playAddr[].src */
+  function dyPickVideo(aweme) {
+    if (!aweme || typeof aweme !== 'object') return null;
+    var v = aweme.video;
+    if (!v) return null;
+    var cands = [];
+    if (Array.isArray(v.bit_rate)) {
+      for (var i = 0; i < v.bit_rate.length; i++) {
+        var b = v.bit_rate[i];
+        var pa = b && b.play_addr;
+        if (pa && Array.isArray(pa.url_list) && pa.url_list.length && typeof pa.url_list[0] === 'string') {
+          cands.push({ url: pa.url_list[0], back: pa.url_list.slice(1, 3),
+                       w: pa.width || 0, h: pa.height || 0, br: b.bit_rate || 0,
+                       size: pa.data_size || 0 });
+        }
+      }
+    }
+    if (Array.isArray(v.bitRateList)) {
+      for (var j = 0; j < v.bitRateList.length; j++) {
+        var d = v.bitRateList[j];
+        if (!d) continue;
+        var du = (typeof d.playApi === 'string') ? d.playApi : '';
+        var dback = [];
+        if (Array.isArray(d.playAddr)) {
+          for (var q = 0; q < d.playAddr.length; q++) {
+            var it2 = d.playAddr[q];
+            if (it2 && typeof it2.src === 'string' && it2.src !== du) {
+              if (!du) du = it2.src; else dback.push(it2.src);
+            }
+          }
+        }
+        if (du) {
+          cands.push({ url: du, back: dback, w: d.width || 0, h: d.height || 0,
+                       br: d.bitRate || 0, size: d.dataSize || 0 });
+        }
+      }
+    }
+    var pv = v.play_addr;
+    if (pv && Array.isArray(pv.url_list) && pv.url_list.length && typeof pv.url_list[0] === 'string') {
+      cands.push({ url: pv.url_list[0], back: pv.url_list.slice(1, 3),
+                   w: pv.width || v.width || 0, h: pv.height || v.height || 0,
+                   br: 0, size: pv.data_size || 0 });
+    }
+    if (!cands.length) return null;
+    cands.sort(function (a, b2) { return (b2.br - a.br) || (b2.h - a.h); });
+    var best = cands[0];
+    return {
+      url: best.url,
+      backUrls: best.back || [],
+      id: dyAwemeId(aweme),
+      desc: String(aweme.desc || '').slice(0, 80),
+      duration: v.duration || 0,
+      width: best.w, height: best.h, size: best.size
+    };
+  }
+
+  function dyStoreAweme(a) {
+    if (!a || typeof a !== 'object') return;
+    var id = dyAwemeId(a);
+    if (id) {
+      DY.map[id] = a;
+      var n = 0, k;
+      for (k in DY.map) n++;
+      if (n > 200) DY.map = {};      // 防滚屏无限增长，超过 200 个清空重来
+    }
+    DY.last = a;
+  }
+
+  /* 深搜任意 JSON 里所有「像 aweme」的对象（有 ID + 播放地址字段） */
+  function dyDeepFindAll(node, depth, out, budget) {
+    if (!node || typeof node !== 'object' || depth > 7) return budget;
+    if (budget.n-- <= 0) return budget;
+    if (Array.isArray(node)) {
+      for (var i = 0; i < node.length && budget.n > 0; i++) dyDeepFindAll(node[i], depth + 1, out, budget);
+      return budget;
+    }
+    var v = node.video;
+    var hasApi = v && v.play_addr && Array.isArray(v.play_addr.url_list) && v.play_addr.url_list.length;
+    var hasDom = v && (Array.isArray(v.bitRateList) || typeof v.playApi === 'string');
+    if (dyAwemeId(node) && (hasApi || hasDom)) {
+      out.push(node);
+      return budget;
+    }
+    for (var k in node) {
+      if (budget.n-- <= 0) break;
+      try { dyDeepFindAll(node[k], depth + 1, out, budget); } catch (e) {}
+    }
+    return budget;
+  }
+
+  /* 处理一个 /aweme/ 接口响应 */
+  function dyIngestJson(json) {
+    try {
+      if (!json || typeof json !== 'object') return;
+      if (json.aweme_detail && typeof json.aweme_detail === 'object') {
+        dyStoreAweme(json.aweme_detail);
+        return;
+      }
+      if (Array.isArray(json.aweme_list) && json.aweme_list.length) {
+        for (var i = 0; i < json.aweme_list.length; i++) {
+          var it = json.aweme_list[i];
+          if (it && it.aweme_info) dyStoreAweme(it.aweme_info);
+        }
+        return;
+      }
+      var out = [];
+      dyDeepFindAll(json, 0, out, { n: 200000 });
+      for (var j = 0; j < out.length; j++) dyStoreAweme(out[j]);
+    } catch (e) {}
+  }
+
+  function dyParseRenderData(txt) {
+    try { return JSON.parse(decodeURIComponent(txt)); } catch (e) {}
+    try { return JSON.parse(txt); } catch (e) {}
+    return null;
+  }
+
+  /* 扫页面 SSR 数据：_ROUTER_DATA / RENDER_DATA */
+  function dyScanPageData() {
+    var out = [];
+    try {
+      if (window._ROUTER_DATA) dyDeepFindAll(window._ROUTER_DATA, 0, out, { n: 300000 });
+    } catch (e) {}
+    if (!out.length) {
+      try {
+        var sd = document.getElementById('RENDER_DATA');
+        if (sd && sd.textContent) {
+          var j = dyParseRenderData(sd.textContent);
+          if (j) dyDeepFindAll(j, 0, out, { n: 300000 });
+        }
+      } catch (e) {}
+    }
+    for (var i = 0; i < out.length; i++) dyStoreAweme(out[i]);
+    return out;
+  }
+
+  /* 从当前播放器的 React fiber 上找 awemeInfo（抖音优化同款思路） */
+  function dyFiberAweme(el) {
+    var node = el;
+    for (var up = 0; node && up < 8; up++, node = node.parentElement) {
+      var key = '';
+      try {
+        var ks = Object.keys(node);
+        for (var i = 0; i < ks.length; i++) {
+          if (ks[i].indexOf('__reactFiber$') === 0 || ks[i].indexOf('__reactInternalInstance$') === 0) {
+            key = ks[i]; break;
+          }
+        }
+      } catch (e) {}
+      if (!key) continue;
+      var fiber = node[key];
+      for (var d = 0; fiber && d < 10; d++, fiber = fiber.return) {
+        try {
+          var mp = fiber.memoizedProps;
+          if (mp && mp.awemeInfo && typeof mp.awemeInfo === 'object') return mp.awemeInfo;
+        } catch (e) {}
+      }
+    }
+    return null;
+  }
+
+  function dyFromFiber() {
+    var sels = ['.basePlayerContainer', '[data-e2e="feed-active-video"]',
+                '.swiper-slide-active xg-player', 'xg-player', '.xg-video-player'];
+    for (var s = 0; s < sels.length; s++) {
+      var els;
+      try { els = document.querySelectorAll(sels[s]); } catch (e) { continue; }
+      for (var i = 0; i < els.length && i < 3; i++) {
+        var a = dyFiberAweme(els[i]);
+        if (a) return a;
+      }
+    }
+    return null;
+  }
+
+  /* 对外入口：拿当前视频的直链信息。awemeId 可空（feed 页场景）。
+     返回 {url, backUrls, id, desc, duration, width, height, size} 或 null */
+  function dyGetVideo(awemeId) {
+    var id = awemeId ? String(awemeId) : '';
+    /* 1) 网络钩子已抓到的（最可靠，清晰度列表最全） */
+    if (id && DY.map[id]) return dyPickVideo(DY.map[id]);
+    /* 2) 页面 SSR 数据 */
+    var cands = dyScanPageData();
+    if (id) {
+      for (var i = 0; i < cands.length; i++) {
+        if (dyAwemeId(cands[i]) === id) return dyPickVideo(cands[i]);
+      }
+      /* 3) fiber：详情页上 fiber 里挂的就是当前视频 */
+      var f = dyFromFiber();
+      if (f && (!dyAwemeId(f) || dyAwemeId(f) === id)) return dyPickVideo(f);
+      return null;
+    }
+    /* 无 id（feed 页）：优先 fiber 当前播放，其次最近抓到的 */
+    var f2 = dyFromFiber();
+    if (f2) { var p2 = dyPickVideo(f2); if (p2) return p2; }
+    if (DY.last) { var p3 = dyPickVideo(DY.last); if (p3) return p3; }
+    return cands.length ? dyPickVideo(cands[0]) : null;
+  }
+
   function capFetch(url, p) {
     if (!p || typeof p.then !== 'function') return p;
     return p.then(function (r) {
       try {
         var ct = (r.headers && r.headers.get) ? (r.headers.get('content-type') || '') : '';
-        if (!mediaKind(url, ct)) return r;
+        if (!mediaKind(url, ct)) {
+          /* 抖音接口响应：clone 出来读 JSON，不影响页面自己拿到的 response */
+          if (CAP.on && dyIsAwemeApi(url)) {
+            var dj = r.clone();
+            if (dj.json) {
+              dj.json().then(dyIngestJson).catch(function () {});
+            }
+          }
+          return r;
+        }
         var st = rangeStart(r);
         if (CAP.bytes >= CAP.maxBytes) { CAP.overflow = true; addSeg(url, ct, null, st); return r; }
         var c = r.clone();
@@ -119,6 +367,16 @@
             try {
               var ct = (self.getResponseHeader && self.getResponseHeader('content-type')) || '';
               var u = self.__mvtU || '';
+              /* 抖音 /aweme/ 接口：解析 JSON 存直链（零 cookie 方案的数据源） */
+              if (CAP.on && dyIsAwemeApi(u)) {
+                try {
+                  var dr = self.response;
+                  if (typeof dr === 'string') dyIngestJson(JSON.parse(dr));
+                  else if (dr && typeof dr === 'object') dyIngestJson(dr);
+                  else if (self.responseText) dyIngestJson(JSON.parse(self.responseText));
+                } catch (e) {}
+                return;
+              }
               if (!mediaKind(u, ct)) return;
               var buf = null;
               try {
@@ -349,19 +607,24 @@
 
   /* 生成「自举」下载脚本：首次运行自动把 yt-dlp.exe 与 ffmpeg 下载到
    * %LOCALAPPDATA%\mvt\bin，不依赖本机 Python / WinGet，重装系统后双击即用。
-   * bakedUrl 非空 => 把链接烤进脚本；为空 => 运行时粘贴/拖放链接。 */
-  function buildYtDlpBat(bakedUrl, isDouyin, dyId) {
+   * bakedUrl 非空 => 把链接烤进脚本；为空 => 运行时粘贴/拖放链接。
+   * dyVid 非空（抖音页面内提取到的直链）=> 走零 cookie 直链分支。 */
+  function buildYtDlpBat(bakedUrl, isDouyin, dyId, dyVid) {
     /* 防盗链：B站 CDN 直链必须同时带浏览器 UA + B站 Referer（实测缺一即 403） */
     var isCdn = /bilivideo\.com|bilivod\.com|bilicdn/i.test(bakedUrl || '');
-    var ref = isCdn ? 'https://www.bilibili.com/'
-      : ((bakedUrl && /^https?:/i.test(bakedUrl)) ? String(bakedUrl).split('#')[0] : 'https://www.bilibili.com/');
+    /* 抖音直链分支：从页面提取的 CDN 直链自带签名查询参数，只需抖音页面 Referer */
+    var direct = (dyVid && dyVid.url) ? String(dyVid.url) : '';
+    var ref = direct ? 'https://www.douyin.com/'
+      : (isCdn ? 'https://www.bilibili.com/'
+      : ((bakedUrl && /^https?:/i.test(bakedUrl)) ? String(bakedUrl).split('#')[0] : 'https://www.bilibili.com/'));
     var UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36';
     /* 抖音输出名：固定 douyin_<视频ID>.%(ext)s。
        必须固定名字——抖音 CDN 直链的查询串曾被 yt-dlp 当成标题/ID 用，
        400+ 字符含 ? & = 的文件名 Windows 直接拒绝创建（Errno 22）。
        注意 bat 里 %% 会被 cmd 折成 %，所以模板写 %%(ext)s。
-       注：dyId 为空时退回 %(id)s 模板。 */
-    var dyOut = dyId ? ('douyin_' + dyId + '.%%(ext)s') : 'douyin_%%(id)s.%%(ext)s';
+       注：dyId 为空时退回 %(id)s 模板；feed 页场景用 dyVid.id 兜底。 */
+    var dyKey = dyId || (dyVid && dyVid.id) || '';
+    var dyOut = dyKey ? ('douyin_' + dyKey + '.%%(ext)s') : 'douyin_%%(id)s.%%(ext)s';
     var L = [
       '@echo off',
       'rem This .bat is intentionally ASCII-only (English prompts). cmd.exe has a 4KB read-buffer',
@@ -411,7 +674,14 @@
       'if not exist "%OUTDIR%" mkdir "%OUTDIR%" >nul 2>nul',
       ''
     ];
-    if (bakedUrl) {
+    if (direct) {
+      /* 直链模式：烤进从页面提取到的 CDN 直链（自带签名，无需 cookie） */
+      L.push('set "URL=' + direct + '"');
+      L.push('if "%URL%"=="" (');
+      L.push('  echo  [mvt] URL is empty.');
+      L.push('  pause & exit /b 1');
+      L.push(')');
+    } else if (bakedUrl) {
       L.push('set "URL=' + bakedUrl + '"');
       L.push('if "%URL%"=="" (');
       L.push('  echo  [mvt] URL is empty.');
@@ -433,7 +703,27 @@
     L.push('set "UA=' + UA + '"');
     L.push('set "REFERER=' + ref + '"');
     L.push('echo.');
-    if (isDouyin) {
+    if (isDouyin && direct) {
+      /* 零 cookie 直链分支：直链从页面自身数据提取（play_addr.url_list），
+         自带签名查询参数，yt-dlp 只需带抖音页面的 Referer。
+         Edge 156 的 ABE 加密让所有「读浏览器 cookie」的方案都不可行也不安全
+         （2026-10-25 实测：带调试端口启动 Edge 会导致它物理删除解不开的
+         cookie，1853→25 不可恢复），所以这条路是首选。 */
+      L.push('echo  [mvt] Douyin: direct CDN link extracted from the page.');
+      L.push('echo  [mvt] No cookies needed. The link is signed and expires within hours,');
+      L.push('echo  [mvt] so run this bat soon after generating it.');
+      L.push('"%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --user-agent "%UA%" --referer "%REFERER%" -o "%OUTDIR%\\' + dyOut + '" -P "%OUTDIR%" --no-mtime "%URL%"');
+      L.push('if errorlevel 1 (');
+      L.push('  echo.');
+      L.push('  echo  [mvt] ================ Direct link failed ================');
+      L.push('  echo  [mvt] Most likely the signed link expired ^(valid for a few hours^).');
+      L.push('  echo  [mvt]   1. Reopen the douyin video page');
+      L.push('  echo  [mvt]   2. Click "download this video" again to regenerate this bat');
+      L.push('  echo  [mvt] Alternative: use the toolbox "record while playing" button');
+      L.push('  echo  [mvt] ^(works without any cookies^).');
+      L.push('  echo  [mvt] ===================================================');
+      L.push(')');
+    } else if (isDouyin) {
       /* Edge 156 (ABE v20 cookies) makes ALL automatic cookie reading unsafe:
          launching Edge with --remote-debugging-port fails ABE validation and
          Edge then DELETES the undecryptable cookies from the profile DB
@@ -441,8 +731,9 @@
          debug browser here. Instead: use a pre-exported Netscape cookie file
          (Cookie-Editor extension, exported from a normal browser session). */
       L.push('echo  [mvt] Douyin detected.');
-      L.push('echo  [mvt] New Edge encrypts cookies ^(ABE^); auto-reading them is unsafe,');
-      L.push('echo  [mvt] so a pre-exported cookie file is used if present.');
+      L.push('echo  [mvt] Could not extract a direct link from the page; falling back to');
+      L.push('echo  [mvt] a pre-exported cookie file. New Edge encrypts cookies ^(ABE^),');
+      L.push('echo  [mvt] so auto-reading them from the browser is unsafe.');
       L.push('set "COOKIES=%OUTDIR%\\__dy_cookies.txt"');
       L.push('if not exist "%COOKIES%" set "COOKIES=%USERPROFILE%\\Desktop\\__dy_cookies.txt"');
       L.push('if exist "%COOKIES%" (');
@@ -869,34 +1160,37 @@
     }
     if (!url) { toast('拿不到当前视频地址', 3000); return; }
 
-    /* 抖音搜索页 /share 页自动提取 modal_id 转为单视频页 */
+    /* 抖音：modal_id 转单视频页；再从页面数据提取直链（零 cookie 首选方案） */
     var isDouyin = /douyin\.com/i.test(url);
+    var dyId = '', dyVid = null;
     if (isDouyin) {
       var m = url.match(/[?&]modal_id=(\d+)/i);
       if (m) {
         url = 'https://www.douyin.com/video/' + m[1];
         toast('已转为单视频页: ' + url, 3000);
-      } else if (/\/video\//i.test(url)) {
-        /* 已经是单视频页，没问题 */
-      } else {
+      }
+      /* 从 /video/<id> 提取数字 ID，用于固定输出文件名 */
+      /* （CDN URL 的查询串曾被 yt-dlp 当标题/ID，400+ 字符导致 Errno 22） */
+      var idm = url.match(/\/video\/(\d+)/);
+      if (idm) dyId = idm[1];
+      /* 页面内提取直链：网络钩子 / _ROUTER_DATA / RENDER_DATA / React fiber。
+         详情页按 ID 精确匹配；feed 页（URL 无 /video/）用当前播放的 fiber 数据。 */
+      dyVid = dyGetVideo(dyId);
+      if (!dyVid && !dyId) {
         toast('抖音链接不是视频页，请打开具体视频后再试', 4000);
         return;
       }
     }
 
-    /* 抖音：从 /video/<id> 提取数字 ID，用于固定输出文件名 */
-    /* （CDN URL 的查询串曾被 yt-dlp 当标题/ID，400+ 字符导致 Errno 22） */
-    var dyId = '';
-    if (isDouyin) {
-      var idm = url.match(/\/video\/(\d+)/);
-      if (idm) dyId = idm[1];
-    }
-
-    var bat = buildYtDlpBat(url, isDouyin, dyId);
+    var bat = buildYtDlpBat(url, isDouyin, dyId, dyVid);
     saveBlob(new Blob([bat], { type: 'application/octet-stream' }), '下载本视频.bat');
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(bat).then(
-        function () { toast('已生成「下载本视频.bat」并复制命令，双击即自动下载合并（首次会先拉取依赖）', 6000); },
+        function () {
+          toast(dyVid
+            ? '已生成「下载本视频.bat」并复制：走页面直链、无需 cookie；直链有效期只有几小时，尽快双击运行'
+            : '已生成「下载本视频.bat」并复制命令，双击即自动下载合并（首次会先拉取依赖）', 6000);
+        },
         function () { toast('已生成「下载本视频.bat」，双击即自动下载合并', 4000); }
       );
     } else {
@@ -1100,7 +1394,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.20');
+    bar.setAttribute('data-mvt-ver', '2.0.21');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1110,7 +1404,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.20';
+    ver.textContent = 'v2.0.21';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
