@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.7
+// @version      2.0.8
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -380,7 +380,7 @@
       'set "FFDIR=%TOOLS%\\ffmpeg\\bin"',
       'set "FFZIP=%TOOLS%\\ffmpeg.zip"',
       'if not exist "%FFDIR%\\ffmpeg.exe" (',
-      '  echo [mvt] First run: downloading ffmpeg (~190MB, please wait) ...',
+      '  echo [mvt] First run: downloading ffmpeg ^(~190MB, please wait^) ...',
       '  curl.exe -L --ssl-no-revoke -o "%FFZIP%" "https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip"',
       '  for %%F in ("%FFZIP%") do if %%~zF LSS 1000000 del /f /q "%FFZIP%" >nul 2>nul',
       "  if not exist \"%FFZIP%\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip' -OutFile '%FFZIP%' -UseBasicParsing\"",
@@ -415,7 +415,7 @@
       L.push('set "URL=%~1"');
       L.push('if "%URL%"=="" (');
       L.push('  echo.');
-      L.push('  echo  [mvt] Paste video URL (Bilibili/YouTube/etc via yt-dlp) then Enter:');
+      L.push('  echo  [mvt] Paste video URL ^(Bilibili/YouTube/etc via yt-dlp^) then Enter:');
       L.push('  set /p "URL=> "');
       L.push(')');
       L.push('if "%URL%"=="" (');
@@ -486,7 +486,7 @@
       'set "FFDIR=%TOOLS%\\ffmpeg\\bin"',
       'set "FFZIP=%TOOLS%\\ffmpeg.zip"',
       'if not exist "%FFDIR%\\ffmpeg.exe" (',
-      '  echo [mvt] First run: downloading ffmpeg (~190MB, please wait) ...',
+      '  echo [mvt] First run: downloading ffmpeg ^(~190MB, please wait^) ...',
       '  curl.exe -L --ssl-no-revoke -o "%FFZIP%" "https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip"',
       '  for %%F in ("%FFZIP%") do if %%~zF LSS 1000000 del /f /q "%FFZIP%" >nul 2>nul',
       "  if not exist \"%FFZIP%\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip' -OutFile '%FFZIP%' -UseBasicParsing\"",
@@ -526,23 +526,23 @@
       'set "FULL="',
       'for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "FULL=%%~fF"',
       'if not defined FULL (',
-      '  echo  [mvt] First attempt failed (maybe hotlink-protected); retrying with Referer=' + REF2 + ' ...',
+      '  echo  [mvt] First attempt failed ^(maybe hotlink-protected^); retrying with Referer=' + REF2 + ' ...',
       '  "%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --user-agent "%UA%" --referer "%REF2%" -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"',
       '  for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "FULL=%%~fF"',
       ')',
       /* 第三招：奇艺/腾讯/优酷这类必须登录才给视频，用浏览器已登录的 cookie 再试一次 */
       'if not defined FULL (',
-      '  echo  [mvt] Still failing; retrying with browser login state (Edge cookies) ...',
+      '  echo  [mvt] Still failing; retrying with browser login state ^(Edge cookies^) ...',
       '  "%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --cookies-from-browser edge -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"',
       '  for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "FULL=%%~fF"',
       ')',
       'if not defined FULL (',
       '  echo  [mvt] Full video download failed, see info above.',
-      '  echo  [mvt] If link has signed params (deadline/e=), it may have expired: replay it on the page then regenerate the script.',
+      '  echo  [mvt] If link has signed params ^(deadline/e=^), it may have expired: replay it on the page then regenerate the script.',
       '  pause & exit /b 1',
       ')',
       'echo.',
-      'echo  [mvt] Step 2/2: ffmpeg precise cut ' + S + ' ~ ' + E + ' -> ' + outName,
+      'echo  [mvt] Step 2/2: ffmpeg precise cut ' + S + ' to ' + E + ', saving as ' + outName,
       '"%FFDIR%\\ffmpeg.exe" -ss ' + S + ' -to ' + E + ' -i "%FULL%" -c:v libx264 -c:a aac -preset veryfast "%OUTDIR%\\' + outName + '"',
       'echo.',
       'if errorlevel 1 ( echo  [mvt] Cut failed, full video kept in %TMPD% ) else ( echo  [mvt] Done: %OUTDIR%\\' + outName + ' )',
@@ -664,7 +664,7 @@
       'set "FFDIR=%TOOLS%\\ffmpeg\\bin"',
       'set "FFZIP=%TOOLS%\\ffmpeg.zip"',
       'if not exist "%FFDIR%\\ffmpeg.exe" (',
-      '  echo [mvt] First run: downloading ffmpeg (~190MB, please wait) ...',
+      '  echo [mvt] First run: downloading ffmpeg ^(~190MB, please wait^) ...',
       '  curl.exe -L --ssl-no-revoke -o "%FFZIP%" "https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip"',
       '  for %%F in ("%FFZIP%") do if %%~zF LSS 1000000 del /f /q "%FFZIP%" >nul 2>nul',
       "  if not exist \"%FFZIP%\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip' -OutFile '%FFZIP%' -UseBasicParsing\"",
@@ -692,6 +692,7 @@
       'set "REF1=' + REF1 + '"',
       'set "REF2=' + REF2 + '"',
       'set "INPUT=%~1"',
+      'set "TMPD=%OUTDIR%\\__ad_tmp"',
       ''
     ];
     if (bakedUrl) {
@@ -707,27 +708,26 @@
     L.push(') else (');
     L.push('  if "%URL%"=="" (');
     L.push('    echo.');
-    L.push('    echo  [mvt] Paste video URL (or drag a local video file onto this .bat) then Enter:');
+    L.push('    echo  [mvt] Paste video URL ^(or drag a local video file onto this .bat^) then Enter:');
     L.push('    set /p "URL=> "');
     L.push('  )');
     L.push('  if "%URL%"=="" (');
     L.push('    echo  [mvt] Neither local file nor URL given, exiting.');
     L.push('    pause & exit /b 1');
     L.push('  )');
-    L.push('  set "TMPD=%OUTDIR%\\__ad_tmp"');
     L.push('  if not exist "%TMPD%" mkdir "%TMPD%"');
     L.push('  echo.');
     L.push('  echo  [mvt] Step 1/2: downloading full video to temp dir...');
     L.push('  "%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --user-agent "%UA%" --referer "%REF1%" -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"');
     L.push('  for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "SRC=%%~fF"');
     L.push('  if not defined SRC (');
-    L.push('    echo  [mvt] First attempt failed (maybe hotlink-protected); retrying with Referer=' + REF2 + ' ...');
+    L.push('    echo  [mvt] First attempt failed ^(maybe hotlink-protected^); retrying with Referer=' + REF2 + ' ...');
     L.push('    "%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --user-agent "%UA%" --referer "%REF2%" -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"');
     L.push('    for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "SRC=%%~fF"');
     L.push('  )');
     /* 第三招：奇艺/腾讯/优酷这类必须登录才给视频，用浏览器已登录的 cookie 再试一次 */
     L.push('  if not defined SRC (');
-    L.push('    echo  [mvt] Still failing; retrying with browser login state (Edge cookies) ...');
+    L.push('    echo  [mvt] Still failing; retrying with browser login state ^(Edge cookies^) ...');
     L.push('    "%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --cookies-from-browser edge -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"');
     L.push('    for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "SRC=%%~fF"');
     L.push('  )');
@@ -735,15 +735,15 @@
     L.push('if not defined SRC (');
     L.push('  echo  [mvt] Could not get video source, see info above.');
     L.push('  echo  [mvt] iQiyi/Tencent/Youku need Edge login; the script retries with login state.');
-    L.push('  echo  [mvt] If still failing, use 5) live-record (it auto-skips ads while recording).');
+    L.push('  echo  [mvt] If still failing, use 5^) live-record ^(it auto-skips ads while recording^).');
     L.push('  pause & exit /b 1');
     L.push(')');
     L.push('echo.');
     if (fast) {
-      L.push('echo  [mvt] Step 2/2: skip intro ' + skip + '(no re-encode, instant)...');
+      L.push('echo  [mvt] Step 2/2: skip intro ' + skip + '^(no re-encode, instant^)...');
       L.push('"%FFDIR%\\ffmpeg.exe" -i "%SRC%" -ss ' + skip + ' -c copy -avoid_negative_ts make_zero -movflags +faststart "%OUTDIR%\\' + outName + '"');
     } else {
-      L.push('echo  [mvt] Step 2/2: skip intro ' + skip + '(re-encode, frame-accurate, please wait for long videos)...');
+      L.push('echo  [mvt] Step 2/2: skip intro ' + skip + '^(re-encode, frame-accurate, please wait for long videos^)...');
       L.push('"%FFDIR%\\ffmpeg.exe" -ss ' + skip + ' -i "%SRC%" -c:v libx264 -preset veryfast -crf 20 -c:a aac -b:a 192k -avoid_negative_ts make_zero -movflags +faststart "%OUTDIR%\\' + outName + '"');
     }
     L.push('echo.');
@@ -1029,7 +1029,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.7');
+    bar.setAttribute('data-mvt-ver', '2.0.8');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1039,7 +1039,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.7';
+    ver.textContent = 'v2.0.8';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
