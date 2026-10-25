@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.19
+// @version      2.0.20
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -350,12 +350,18 @@
   /* 生成「自举」下载脚本：首次运行自动把 yt-dlp.exe 与 ffmpeg 下载到
    * %LOCALAPPDATA%\mvt\bin，不依赖本机 Python / WinGet，重装系统后双击即用。
    * bakedUrl 非空 => 把链接烤进脚本；为空 => 运行时粘贴/拖放链接。 */
-  function buildYtDlpBat(bakedUrl, isDouyin) {
+  function buildYtDlpBat(bakedUrl, isDouyin, dyId) {
     /* 防盗链：B站 CDN 直链必须同时带浏览器 UA + B站 Referer（实测缺一即 403） */
     var isCdn = /bilivideo\.com|bilivod\.com|bilicdn/i.test(bakedUrl || '');
     var ref = isCdn ? 'https://www.bilibili.com/'
       : ((bakedUrl && /^https?:/i.test(bakedUrl)) ? String(bakedUrl).split('#')[0] : 'https://www.bilibili.com/');
     var UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36';
+    /* 抖音输出名：固定 douyin_<视频ID>.%(ext)s。
+       必须固定名字——抖音 CDN 直链的查询串曾被 yt-dlp 当成标题/ID 用，
+       400+ 字符含 ? & = 的文件名 Windows 直接拒绝创建（Errno 22）。
+       注意 bat 里 %% 会被 cmd 折成 %，所以模板写 %%(ext)s。
+       注：dyId 为空时退回 %(id)s 模板。 */
+    var dyOut = dyId ? ('douyin_' + dyId + '.%%(ext)s') : 'douyin_%%(id)s.%%(ext)s';
     var L = [
       '@echo off',
       'rem This .bat is intentionally ASCII-only (English prompts). cmd.exe has a 4KB read-buffer',
@@ -428,34 +434,41 @@
     L.push('set "REFERER=' + ref + '"');
     L.push('echo.');
     if (isDouyin) {
-      L.push('echo  [mvt] Douyin detected ^(requires Edge login cookies^) ...');
-      L.push('echo  [mvt] Force-closing Edge to free the profile for the headless cookie read ...');
-      L.push('echo  [mvt] ^(your open tabs will close; Edge offers to restore them on next launch^)');
-      L.push('taskkill /F /IM msedge.exe >nul 2>nul');
-      L.push('ping -n 4 127.0.0.1 >nul');
-      L.push('taskkill /F /IM msedge.exe >nul 2>nul');
-      L.push('ping -n 3 127.0.0.1 >nul');
-      L.push('echo  [mvt] Reading login cookies via headless Edge ^(DevTools protocol^) ...');
+      /* Edge 156 (ABE v20 cookies) makes ALL automatic cookie reading unsafe:
+         launching Edge with --remote-debugging-port fails ABE validation and
+         Edge then DELETES the undecryptable cookies from the profile DB
+         (verified: 1853 cookies -> 25 on 2026-10-25). So we NEVER launch a
+         debug browser here. Instead: use a pre-exported Netscape cookie file
+         (Cookie-Editor extension, exported from a normal browser session). */
+      L.push('echo  [mvt] Douyin detected.');
+      L.push('echo  [mvt] New Edge encrypts cookies ^(ABE^); auto-reading them is unsafe,');
+      L.push('echo  [mvt] so a pre-exported cookie file is used if present.');
       L.push('set "COOKIES=%OUTDIR%\\__dy_cookies.txt"');
-      L.push('set "PYEX=C:\\Users\\whx\\.workbuddy\\binaries\\python\\versions\\3.13.12\\python.exe"');
-      L.push('if not exist "%PYEX%" (');
-      L.push('  where python.exe >nul 2>nul');
-      L.push('  if not errorlevel 1 set "PYEX=python.exe"');
-      L.push(')');
-      L.push('if defined PYEX (');
-      L.push('  "%PYEX%" "%LOCALAPPDATA%\\mvt\\bin\\extract_douyin_cookies.py" "%COOKIES%"');
-      L.push(')');
-      L.push('if not exist "%COOKIES%" (');
-      L.push('  echo  [mvt] Cookie read failed, trying yt-dlp browser cookie ...');
-      L.push('  "%YTDLP%" --no-playlist -f "best[height<=1080]/best" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --user-agent "%UA%" --cookies-from-browser edge -P "%OUTDIR%" --no-mtime "%URL%"');
+      L.push('if not exist "%COOKIES%" set "COOKIES=%USERPROFILE%\\Desktop\\__dy_cookies.txt"');
+      L.push('if exist "%COOKIES%" (');
+      L.push('  echo  [mvt] Using exported cookies: %COOKIES%');
+      L.push('  "%YTDLP%" --no-playlist -f "best[height<=1080]/best" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --user-agent "%UA%" --cookies "%COOKIES%" -o "%OUTDIR%\\' + dyOut + '" -P "%OUTDIR%" --no-mtime "%URL%"');
       L.push(') else (');
-      L.push('  echo  [mvt] Using extracted cookies ...');
-      L.push('  "%YTDLP%" --no-playlist -f "best[height<=1080]/best" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --user-agent "%UA%" --cookies "%COOKIES%" -P "%OUTDIR%" --no-mtime "%URL%"');
+      L.push('  echo  [mvt] No cookie file found, trying browser cookies directly ^(fails on new Edge^) ...');
+      L.push('  "%YTDLP%" --no-playlist -f "best[height<=1080]/best" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --user-agent "%UA%" --cookies-from-browser edge -o "%OUTDIR%\\' + dyOut + '" -P "%OUTDIR%" --no-mtime "%URL%"');
+      L.push(')');
+      L.push('if errorlevel 1 (');
+      L.push('  echo.');
+      L.push('  echo  [mvt] ================ Douyin cookie setup ================');
+      L.push('  echo  [mvt] Douyin needs login cookies. One-time setup ^(~5 min^):');
+      L.push('  echo  [mvt]   1. Install the "Cookie-Editor" extension in Edge');
+      L.push('  echo  [mvt]   2. Open douyin.com and make sure you are logged in');
+      L.push('  echo  [mvt]   3. Cookie-Editor icon - Export - Netscape format');
+      L.push('  echo  [mvt]   4. Save the file as: %OUTDIR%\\__dy_cookies.txt');
+      L.push('  echo  [mvt]   5. Run this bat again');
+      L.push('  echo  [mvt] Alternative: use the toolbox "record while playing" button');
+      L.push('  echo  [mvt] ^(works without any cookies^).');
+      L.push('  echo  [mvt] =====================================================');
       L.push(')');
     } else {
       L.push('echo  [mvt] Downloading ... output dir: %OUTDIR%');
       L.push('echo.');
-      L.push('"%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --user-agent "%UA%" --referer "%REFERER%" -P "%OUTDIR%" --no-mtime "%URL%"');
+      L.push('"%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --user-agent "%UA%" --referer "%REFERER%" --trim-filenames 120 -P "%OUTDIR%" --no-mtime "%URL%"');
     }
     L.push('');
     L.push('echo.');
@@ -871,7 +884,15 @@
       }
     }
 
-    var bat = buildYtDlpBat(url, isDouyin);
+    /* 抖音：从 /video/<id> 提取数字 ID，用于固定输出文件名 */
+    /* （CDN URL 的查询串曾被 yt-dlp 当标题/ID，400+ 字符导致 Errno 22） */
+    var dyId = '';
+    if (isDouyin) {
+      var idm = url.match(/\/video\/(\d+)/);
+      if (idm) dyId = idm[1];
+    }
+
+    var bat = buildYtDlpBat(url, isDouyin, dyId);
     saveBlob(new Blob([bat], { type: 'application/octet-stream' }), '下载本视频.bat');
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(bat).then(
@@ -1079,7 +1100,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.19');
+    bar.setAttribute('data-mvt-ver', '2.0.20');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1089,7 +1110,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.19';
+    ver.textContent = 'v2.0.20';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
