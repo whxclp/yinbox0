@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.5
-// @description  自研轻量视频增强：倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
+// @version      2.0.6
+// @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
 // @run-at       document-start
@@ -1011,7 +1011,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.5');
+    bar.setAttribute('data-mvt-ver', '2.0.6');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1021,7 +1021,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.5';
+    ver.textContent = 'v2.0.6';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
@@ -1109,6 +1109,15 @@
     var toolBtn = mBtn('工具', true);
     var mTool = document.createElement('div');
     mTool.className = 'mvt-menu';
+    var adItem = mItem('自动跳广告：' + (AD.on ? '开' : '关'), function () {
+      AD.on = !AD.on;
+      adSave();
+      adItem.textContent = '自动跳广告：' + (AD.on ? '开' : '关');
+      if (!AD.on && AD.active) adOff(AD.active);
+      toast(AD.on ? '自动跳广告：开（识别到广告会静音+加速跳过）' : '自动跳广告：关', 3000);
+    });
+    mTool.appendChild(adItem);
+    mTool.appendChild(mSep());
     mTool.appendChild(mItem('屏幕截图', function () {
       try {
         var c = document.createElement('canvas');
@@ -1299,6 +1308,176 @@
     }
   }
 
+  /* ================= 播放时自动跳广告（片头/插播） =================
+   * 和「⑦ 去片头广告」不是一回事：⑦ 是下载后剪掉片头，这里是在线播放时当场跳过。
+   *
+   * 判定：只在「视频所在容器」里找广告文案（不扫全页，避免误伤），
+   *       命中 关闭此广告 / 跳过广告 / 广告剩余 / 广告时长 之类才算广告。
+   *       普通视频页不会命中这些词，所以正片不会被误判。
+   *
+   * 三重手段，从轻到重：
+   *   ① 点真正的跳过按钮（只认「跳过广告 / 跳过此广告 / Skip Ad」这几个词）
+   *      —— 故意不点「关闭此广告」：奇艺那句「黄金会员关闭此广告」是 VIP 购买入口，点了会弹充值页
+   *   ② 广告片通常很短（duration ≤ 180s）→ 直接跳到末尾，广告立刻结束
+   *   ③ 跳不掉也点不掉 → 静音 + 16 倍速冲过去，广告结束自动还原原来的倍速和音量
+   *
+   * 实测要点：奇艺片头广告的文案是「黄金关此广告」（黄金会员关闭此广告被截断），
+   * 所以正则里要同时含「关闭此广告」和「关此广告」。
+   */
+  var AD_SKIP_BTN = /^(跳过广告|跳过此广告|跳过片头广告|skip\s*ads?)$/i;
+  var AD_HINT = /关(闭)?此广告|跳过广告|跳过此广告|广告剩余|广告时长|广告倒计时|skip\s*ads?/i;
+  var AD = { on: true, rate0: null, mute0: null, lastJump: '', active: null };
+
+  try { if (localStorage.getItem('mvt:adskip') === '0') AD.on = false; } catch (e) {}
+  function adSave() { try { localStorage.setItem('mvt:adskip', AD.on ? '1' : '0'); } catch (e) {} }
+
+  /* 取正在播的那个 video（广告可能是另一个 video 元素，不能只认 cur） */
+  function adPickVideo() {
+    if (cur && !cur.paused && cur.readyState > 2) return cur;
+    var vs = document.querySelectorAll('video');
+    for (var i = 0; i < vs.length; i++) {
+      if (!vs[i].paused && vs[i].readyState > 2) return vs[i];
+    }
+    return cur || vs[0] || null;
+  }
+
+  /* 视频往上 6 层当作「播放器容器」，广告文案基本都在这里面 */
+  function adBox(v) {
+    if (!v) return null;
+    var p = v;
+    for (var i = 0; i < 6 && p.parentElement && p.parentElement !== document.body; i++) p = p.parentElement;
+    return p;
+  }
+
+  function adLook(v) {
+    /* ① 首选：在画面范围内采样，看压在画面上的文字里有没有广告文案。
+          elementFromPoint 是 O(1) 且不触发全页布局，可以每个 tick 放心跑；
+          而且「文字确实盖在视频画面上」本身就是很强的广告证据。 */
+    if (adProbe(v)) return true;
+    /* ② 兜底：广告标识可能挂在播放器容器里但不在画面正中，读一次容器文字，1.5s 缓存 */
+    return adBoxText(v);
+  }
+
+  /* 采样点按比例撒在画面中下部（跳过广告/广告剩余这类文案基本都在这一带），
+     最右下角那两点是照奇艺「黄金关此广告」的实际位置加的 */
+  var AD_PTS = [
+    [0.50, 0.50],
+    [0.12, 0.88], [0.30, 0.90], [0.50, 0.93],
+    [0.68, 0.90], [0.85, 0.88], [0.94, 0.92],
+    [0.90, 0.10]
+  ];
+
+  function adProbe(v) {
+    var r;
+    try { r = v.getBoundingClientRect(); } catch (e) { return false; }
+    if (!r || r.width < 200 || r.height < 120) return false;
+    var W = window.innerWidth, H = window.innerHeight;
+    for (var i = 0; i < AD_PTS.length; i++) {
+      var x = r.left + r.width * AD_PTS[i][0];
+      var y = r.top + r.height * AD_PTS[i][1];
+      if (x < 0 || y < 0 || x > W - 1 || y > H - 1) continue;
+      var el;
+      try { el = document.elementFromPoint(x, y); } catch (e) { continue; }
+      for (var d = 0; d < 3 && el && el !== document.body; d++) {
+        /* 必须严格用 innerText（只含「看得见」的文字）。
+           绝不能 `innerText || textContent` 回退：播放器常把「关闭此广告」这类
+           DOM 预埋成 display:none，textContent 会把隐藏文字也算进来，
+           结果广告早就播完了还一直判成广告（实测踩过）。 */
+        var tx = (typeof el.innerText === 'string') ? el.innerText : (el.textContent || '');
+        if (tx && tx.length < 300 && AD_HINT.test(tx)) return true;
+        el = el.parentElement;
+      }
+    }
+    return false;
+  }
+
+  var adBoxCache = { t: 0, v: false };
+  function adBoxText(v) {
+    var now = Date.now();
+    if (now - adBoxCache.t < 1500) return adBoxCache.v;
+    adBoxCache.t = now;
+    adBoxCache.v = false;
+    var box = adBox(v);
+    if (box) {
+      var t = box.innerText || '';
+      if (t && t.length < 6000 && AD_HINT.test(t)) adBoxCache.v = true;
+    }
+    return adBoxCache.v;
+  }
+
+  /* ① 点跳过按钮：只在广告期间、只在容器内、只点短文案叶子节点 */
+  function adHit(v) {
+    var box = adBox(v);
+    if (!box) return false;
+    var all = box.querySelectorAll('*');
+    if (all.length > 4000) return false;   /* 容器太杂就不动，免得卡 */
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i];
+      if (el.__mvtAdDone) continue;
+      if (el.children && el.children.length) continue;
+      var tx = (el.textContent || '').trim();
+      if (!tx || tx.length > 12) continue;
+      if (!AD_SKIP_BTN.test(tx)) continue;
+      var r = el.getBoundingClientRect();
+      if (r.width < 6 || r.height < 6) continue;
+      el.__mvtAdDone = 1;
+      try { el.click(); } catch (e) {}
+      toast('已点击「' + tx + '」跳过广告', 2400);
+      return true;
+    }
+    return false;
+  }
+
+  function adOn(v) {
+    if (AD.active === v) {
+      /* 播放器会自己把 rate 改回去，每个 tick 补一刀 */
+      if (v.playbackRate < 16) { try { v.playbackRate = 16; } catch (e) {} }
+      return;
+    }
+    if (AD.active && AD.active !== v) adOff(AD.active);
+    AD.active = v;
+    AD.rate0 = v.playbackRate;
+    AD.mute0 = v.muted;
+
+    /* ② 广告片很短 → 直接跳尾，一次就行。
+       只在「刚开头」时才跳：万一是误判（比如正片本身就是 3 分钟短片），
+       也不会把已经看到一半的人直接拽到结尾。 */
+    var src = v.currentSrc || v.src || '';
+    if (v.duration && v.duration <= 180 && v.currentTime < 5 && AD.lastJump !== src) {
+      AD.lastJump = src;
+      try { v.currentTime = Math.max(0, v.duration - 0.2); } catch (e) {}
+    }
+    /* ③ 静音 + 16 倍速 */
+    try { v.muted = true; } catch (e) {}
+    try { v.playbackRate = 16; } catch (e) {}
+    toast('检测到广告，正在跳过…', 2600);
+  }
+
+  function adOff(v) {
+    if (!v || AD.active !== v) return;
+    AD.active = null;
+    if (AD.rate0 != null) {
+      try { v.playbackRate = AD.rate0; } catch (e) {}
+      if (v.__mvt) v.__mvt.rate = AD.rate0;
+      updateRateBtn();
+    }
+    if (AD.mute0 != null) { try { v.muted = AD.mute0; } catch (e) {} }
+    AD.rate0 = null; AD.mute0 = null;
+    toast('广告已跳过', 2200);
+  }
+
+  function adTick() {
+    /* 兜一层：定时器里抛异常会每 800ms 刷一次控制台，还拖慢页面 */
+    try {
+      if (!AD.on) { if (AD.active) adOff(AD.active); return; }
+      if (mvtRecording) return;   /* 录制中绝不动倍速，否则录制会错乱 */
+      var v = adPickVideo();
+      if (!v) return;
+      if (adLook(v)) { adHit(v); adOn(v); }
+      else { adOff(v); }
+    } catch (e) { /* 静默：广告模块绝不能影响主功能 */ }
+  }
+
   /* ================= 启动 ================= */
   function start() {
     var st = document.createElement('style');
@@ -1316,6 +1495,7 @@
     var mo = new MutationObserver(scan);
     mo.observe(document.documentElement, { childList: true, subtree: true });
     setInterval(scan, 2000);
+    setInterval(adTick, 800);
     setInterval(positionBar, 250);
     window.addEventListener('scroll', positionBar, true);
     window.addEventListener('resize', positionBar);
