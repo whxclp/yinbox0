@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.9
+// @version      2.0.10
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -1037,7 +1037,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.9');
+    bar.setAttribute('data-mvt-ver', '2.0.10');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1047,7 +1047,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.9';
+    ver.textContent = 'v2.0.10';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
@@ -1350,8 +1350,8 @@
    * 实测要点：奇艺片头广告的文案是「黄金关此广告」（黄金会员关闭此广告被截断），
    * 所以正则里要同时含「关闭此广告」和「关此广告」。
    */
-  var AD_SKIP_BTN = /^(跳过广告|跳过此广告|跳过片头广告|skip\s*ads?)$/i;
-  var AD_HINT = /关(闭)?此广告|跳过广告|跳过此广告|广告剩余|广告时长|广告倒计时|skip\s*ads?/i;
+  var AD_SKIP_BTN = /^(跳过广告|跳过此广告|跳过片头广告|跳过$|稍后跳过|skip\s*ads?|关闭广告|暂不观看)$/i;
+  var AD_HINT = /关(闭)?此广告|跳过广告|跳过此广告|跳过$|稍后跳过|广告剩余|广告时长|广告倒计时|正在播放广告|广告中|即将播放|skip\s*ads?|观看完整视频|关闭广告|暂不观看|黄金会员/gi;
   var AD = { on: true, rate0: null, mute0: null, lastJump: '', active: null };
 
   try { if (localStorage.getItem('mvt:adskip') === '0') AD.on = false; } catch (e) {}
@@ -1381,7 +1381,23 @@
           而且「文字确实盖在视频画面上」本身就是很强的广告证据。 */
     if (adProbe(v)) return true;
     /* ② 兜底：广告标识可能挂在播放器容器里但不在画面正中，读一次容器文字，1.5s 缓存 */
-    return adBoxText(v);
+    if (adBoxText(v)) return true;
+    /* ③ 腾讯/QQ 专属增强：广告 overlay 有时在外层容器里但不在 video 的 6 层祖先里，
+       所以额外扫一下 body 中所有可见的「广告」字样（限制在视频附近 400px） */
+    if (/qq\.com|tencent\.com/i.test(window.location.hostname)) {
+      try {
+        var rr = v.getBoundingClientRect();
+        var els = document.querySelectorAll('[class*="ad"],[class*="Ad"],[class*="adv"],[class*="AD"],.mvt-ad-overlay');
+        for (var k = 0; k < els.length; k++) {
+          var er = els[k].getBoundingClientRect();
+          if (er.width < 20 || er.height < 10) continue;
+          if (Math.abs(er.left - rr.left) > 400 && Math.abs(er.top - rr.top) > 400) continue;
+          var et = els[k].innerText || '';
+          if (et && et.length < 300 && AD_HINT.test(et)) return true;
+        }
+      } catch (e) {}
+    }
+    return false;
   }
 
   /* 采样点按比例撒在画面中下部（跳过广告/广告剩余这类文案基本都在这一带），
@@ -1450,6 +1466,21 @@
       try { el.click(); } catch (e) {}
       toast('已点击「' + tx + '」跳过广告', 2400);
       return true;
+    }
+    /* 腾讯/QQ 专属：有时跳过按钮是 SVG 图标，没有 textContent，得找整个可点击区域 */
+    if (/qq\.com|tencent\.com/i.test(window.location.hostname)) {
+      var hints = box.querySelectorAll('[class*="skip"],[class*="Skip"],[class*="close"],[class*="Close"],button,a');
+      for (var j = 0; j < hints.length; j++) {
+        var h = hints[j];
+        if (h.__mvtAdDone) continue;
+        var ht = (h.innerText || h.value || '').trim();
+        if (ht && AD_SKIP_BTN.test(ht)) {
+          h.__mvtAdDone = 1;
+          try { h.click(); } catch (e) {}
+          toast('已点击「' + ht + '」跳过广告', 2400);
+          return true;
+        }
+      }
     }
     return false;
   }
