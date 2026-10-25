@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.10
+// @version      2.0.11
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -350,7 +350,7 @@
   /* 生成「自举」下载脚本：首次运行自动把 yt-dlp.exe 与 ffmpeg 下载到
    * %LOCALAPPDATA%\mvt\bin，不依赖本机 Python / WinGet，重装系统后双击即用。
    * bakedUrl 非空 => 把链接烤进脚本；为空 => 运行时粘贴/拖放链接。 */
-  function buildYtDlpBat(bakedUrl) {
+  function buildYtDlpBat(bakedUrl, isDouyin) {
     /* 防盗链：B站 CDN 直链必须同时带浏览器 UA + B站 Referer（实测缺一即 403） */
     var isCdn = /bilivideo\.com|bilivod\.com|bilicdn/i.test(bakedUrl || '');
     var ref = isCdn ? 'https://www.bilibili.com/'
@@ -427,9 +427,19 @@
     L.push('set "UA=' + UA + '"');
     L.push('set "REFERER=' + ref + '"');
     L.push('echo.');
-    L.push('echo  [mvt] Downloading ... output dir: %OUTDIR%');
-    L.push('echo.');
-    L.push('"%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --user-agent "%UA%" --referer "%REFERER%" -P "%OUTDIR%" --no-mtime "%URL%"');
+    if (isDouyin) {
+      L.push('echo  [mvt] Douyin detected ^(requires Edge login cookies^) ...');
+      L.push('echo  [mvt] Force-closing Edge to unlock cookie DB ...');
+      L.push('taskkill /F /IM msedge.exe >nul 2>nul');
+      L.push('ping -n 3 127.0.0.1 >nul');
+      L.push('taskkill /F /IM msedge.exe >nul 2>nul');
+      L.push('echo  [mvt] Downloading with Edge cookies ...');
+      L.push('"%YTDLP%" --no-playlist -f "best[height<=1080]/best" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --user-agent "%UA%" --cookies-from-browser edge -P "%OUTDIR%" --no-mtime "%URL%"');
+    } else {
+      L.push('echo  [mvt] Downloading ... output dir: %OUTDIR%');
+      L.push('echo.');
+      L.push('"%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --user-agent "%UA%" --referer "%REFERER%" -P "%OUTDIR%" --no-mtime "%URL%"');
+    }
     L.push('');
     L.push('echo.');
     L.push('if errorlevel 1 ( echo  [mvt] Download failed, see info above. ) else ( echo  [mvt] Done, file in: %OUTDIR% )');
@@ -829,7 +839,8 @@
     }
     if (!url) { toast('拿不到当前视频地址', 3000); return; }
 
-    var bat = buildYtDlpBat(url);
+    var isDouyin = /douyin\.com/i.test(url);
+    var bat = buildYtDlpBat(url, isDouyin);
     saveBlob(new Blob([bat], { type: 'application/octet-stream' }), '下载本视频.bat');
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(bat).then(
@@ -844,7 +855,7 @@
   /* ================= 下载模式五：生成「通用」下载脚本（运行后粘贴任意链接） =================
    * 等价桌面那个 视频下载合并.bat，但更稳：自举补齐 yt-dlp/ffmpeg，不限 B站、不限是否在视频页。 */
   function genDownBatGeneric() {
-    var bat = buildYtDlpBat('');
+    var bat = buildYtDlpBat('', false);
     saveBlob(new Blob([bat], { type: 'application/octet-stream' }), '视频下载合并.bat');
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(bat).then(
@@ -1037,7 +1048,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.10');
+    bar.setAttribute('data-mvt-ver', '2.0.11');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1047,7 +1058,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.10';
+    ver.textContent = 'v2.0.11';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
