@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.18
+// @version      2.0.19
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -429,20 +429,24 @@
     L.push('echo.');
     if (isDouyin) {
       L.push('echo  [mvt] Douyin detected ^(requires Edge login cookies^) ...');
-      L.push('echo  [mvt] Force-closing Edge to unlock cookie DB ...');
+      L.push('echo  [mvt] Force-closing Edge to free the profile for the headless cookie read ...');
+      L.push('echo  [mvt] ^(your open tabs will close; Edge offers to restore them on next launch^)');
       L.push('taskkill /F /IM msedge.exe >nul 2>nul');
       L.push('ping -n 4 127.0.0.1 >nul');
       L.push('taskkill /F /IM msedge.exe >nul 2>nul');
-      L.push('ping -n 2 127.0.0.1 >nul');
-      L.push('echo  [mvt] Extracting Edge cookies for douyin ...');
+      L.push('ping -n 3 127.0.0.1 >nul');
+      L.push('echo  [mvt] Reading login cookies via headless Edge ^(DevTools protocol^) ...');
       L.push('set "COOKIES=%OUTDIR%\\__dy_cookies.txt"');
-      L.push('set "PY extractor=C:\\Users\\whx\\.workbuddy\\binaries\\python\\versions\\3.13.12\\python.exe"');
-      L.push('if not exist "%PY extractor%" set "PY extractor=python.exe"');
-      L.push('if exist "%PY extractor%" (');
-      L.push('  "%PY extractor%" "%LOCALAPPDATA%\\mvt\\bin\\extract_douyin_cookies.py" "%COOKIES%"');
+      L.push('set "PYEX=C:\\Users\\whx\\.workbuddy\\binaries\\python\\versions\\3.13.12\\python.exe"');
+      L.push('if not exist "%PYEX%" (');
+      L.push('  where python.exe >nul 2>nul');
+      L.push('  if not errorlevel 1 set "PYEX=python.exe"');
+      L.push(')');
+      L.push('if defined PYEX (');
+      L.push('  "%PYEX%" "%LOCALAPPDATA%\\mvt\\bin\\extract_douyin_cookies.py" "%COOKIES%"');
       L.push(')');
       L.push('if not exist "%COOKIES%" (');
-      L.push('  echo  [mvt] Cookie extraction failed, trying browser direct ...');
+      L.push('  echo  [mvt] Cookie read failed, trying yt-dlp browser cookie ...');
       L.push('  "%YTDLP%" --no-playlist -f "best[height<=1080]/best" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --user-agent "%UA%" --cookies-from-browser edge -P "%OUTDIR%" --no-mtime "%URL%"');
       L.push(') else (');
       L.push('  echo  [mvt] Using extracted cookies ...');
@@ -1075,7 +1079,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.18');
+    bar.setAttribute('data-mvt-ver', '2.0.19');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1085,7 +1089,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.18';
+    ver.textContent = 'v2.0.19';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
