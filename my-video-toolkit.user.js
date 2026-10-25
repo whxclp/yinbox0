@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.13
+// @version      2.0.14
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -1075,7 +1075,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.13');
+    bar.setAttribute('data-mvt-ver', '2.0.14');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1085,7 +1085,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.13';
+    ver.textContent = 'v2.0.14';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
@@ -1250,7 +1250,15 @@
     bar.addEventListener('mouseenter', function () { clearTimeout(hideTimer); bar.classList.add('mvt-on'); });
     bar.addEventListener('mouseleave', slideUpSoon);
 
-    document.body.appendChild(bar);
+    // 确保在 body 根部，避免被父容器 transform/overflow 影响
+    if (bar.parentElement !== document.body) {
+      document.body.appendChild(bar);
+    }
+    bar.style.left = '40px';
+    bar.style.right = '';
+    bar.style.top = '0';
+    bar.style.transform = '';
+    bar.style.zIndex = '2147483000';
   }
 
   function setRate(v, r) {
@@ -1302,8 +1310,12 @@
       left = 40;
     }
     left = Math.max(8, Math.min(left, window.innerWidth - bar.offsetWidth - 8));
+    // 强制定位，清除所有可能干扰的样式
     bar.style.left = left + 'px';
-    bar.style.right = 'auto';
+    bar.style.right = '';
+    bar.style.transform = '';
+    // 确保在顶层
+    bar.style.zIndex = '2147483000';
   }
 
   /* ================= 绑定视频 ================= */
