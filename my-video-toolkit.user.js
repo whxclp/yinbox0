@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.4
-// @description  自研轻量视频增强：倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
+// @version      2.0.5
+// @description  自研轻量视频增强：倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
 // @run-at       document-start
@@ -351,6 +351,11 @@
    * %LOCALAPPDATA%\mvt\bin，不依赖本机 Python / WinGet，重装系统后双击即用。
    * bakedUrl 非空 => 把链接烤进脚本；为空 => 运行时粘贴/拖放链接。 */
   function buildYtDlpBat(bakedUrl) {
+    /* 防盗链：B站 CDN 直链必须同时带浏览器 UA + B站 Referer（实测缺一即 403） */
+    var isCdn = /bilivideo\.com|bilivod\.com|bilicdn/i.test(bakedUrl || '');
+    var ref = isCdn ? 'https://www.bilibili.com/'
+      : ((bakedUrl && /^https?:/i.test(bakedUrl)) ? String(bakedUrl).split('#')[0] : 'https://www.bilibili.com/');
+    var UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36';
     var L = [
       '@echo off',
       'chcp 65001 >nul',
@@ -418,10 +423,12 @@
       L.push(')');
     }
     L.push('');
+    L.push('set "UA=' + UA + '"');
+    L.push('set "REFERER=' + ref + '"');
     L.push('echo.');
     L.push('echo  [mvt] 下载中 ... 输出目录：%OUTDIR%');
     L.push('echo.');
-    L.push('"%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" -P "%OUTDIR%" --no-mtime "%URL%"');
+    L.push('"%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --user-agent "%UA%" --referer "%REFERER%" -P "%OUTDIR%" --no-mtime "%URL%"');
     L.push('');
     L.push('echo.');
     L.push('if errorlevel 1 ( echo  [mvt] 下载失败，见上方信息。 ) else ( echo  [mvt] 完成，文件在：%OUTDIR% )');
@@ -439,8 +446,15 @@
   /* ================= 片段下载：暂停→记录当前播放点→前后各留 N 秒 =================
    * 先下完整视频到临时目录，再用 ffmpeg 按时间精确裁剪出片段（全站通用、边界精确）。
    * 自举补齐 yt-dlp/ffmpeg，重装系统后也能用。 */
-  function buildYtDlpSegBat(startSec, endSec, bakedUrl) {
+  function buildYtDlpSegBat(startSec, endSec, bakedUrl, pageUrl) {
     var S = fmtTime(startSec), E = fmtTime(endSec);
+    /* 防盗链：直接拿到的 bilivideo CDN 直链必须同时带浏览器 UA + B站 Referer，
+     * 只带 Referer 也是 403（已实测）。所以烤两个 Referer，第一个失败自动换第二个重试。 */
+    var isCdn = /bilivideo\.com|bilivod\.com|bilicdn/i.test(bakedUrl);
+    var pg = (pageUrl && /^https?:/i.test(pageUrl)) ? String(pageUrl).split('#')[0] : 'https://www.bilibili.com/';
+    var REF1 = isCdn ? 'https://www.bilibili.com/' : pg;
+    var REF2 = isCdn ? pg : 'https://www.bilibili.com/';
+    var UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36';
     function pad(n) { return n < 10 ? '0' + n : '' + n; }
     function fn(sec) {
       sec = Math.max(0, Math.floor(sec || 0));
@@ -501,19 +515,30 @@
       '',
       'set "TMPD=%OUTDIR%\\__seg_tmp"',
       'if not exist "%TMPD%" mkdir "%TMPD%"',
+      'set "UA=' + UA + '"',
+      'set "REF1=' + REF1 + '"',
+      'set "REF2=' + REF2 + '"',
       'echo.',
       'echo  [mvt] 步骤1/2：下载完整视频到临时目录...',
-      '"%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"',
-      'if not exist "%TMPD%\\full.mp4" (',
+      '"%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --user-agent "%UA%" --referer "%REF1%" -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"',
+      'set "FULL="',
+      'for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "FULL=%%~fF"',
+      'if not defined FULL (',
+      '  echo  [mvt] 首次尝试失败（可能是防盗链），换用 Referer=' + REF2 + ' 重试 ...',
+      '  "%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --user-agent "%UA%" --referer "%REF2%" -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"',
+      '  for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "FULL=%%~fF"',
+      ')',
+      'if not defined FULL (',
       '  echo  [mvt] 完整视频下载失败，见上方信息。',
+      '  echo  [mvt] 若链接带签名参数(deadline/e=)，可能已过期：回网页重新播放一下，再重新生成脚本。',
       '  pause & exit /b 1',
       ')',
       'echo.',
       'echo  [mvt] 步骤2/2：ffmpeg 精确裁剪 ' + S + ' ~ ' + E + ' -> ' + outName,
-      '"%FFDIR%\\ffmpeg.exe" -ss ' + S + ' -to ' + E + ' -i "%TMPD%\\full.mp4" -c:v libx264 -c:a aac -preset veryfast "%OUTDIR%\\' + outName + '"',
+      '"%FFDIR%\\ffmpeg.exe" -ss ' + S + ' -to ' + E + ' -i "!FULL!" -c:v libx264 -c:a aac -preset veryfast "%OUTDIR%\\' + outName + '"',
       'echo.',
       'if errorlevel 1 ( echo  [mvt] 裁剪失败，完整视频已保留在 %TMPD% ) else ( echo  [mvt] 完成：%OUTDIR%\\' + outName + ' )',
-      'del /f /q "%TMPD%\\full.mp4" 2>nul',
+      'del /f /q "%TMPD%\\full.*" 2>nul',
       'rd /s /q "%TMPD%" 2>nul',
       'pause'
     ];
@@ -524,16 +549,17 @@
     var v = cur;
     if (!v || !v.currentTime) { toast('没有正在播放的视频，无法定位播放点', 3000); return; }
     var ct = v.currentTime;
-    var url = String(location.href || '').split('#')[0];
-    if (!/bilibili\\.com/i.test(url) && cur) {
+    var page = String(location.href || '').split('#')[0];
+    var url = page;
+    if (!/bilibili\.com/i.test(url) && cur) {
       var s = cur.currentSrc || cur.src || '';
       if (s && s.indexOf('http') === 0) url = s;
     }
     if (!url) { toast('拿不到视频地址', 3000); return; }
-    showSegPanel(ct, url);
+    showSegPanel(ct, url, page);
   }
 
-  function showSegPanel(ct, url) {
+  function showSegPanel(ct, url, page) {
     var mask = document.createElement('div');
     mask.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:2147483646;';
     var card = document.createElement('div');
@@ -567,7 +593,7 @@
       var a = parseFloat(document.getElementById('mvtSegA').value) || 0;
       var start = Math.max(0, Math.floor(ct - b));
       var end = Math.floor(ct + a);
-      var bat = buildYtDlpSegBat(start, end, url);
+      var bat = buildYtDlpSegBat(start, end, url, page);
       saveBlob(new Blob([bat], { type: 'application/octet-stream' }), '片段下载.bat');
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(bat).then(
@@ -580,6 +606,192 @@
     });
     mask.addEventListener('click', function (e) { if (e.target === mask) close(); });
     upd();
+  }
+
+  /* ================= 去片头广告：跳过前 N 秒 =================
+   * 两种用法：① 双击后粘贴链接（先下载再裁）；② 把本地视频文件拖到生成的 bat 上直接裁。
+   *
+   * 【裁剪写法实测结论】（源 60s / GOP 10s / -ss 7，本机 ffmpeg N-128013 实测）
+   *   A: -ss 前置 + -c copy + avoid_negative_ts → 输出 60s，根本没裁（退到上一个关键帧后全部保留）✗
+   *   B: -ss 前置 + -c copy（不带 avoid_negative_ts）→ 时长对但首帧非关键帧，开头花屏 ✗
+   *   C: -ss 前置 + 全重编码 + avoid_negative_ts → 53.03s，首帧关键帧，音视频同步 ✓（默认采用）
+   *   D: -ss 前置 + 视频重编 + 音频 copy → 音频 pts 从 0 起、视频从 7 起，音画错位 7 秒 ✗
+   *   E: -ss 后置 + -c copy + avoid_negative_ts → 52.98s，首帧是关键帧，但开头静止 0~GOP 秒 ⭕（极速档）
+   * 结论：想要精确+干净必须重编码；音频绝不能用 -c copy（会不跟着裁）。 */
+  function buildYtDlpAdBat(skipSec, bakedUrl, pageUrl, mode) {
+    var fast = (mode === 'fast');
+    var skip = fmtTime(skipSec);
+    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+    function fn(sec) {
+      sec = Math.max(0, Math.floor(sec || 0));
+      return pad(Math.floor(sec / 3600)) + pad(Math.floor((sec % 3600) / 60)) + pad(sec % 60);
+    }
+    var outName = '去广告_' + fn(skipSec) + '起' + (fast ? '_极速' : '') + '.mp4';
+    var isCdn = /bilivideo\.com|bilivod\.com|bilicdn/i.test(bakedUrl || '');
+    var pg = (pageUrl && /^https?:/i.test(pageUrl)) ? String(pageUrl).split('#')[0] : 'https://www.bilibili.com/';
+    var REF1 = isCdn ? 'https://www.bilibili.com/' : pg;
+    var REF2 = isCdn ? pg : 'https://www.bilibili.com/';
+    var UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36';
+    var L = [
+      '@echo off',
+      'chcp 65001 >nul',
+      'setlocal EnableDelayedExpansion',
+      '',
+      'set "TOOLS=%LOCALAPPDATA%\\mvt\\bin"',
+      'if not exist "%TOOLS%" mkdir "%TOOLS%" >nul 2>nul',
+      'set "YTDLP=%TOOLS%\\yt-dlp.exe"',
+      'if not exist "%YTDLP%" (',
+      '  echo [mvt] 首次运行：下载 yt-dlp ...',
+      '  curl.exe -L --ssl-no-revoke -o "%YTDLP%" "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"',
+      '  for %%F in ("%YTDLP%") do if %%~zF LSS 1000000 del /f /q "%YTDLP%" >nul 2>nul',
+      "  if not exist \"%YTDLP%\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe' -OutFile '%YTDLP%' -UseBasicParsing\"",
+      '  del /f /q "%YTDLP%:Zone.Identifier" 2>nul',
+      ')',
+      'if not exist "%YTDLP%" (',
+      '  echo [mvt] yt-dlp 下载失败，请检查网络后重试。',
+      '  pause & exit /b 1',
+      ')',
+      '',
+      'set "FFDIR=%TOOLS%\\ffmpeg\\bin"',
+      'if not exist "%FFDIR%\\ffmpeg.exe" (',
+      '  echo [mvt] 首次运行：下载 ffmpeg（约 190MB，请稍候）...',
+      '  set "FFZIP=%TOOLS%\\ffmpeg.zip"',
+      '  curl.exe -L --ssl-no-revoke -o "!FFZIP!" "https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip"',
+      '  for %%F in ("!FFZIP!") do if %%~zF LSS 1000000 del /f /q "!FFZIP!" >nul 2>nul',
+      "  if not exist \"!FFZIP!\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip' -OutFile '!FFZIP!' -UseBasicParsing\"",
+      '  if exist "!FFZIP!" (',
+      '    echo [mvt] 解压 ffmpeg ...',
+      '    if not exist "%TOOLS%\\ffmpeg_extract" mkdir "%TOOLS%\\ffmpeg_extract"',
+      '    tar -xf "!FFZIP!" -C "%TOOLS%\\ffmpeg_extract"',
+      '    for /d %%D in ("%TOOLS%\\ffmpeg_extract\\ffmpeg-*") do (',
+      '      if exist "%%D\\bin\\ffmpeg.exe" xcopy /E /Y "%%D\\*" "%TOOLS%\\ffmpeg\\" >nul',
+      '    )',
+      '    rd /s /q "%TOOLS%\\ffmpeg_extract" >nul 2>nul',
+      '    del /f /q "!FFZIP!" >nul 2>nul',
+      '  )',
+      ')',
+      'if not exist "%FFDIR%\\ffmpeg.exe" (',
+      '  echo [mvt] ffmpeg 下载/解压失败，请检查网络后重试。',
+      '  del /f /q "!FFZIP!" >nul 2>nul',
+      '  pause & exit /b 1',
+      ')',
+      '',
+      'set "OUTDIR=%USERPROFILE%\\Desktop\\视频下载"',
+      'if not exist "%OUTDIR%" mkdir "%OUTDIR%" >nul 2>nul',
+      'set "SKIP=' + skip + '"',
+      'set "UA=' + UA + '"',
+      'set "REF1=' + REF1 + '"',
+      'set "REF2=' + REF2 + '"',
+      'set "INPUT=%~1"',
+      ''
+    ];
+    if (bakedUrl) {
+      L.push('set "URL=' + bakedUrl + '"');
+    } else {
+      L.push('set "URL="');
+    }
+    L.push('set "SRC="');
+    L.push('if exist "!INPUT!" set "SRC=!INPUT!"');
+    L.push('if defined SRC (');
+    L.push('  echo.');
+    L.push('  echo  [mvt] 直接处理本地文件：!SRC!');
+    L.push(') else (');
+    L.push('  if "!URL!"=="" (');
+    L.push('    echo.');
+    L.push('    echo  [mvt] 粘贴视频链接（或把本地视频文件拖到本 bat 上）后回车：');
+    L.push('    set /p "URL=> "');
+    L.push('  )');
+    L.push('  if "!URL!"=="" (');
+    L.push('    echo  [mvt] 既没有本地文件也没有链接，退出。');
+    L.push('    pause & exit /b 1');
+    L.push('  )');
+    L.push('  set "TMPD=%OUTDIR%\\__ad_tmp"');
+    L.push('  if not exist "%TMPD%" mkdir "%TMPD%"');
+    L.push('  echo.');
+    L.push('  echo  [mvt] 步骤1/2：下载完整视频到临时目录...');
+    L.push('  "%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --user-agent "%UA%" --referer "%REF1%" -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"');
+    L.push('  for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "SRC=%%~fF"');
+    L.push('  if not defined SRC (');
+    L.push('    echo  [mvt] 首次尝试失败（可能是防盗链），换用 Referer=' + REF2 + ' 重试 ...');
+    L.push('    "%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --user-agent "%UA%" --referer "%REF2%" -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"');
+    L.push('    for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "SRC=%%~fF"');
+    L.push('  )');
+    L.push(')');
+    L.push('if not defined SRC (');
+    L.push('  echo  [mvt] 拿不到视频源，见上方信息。');
+    L.push('  echo  [mvt] 爱奇艺/腾讯/优酷等有 DRM 的站点 yt-dlp 抓不到，请换源或改用录屏。');
+    L.push('  pause & exit /b 1');
+    L.push(')');
+    L.push('echo.');
+    if (fast) {
+      L.push('echo  [mvt] 步骤2/2：跳过片头 ' + skip + '（不重编码，秒级完成）...');
+      L.push('"%FFDIR%\\ffmpeg.exe" -i "!SRC!" -ss ' + skip + ' -c copy -avoid_negative_ts make_zero -movflags +faststart "%OUTDIR%\\' + outName + '"');
+    } else {
+      L.push('echo  [mvt] 步骤2/2：跳过片头 ' + skip + '（重编码，精确到帧，长片请耐心）...');
+      L.push('"%FFDIR%\\ffmpeg.exe" -ss ' + skip + ' -i "!SRC!" -c:v libx264 -preset veryfast -crf 20 -c:a aac -b:a 192k -avoid_negative_ts make_zero -movflags +faststart "%OUTDIR%\\' + outName + '"');
+    }
+    L.push('echo.');
+    L.push('if errorlevel 1 ( echo  [mvt] 处理失败，见上方信息。 ) else ( echo  [mvt] 完成：%OUTDIR%\\' + outName + ' )');
+    L.push('if defined TMPD rd /s /q "!TMPD!" 2>nul');
+    L.push('pause');
+    return L.join('\r\n') + '\r\n';
+  }
+
+  function genAdBat() {
+    var url = '';
+    var page = String(location.href || '').split('#')[0];
+    var v = cur;
+    if (v) {
+      var s = v.currentSrc || v.src || '';
+      if (/bilibili\.com/i.test(page)) url = page;
+      else if (s && s.indexOf('http') === 0) url = s;
+    }
+    showAdPanel(url, page);
+  }
+
+  function showAdPanel(url, page) {
+    var mask = document.createElement('div');
+    mask.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:2147483646;';
+    var card = document.createElement('div');
+    card.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;color:#222;'
+      + 'border:1px solid #ccc;border-radius:10px;padding:18px 20px;z-index:2147483647;'
+      + 'font:14px/1.6 system-ui,sans-serif;box-shadow:0 8px 30px rgba(0,0,0,.25);min-width:320px;';
+    card.innerHTML =
+      '<div style="font-weight:700;margin-bottom:10px;">去片头广告</div>'
+      + '<div style="margin:6px 0;">跳过前 <input id="mvtAdS" type="number" value="90" min="0" step="1" style="width:70px;"> 秒</div>'
+      + '<div style="margin:10px 0 4px;font-size:13px;">裁剪方式</div>'
+      + '<label style="display:block;font-size:12px;margin:3px 0;cursor:pointer;">'
+      + '<input type="radio" name="mvtAdMode" value="accurate" checked> 精确（重编码，分秒不差；1 小时片约几分钟）</label>'
+      + '<label style="display:block;font-size:12px;margin:3px 0;cursor:pointer;">'
+      + '<input type="radio" name="mvtAdMode" value="fast"> 极速（不重编码，秒级完成；开头可能静止几秒）</label>'
+      + '<div style="margin-top:10px;color:#888;font-size:12px;">生成后：双击 bat 粘贴链接下载，或把本地视频文件拖到 bat 上直接裁。</div>'
+      + '<div style="margin-top:6px;color:#888;font-size:12px;">不重编码无法精确落点（要对齐关键帧），所以默认走重编码。</div>'
+      + '<div style="margin-top:14px;text-align:right;">'
+      + '<button id="mvtAdCancel" style="background:#eee;color:#333;border:0;border-radius:6px;padding:6px 14px;cursor:pointer;">取消</button>'
+      + '<button id="mvtAdOk" style="background:#4ec98a;color:#fff;border:0;border-radius:6px;padding:6px 14px;cursor:pointer;margin-left:8px;">生成脚本</button>'
+      + '</div>';
+    function close() { if (mask.parentNode) mask.parentNode.removeChild(mask); }
+    mask.appendChild(card);
+    document.body.appendChild(mask);
+    document.getElementById('mvtAdCancel').addEventListener('click', close);
+    document.getElementById('mvtAdOk').addEventListener('click', function () {
+      var sk = Math.max(0, Math.floor(parseFloat(document.getElementById('mvtAdS').value) || 0));
+      var md = 'accurate';
+      var rs = document.getElementsByName('mvtAdMode');
+      for (var i = 0; i < rs.length; i++) if (rs[i].checked) md = rs[i].value;
+      var bat = buildYtDlpAdBat(sk, url, page, md);
+      saveBlob(new Blob([bat], { type: 'application/octet-stream' }), '去片头广告.bat');
+      var tip = '已生成「去片头广告.bat」：跳过前 ' + sk + ' 秒（' + (md === 'fast' ? '极速' : '精确') + '）';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(bat).then(
+          function () { close(); toast(tip + '，已复制；可拖本地文件进去', 6000); },
+          function () { close(); toast(tip, 4000); }
+        );
+      } else {
+        close(); toast(tip, 4000);
+      }
+    });
+    mask.addEventListener('click', function (e) { if (e.target === mask) close(); });
   }
 
   /* ================= 下载模式四：生成本地下载脚本（yt-dlp，最稳） =================
@@ -799,7 +1011,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.4');
+    bar.setAttribute('data-mvt-ver', '2.0.5');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -809,7 +1021,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.4';
+    ver.textContent = 'v2.0.5';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
@@ -883,6 +1095,7 @@
     mDl.appendChild(mItem('④ 分片合并（仅部分站点）', function () { segDownload(); }));
     mDl.appendChild(mItem('⑤ 边播边录（兜底·慢）', function () { mergeRecord(cur); }));
     mDl.appendChild(mItem('⑥ 片段下载（整段下完再剪）', function () { genSegBat(); }));
+    mDl.appendChild(mItem('⑦ 去片头广告（跳过前 N 秒）', function () { genAdBat(); }));
     mDl.appendChild(mSep());
     mDl.appendChild(mItem('分片状态', function () { reportSeg(); }));
     mDl.appendChild(mItem('清空分片缓存', function () {
