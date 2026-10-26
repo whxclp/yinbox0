@@ -18,7 +18,7 @@
    * 分片捕获：必须在页面脚本执行前挂钩，所以 @run-at 是 document-start
    * 思路：拦下 fetch / XHR，把视频音频分片的二进制先攒起来，
    *      用户点「分片合并下载」时按序号排序拼接 —— 即「先下载完，再合并」。
-   * ===============================================C���============= */
+   * ============================================================ */
   var CAP = {
     on: true,
     seq: 0,
@@ -712,7 +712,7 @@
       L.push('echo  [mvt] Douyin: direct CDN link extracted from the page.');
       L.push('echo  [mvt] No cookies needed. The link is signed and expires within hours,');
       L.push('echo  [mvt] so run this bat soon after generating it.');
-      L.push('"%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --user-agent "%UA%" --referer "%REFERER%" -o "%OUTDIR%\\' + dyOut + '" -P "%OUTDIR ���%" --no-mtime "%URL%"');
+      L.push('"%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --user-agent "%UA%" --referer "%REFERER%" -o "%OUTDIR%\\' + dyOut + '" -P "%OUTDIR%" --no-mtime "%URL%"');
       L.push('if errorlevel 1 (');
       L.push('  echo.');
       L.push('  echo  [mvt] ================ Direct link failed ================');
@@ -1207,7 +1207,7 @@
     saveBlob(new Blob([bat], { type: 'application/octet-stream' }), '视频下载合并.bat');
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(bat).then(
-        function () { toast('已生成「视频下载合并.bat」（通用版，运行后粘贴任意链接，首次自动拉依赖），命令已复制'���, 6000); },
+        function () { toast('已生成「视频下载合并.bat」（通用版，运行后粘贴任意链接，首次自动拉依赖），命令已复制', 6000); },
         function () { toast('已生成「视频下载合并.bat」（通用版，运行后粘贴任意链接）', 4000); }
       );
     } else {
@@ -1927,7 +1927,7 @@
 
   /* ================= 启动 ================= */
   function start() {
-    var st = document&�7_�.createElement('style');
+    var st = document.createElement('style');
     st.textContent = css;
     (document.head || document.documentElement).appendChild(st);
 
