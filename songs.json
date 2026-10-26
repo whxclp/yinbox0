@@ -2385,42 +2385,48 @@
    "artist": "",
    "file": "https://whxclp.github.io/yinbox1/白兰雷鬼合集-1.mp3",
    "lrc": "",
-   "new": true
+   "new": true,
+   "noLyric": true
   },
   {
    "title": "白兰2026雷鬼合集（2/6）",
    "artist": "",
    "file": "https://whxclp.github.io/yinbox1/白兰雷鬼合集-2.mp3",
    "lrc": "",
-   "new": true
+   "new": true,
+   "noLyric": true
   },
   {
    "title": "白兰2026雷鬼合集（3/6）",
    "artist": "",
    "file": "https://whxclp.github.io/yinbox1/白兰雷鬼合集-3.mp3",
    "lrc": "",
-   "new": true
+   "new": true,
+   "noLyric": true
   },
   {
    "title": "白兰2026雷鬼合集（4/6）",
    "artist": "",
    "file": "https://whxclp.github.io/yinbox1/白兰雷鬼合集-4.mp3",
    "lrc": "",
-   "new": true
+   "new": true,
+   "noLyric": true
   },
   {
    "title": "白兰2026雷鬼合集（5/6）",
    "artist": "",
    "file": "https://whxclp.github.io/yinbox1/白兰雷鬼合集-5.mp3",
    "lrc": "",
-   "new": true
+   "new": true,
+   "noLyric": true
   },
   {
    "title": "白兰2026雷鬼合集（6/6）",
    "artist": "",
    "file": "https://whxclp.github.io/yinbox1/白兰雷鬼合集-6.mp3",
    "lrc": "",
-   "new": true
+   "new": true,
+   "noLyric": true
   },
   {
    "title": "2026年10首车载音乐连播",
@@ -2681,7 +2687,8 @@
    "artist": "",
    "file": "https://whxclp.github.io/yinbox1/白兰雷鬼完整版.mp3",
    "lrc": "",
-   "coll": "白兰雷鬼"
+   "coll": "白兰雷鬼",
+   "noLyric": true
   },
   {
    "title": "红美人之歌",
