@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.39
+// @version      2.0.40
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -1603,12 +1603,22 @@
         else if (st === 'done') txt = '完成: ' + (c0.file ? String(c0.file).split(/[\\/]/).pop() : nm);
         else if (st === 'failed') txt = '失败: ' + String(c0.error || '').slice(0, 42);
         if (window.mvtProg) {
-          window.mvtProg.textContent = '\u25c8 ' + txt;
+          window.mvtProg.textContent = txt;
           window.mvtProg.style.color = (st === 'failed') ? '#f88' : (st === 'done' ? '#8f8' : '#8df');
+          if (window.mvtProgFill) {
+            var w = (st === 'done') ? 100 : (st === 'failed') ? 0 : (pct >= 0 ? pct : 2);
+            window.mvtProgFill.style.width = w + '%';
+            window.mvtProgFill.style.background = (st === 'failed') ? '#d33'
+              : (st === 'done') ? 'linear-gradient(90deg,#2a7,#4c9)' : 'linear-gradient(90deg,#3aa,#6cf)';
+          }
         }
       })
       .catch(function () {
-        if (window.mvtProg) { window.mvtProg.textContent = '\u25c8 服务未启动'; window.mvtProg.style.color = '#fa0'; }
+        if (window.mvtProg) {
+          window.mvtProg.textContent = '服务未启动';
+          window.mvtProg.style.color = '#fa0';
+          if (window.mvtProgFill) { window.mvtProgFill.style.width = '0%'; window.mvtProgFill.style.background = '#d33'; }
+        }
       });
   }
   if (!window.__mvtPollStarted) {
@@ -1619,7 +1629,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.39');
+    bar.setAttribute('data-mvt-ver', '2.0.40');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1629,19 +1639,32 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.39';
+    ver.textContent = 'v2.0.40';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
-    /* 下载进度显示（轮询新视野服务） */
-    var prog = document.createElement('span');
-    prog.className = 'mvt-prog';
-    prog.textContent = '';
-    prog.style.cssText = 'margin-left:6px;padding:2px 8px;border-radius:4px;font:12px/1.5 system-ui;'
-      + 'background:rgba(255,255,255,.12);color:#8df;white-space:nowrap;max-width:260px;overflow:hidden;text-overflow:ellipsis;';
-    prog.title = '新视野后台下载状态';
-    bar.appendChild(prog);
-    window.mvtProg = prog;
+    /* 下载进度显示（轮询新视野服务）：可视化进度条 + 状态文字 */
+    var progWrap = document.createElement('div');
+    progWrap.className = 'mvt-prog';
+    progWrap.style.cssText = 'margin-left:8px;display:inline-flex;align-items:center;gap:6px;'
+      + 'background:rgba(255,255,255,.12);border-radius:4px;padding:2px 8px;font:12px/1.5 system-ui;'
+      + 'color:#8df;white-space:nowrap;max-width:360px;';
+    progWrap.title = '新视野后台下载状态';
+    var progBar = document.createElement('div');
+    progBar.className = 'mvt-prog-bar';
+    progBar.style.cssText = 'width:80px;height:9px;border-radius:5px;background:rgba(255,255,255,.18);overflow:hidden;flex:none;';
+    var progFill = document.createElement('div');
+    progFill.className = 'mvt-prog-fill';
+    progFill.style.cssText = 'width:0%;height:100%;background:linear-gradient(90deg,#3aa,#6cf);border-radius:5px;transition:width .5s;';
+    progBar.appendChild(progFill);
+    var progTxt = document.createElement('span');
+    progTxt.className = 'mvt-prog-txt';
+    progTxt.textContent = '';
+    progWrap.appendChild(progBar);
+    progWrap.appendChild(progTxt);
+    bar.appendChild(progWrap);
+    window.mvtProg = progTxt;
+    window.mvtProgFill = progFill;
 
     /* --- 倍速 --- */
     rateBtn = mBtn('倍速 1x', true, 'rate-btn');
