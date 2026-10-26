@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.30
+// @version      2.0.31
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -304,7 +304,8 @@
 
   function dyFromFiber() {
     var sels = ['.basePlayerContainer', '[data-e2e="feed-active-video"]',
-                '.swiper-slide-active xg-player', 'xg-player', '.xg-video-player'];
+                '.swiper-slide-active xg-player', 'xg-player', '.xg-video-player',
+                '.douyin-player-video-container video', '.note-video-container video'];
     for (var s = 0; s < sels.length; s++) {
       var els;
       try { els = document.querySelectorAll(sels[s]); } catch (e) { continue; }
@@ -1495,7 +1496,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.30');
+    bar.setAttribute('data-mvt-ver', '2.0.31');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1505,7 +1506,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.30';
+    ver.textContent = 'v2.0.31';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
