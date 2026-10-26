@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.31
+// @version      2.0.32
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -795,6 +795,18 @@
         L.push('  echo  [mvt] Cover download failed, MP3 kept: ' + _mp3n);
         L.push(')');
       }
+      if (isNote && DY.media && DY.media.length > 1) {
+        var _mn = Math.min(DY.media.length, 6);
+        for (var _mi = 1; _mi < _mn; _mi++) {
+          L.push('echo.');
+          L.push('echo  [mvt] Note audio segment ' + (_mi + 1) + '/' + _mn + ' ...');
+          L.push('"%YTDLP%" --no-playlist -f "ba/b" --ffmpeg-location "%FFDIR%" --user-agent "%UA%" --referer "%REFERER%" -o "%OUTDIR%\\douyin_music_' + (_mi + 1) + '.%%(ext)s" -P "%OUTDIR%" --no-mtime "' + DY.media[_mi] + '"');
+        }
+        L.push('echo.');
+        L.push('echo  [mvt] All note audio segments downloaded: douyin_music_1.mp3 ... douyin_music_' + _mn + '.mp3');
+        L.push('echo  [mvt] If they are one song split into segments, merge with:');
+        L.push('echo  [mvt]   ffmpeg -f concat -safe 0 -i list.txt -c copy merged.mp3');
+      }
       L.push('if errorlevel 1 (');
       L.push('  echo.');
       L.push('  echo  [mvt] ================ Direct link failed ================');
@@ -1496,7 +1508,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.31');
+    bar.setAttribute('data-mvt-ver', '2.0.32');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1506,7 +1518,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.31';
+    ver.textContent = 'v2.0.32';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
