@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.26
+// @version      2.0.27
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -161,16 +161,24 @@
                    w: pv.width || v.width || 0, h: pv.height || v.height || 0,
                    br: 0, size: pv.data_size || 0 });
     }
-    if (!cands.length) return null;
+    /* note 图文/音乐作品：完整声音在 music.play_url（视频只有试看），一并提取 */
+    var musicUrl = '';
+    var mu = aweme.music;
+    if (mu && mu.play_url && Array.isArray(mu.play_url.url_list) && mu.play_url.url_list.length
+        && typeof mu.play_url.url_list[0] === 'string') {
+      musicUrl = mu.play_url.url_list[0];
+    }
+    if (!cands.length && !musicUrl) return null;
     cands.sort(function (a, b2) { return (b2.br - a.br) || (b2.h - a.h); });
-    var best = cands[0];
+    var best = cands[0] || {};
     return {
-      url: best.url,
+      url: best.url || musicUrl || '',
       backUrls: best.back || [],
       id: dyAwemeId(aweme),
       desc: String(aweme.desc || '').slice(0, 80),
       duration: v.duration || 0,
-      width: best.w, height: best.h, size: best.size
+      width: best.w, height: best.h, size: best.size,
+      musicUrl: musicUrl
     };
   }
 
@@ -618,7 +626,10 @@
     /* 防盗链：B站 CDN 直链必须同时带浏览器 UA + B站 Referer（实测缺一即 403） */
     var isCdn = /bilivideo\.com|bilivod\.com|bilicdn/i.test(bakedUrl || '');
     /* 抖音直链分支：从页面提取的 CDN 直链自带签名查询参数，只需抖音页面 Referer */
-    var direct = (dyVid && dyVid.url) ? String(dyVid.url) : '';
+    /* note 图文/音乐作品：视频只有 5 秒试看，完整声音在 music 直链（MP3） */
+    var isNote = /\/note\//i.test(bakedUrl || '');
+    var _directSrc = dyVid && (isNote ? (dyVid.musicUrl || dyVid.url) : (dyVid.url || dyVid.musicUrl));
+    var direct = _directSrc ? String(_directSrc) : '';
     var ref = direct ? 'https://www.douyin.com/'
       : (isCdn ? 'https://www.bilibili.com/'
       : ((bakedUrl && /^https?:/i.test(bakedUrl)) ? String(bakedUrl).split('#')[0] : 'https://www.bilibili.com/'));
@@ -633,9 +644,11 @@
        路径段+查询串拼成文件名，Windows 直接拒绝创建/乱名）。
        改用页面标题清洗后做文件名，最差兜底 douyin_video。 */
     var dyDesc = (dyVid && dyVid.desc) || '';
-    var dyOut = dyKey
-      ? ('douyin_' + dyKey + '.%%(ext)s')
-      : ('douyin_' + (dyDesc.replace(/[\\/:*?"<>|%&^!]/g, '_').trim().slice(0, 60) || 'video') + '.%%(ext)s');
+    var dyOut = (isNote && dyVid && dyVid.musicUrl)
+      ? ('douyin_music_' + (dyDesc.replace(/[\\/:*?"<>|%&^!]/g, '_').trim().slice(0, 60) || dyKey || 'note') + '.%%(ext)s')
+      : (dyKey
+        ? ('douyin_' + dyKey + '.%%(ext)s')
+        : ('douyin_' + (dyDesc.replace(/[\\/:*?"<>|%&^!]/g, '_').trim().slice(0, 60) || 'video') + '.%%(ext)s'));
     var L = [
       '@echo off',
       'rem This .bat is intentionally ASCII-only (English prompts). cmd.exe has a 4KB read-buffer',
@@ -1202,7 +1215,7 @@
       }
       /* 从 /video/<id> 提取数字 ID，用于固定输出文件名 */
       /* （CDN URL 的查询串曾被 yt-dlp 当标题/ID，400+ 字符导致 Errno 22） */
-      var idm = url.match(/\/video\/(\d+)/);
+      var idm = url.match(/\/(?:video|note)\/(\d+)/);
       if (idm) dyId = idm[1];
       /* 页面内提取直链：网络钩子 / _ROUTER_DATA / RENDER_DATA / React fiber。
          详情页按 ID 精确匹配；feed 页（URL 无 /video/）用当前播放的 fiber 数据。 */
@@ -1425,7 +1438,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.26');
+    bar.setAttribute('data-mvt-ver', '2.0.27');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1435,7 +1448,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.26';
+    ver.textContent = 'v2.0.27';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
