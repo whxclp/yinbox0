@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.25
+// @version      2.0.26
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -400,13 +400,18 @@
   /* ================= 样式 ================= */
   var css = [
     '.mvt-bar{position:fixed;top:0;left:40px;z-index:2147483000;display:flex;align-items:center;gap:2px;',
-    '  background:rgba(20,20,24,.92);border:1px solid rgba(255,255,255,.14);border-top:none;border-radius:0 0 8px 8px;',
+    '  background:linear-gradient(90deg,#d91e43,#ff6a3d);border:1px solid rgba(255,255,255,.4);border-top:none;border-radius:0 0 8px 8px;',
     '  padding:4px 6px;box-shadow:0 4px 16px rgba(0,0,0,.4);font-size:13px;user-select:none;',
     '  transform:translateY(calc(-100% + 3px));transition:transform .22s ease;}',
     '.mvt-bar.mvt-on{transform:translateY(0);}',
-    '.mvt-btn{position:relative;color:#eee;background:transparent;border:none;border-radius:6px;',
+    '.mvt-btn{position:relative;color:#fff;font-weight:600;text-shadow:0 1px 2px rgba(0,0,0,.4);background:transparent;border:none;border-radius:6px;',
     '  padding:5px 9px;cursor:pointer;font-size:13px;line-height:1;white-space:nowrap;font-family:inherit;}',
-    '.mvt-btn:hover{background:rgba(255,255,255,.14);}',
+    '.mvt-btn:hover{background:rgba(255,255,255,.22);}',
+    '.mvt-btn.rate-btn{color:#ffd166;}',
+    '.mvt-btn.pic-btn{color:#7dffb2;}',
+    '.mvt-btn.flt-btn{color:#c4a6ff;}',
+    '.mvt-btn.dl-btn{color:#7fd8ff;}',
+    '.mvt-btn.tool-btn{color:#7ff5e8;}',
     '.mvt-btn.mvt-has-menu::after{content:" ▾";opacity:.6;font-size:10px;}',
     '.mvt-menu{position:absolute;top:calc(100% + 6px);right:0;min-width:150px;',
     '  background:rgba(28,28,32,.97);border:1px solid rgba(255,255,255,.16);border-radius:8px;',
@@ -1420,7 +1425,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.25');
+    bar.setAttribute('data-mvt-ver', '2.0.26');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1430,12 +1435,12 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.25';
+    ver.textContent = 'v2.0.26';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
     /* --- 倍速 --- */
-    rateBtn = mBtn('倍速 1x', true);
+    rateBtn = mBtn('倍速 1x', true, 'rate-btn');
     var mRate = document.createElement('div');
     mRate.className = 'mvt-menu';
     [0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3].forEach(function (r) {
@@ -1445,7 +1450,7 @@
     bar.appendChild(rateBtn);
 
     /* --- 画面 --- */
-    var picBtn = mBtn('画面', true);
+    var picBtn = mBtn('画面', true, 'pic-btn');
     var mPic = document.createElement('div');
     mPic.className = 'mvt-menu';
     mPic.appendChild(mItem('左转 90°', function () { cur.__mvt.rotate -= 90; apply(cur); }));
@@ -1470,7 +1475,7 @@
     bar.appendChild(picBtn);
 
     /* --- 滤镜 --- */
-    var fltBtn = mBtn('滤镜', true);
+    var fltBtn = mBtn('滤镜', true, 'flt-btn');
     var mFlt = document.createElement('div');
     mFlt.className = 'mvt-menu';
     function step(key, delta, name) {
@@ -1494,7 +1499,7 @@
     bar.appendChild(fltBtn);
 
     /* --- 下载（三种模式） --- */
-    var dlBtn = mBtn('下载', true);
+    var dlBtn = mBtn('下载', true, 'dl-btn');
     var mDl = document.createElement('div');
     mDl.className = 'mvt-menu';
     /* 优化：把真正能用的 yt-dlp 路径放到最前并标推荐，B站会出垃圾的①降级标注 */
@@ -1515,7 +1520,7 @@
     bar.appendChild(dlBtn);
 
     /* --- 工具 --- */
-    var toolBtn = mBtn('工具', true);
+    var toolBtn = mBtn('工具', true, 'tool-btn');
     var mTool = document.createElement('div');
     mTool.className = 'mvt-menu';
     var adItem = mItem('自动跳广告：' + (AD.on ? '开' : '关'), function () {
@@ -1600,7 +1605,7 @@
       document.body.appendChild(bar);
     }
     // 用 !important 强制覆盖页面 CSS（保留 transform 给 CSS 类控制，默认隐藏）
-    bar.style.cssText = 'position:fixed!important;top:0!important;left:40px!important;right:auto!important;z-index:2147483000!important;display:flex!important;align-items:center!important;gap:2px!important;background:rgba(20,20,24,.92)!important;border:1px solid rgba(255,255,255,.14)!important;border-top:none!important;border-radius:0 0 8px 8px!important;padding:4px 6px!important;box-shadow:0 4px 16px rgba(0,0,0,.4)!important;font-size:13px!important;user-select:none!important;';
+    bar.style.cssText = 'position:fixed!important;top:0!important;left:40px!important;right:auto!important;z-index:2147483000!important;display:flex!important;align-items:center!important;gap:2px!important;background:linear-gradient(90deg,#d91e43,#ff6a3d)!important;border:1px solid rgba(255,255,255,.4)!important;border-top:none!important;border-radius:0 0 8px 8px!important;padding:4px 6px!important;box-shadow:0 4px 16px rgba(0,0,0,.4)!important;font-size:13px!important;user-select:none!important;';
   }
 
   function setRate(v, r) {
