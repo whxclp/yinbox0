@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.33
+// @version      2.0.34
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -1275,6 +1275,45 @@
   /* ================= 下载模式四：生成本地下载脚本（yt-dlp，最稳） =================
    * 把「当前视频 URL」烤进一个自举 .bat：双击即用，首次运行自动补齐 yt-dlp/ffmpeg，
    * 不依赖本机 Python / WinGet，重装系统后也能用。等价桌面那个 视频下载合并.bat。 */
+  /* v2.0.34 抖音后台下载：直链提交给新视野本地服务（127.0.0.1:18322），不生成 bat */
+  function mvtServerSubmit(url, title, referer, out) {
+    return fetch('http://127.0.0.1:18322/api/download', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-XinVision-Token': 'xinvision-2026' },
+      body: JSON.stringify({ url: url, title: title, referer: referer, out_template: out })
+    }).then(function (r) { return r.json(); })
+      .catch(function () { return { ok: false, error: 'service-unreachable' }; });
+  }
+
+  function mvtDouyinBackground(url, dyId, dyVid) {
+    var ref = String(location.href || url);
+    var desc = (dyVid && dyVid.desc) || document.title || 'douyin';
+    var subs = [];
+    var isNote = /\/note\//i.test(ref) || (dyVid && dyVid.musicUrl) || (DY.media && DY.media.length);
+    if (isNote) {
+      var segs = [];
+      if (DY.media && DY.media.length) segs = segs.concat(DY.media);
+      if (dyVid && dyVid.musicUrl && segs.indexOf(dyVid.musicUrl) < 0) segs.unshift(dyVid.musicUrl);
+      if (!segs.length) { toast('未提取到音频直链：请先点播放（等进度条走动几秒）后再点下载', 6000); return; }
+      for (var si = 0; si < segs.length; si++) {
+        subs.push({ url: segs[si], out: 'douyin_music_' + (segs.length > 1 ? (si + 1) : (dyId || 'note')) + '.%(ext)s' });
+      }
+    } else if (dyVid && dyVid.url) {
+      subs.push({ url: dyVid.url, out: 'douyin_' + (dyId || 'video') + '.%(ext)s' });
+    } else {
+      toast('未提取到直链，请刷新页面后重试', 4000);
+      return;
+    }
+    var done = 0, total = subs.length;
+    subs.forEach(function (sb) {
+      mvtServerSubmit(sb.url, desc, ref, sb.out).then(function (res) {
+        done++;
+        if (res && res.ok) toast('后台下载已提交：' + sb.out + '（' + done + '/' + total + '）', 4500);
+        else toast('提交失败：' + ((res && res.error) || '新视野服务未启动？') + '：' + sb.out, 5000);
+      });
+    });
+  }
+
   function genDownBat() {
     var url = String(location.href || '').split('#')[0];
     if (!/bilibili\.com/i.test(url) && !/douyin\.com/i.test(url) && cur) {
@@ -1303,6 +1342,9 @@
         toast('抖音链接不是视频页，请打开具体视频后再试', 4000);
         return;
       }
+      /* v2.0.34：后台下载（新视野本地服务），不再生成 bat */
+      mvtDouyinBackground(url, dyId, dyVid);
+      return;
     }
 
     var bat = buildYtDlpBat(url, isDouyin, dyId, dyVid);
@@ -1517,7 +1559,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.33');
+    bar.setAttribute('data-mvt-ver', '2.0.34');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1527,7 +1569,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.33';
+    ver.textContent = 'v2.0.34';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
