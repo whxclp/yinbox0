@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.37
+// @version      2.0.38
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -1577,10 +1577,40 @@
 
   var rateBtn;
 
+  /* 下载进度：轮询新视野本地服务（127.0.0.1:18322），最新任务状态显示在工具栏 */
+  function mvtPollProgress() {
+    if (!window.mvtProg) return;
+    fetch('http://127.0.0.1:18322/api/tasks', { headers: { 'X-XinVision-Token': 'xinvision-2026' } })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (!j || !j.ok || !j.tasks || !j.tasks.length) return;
+        var c0 = j.tasks[0];
+        var st = String(c0.state || '');
+        var pct = (typeof c0.percent === 'number') ? Math.round(c0.percent) : -1;
+        var nm = String(c0.out_template || c0.title || '');
+        var txt = st;
+        if (st === 'queued') txt = '排队: ' + nm;
+        else if (st === 'running') txt = '下载中 ' + (pct >= 0 ? pct + '% ' : '') + nm;
+        else if (st === 'done') txt = '完成: ' + (c0.file ? String(c0.file).split(/[\\/]/).pop() : nm);
+        else if (st === 'failed') txt = '失败: ' + String(c0.error || '').slice(0, 42);
+        if (window.mvtProg) {
+          window.mvtProg.textContent = '\u25c8 ' + txt;
+          window.mvtProg.style.color = (st === 'failed') ? '#f88' : (st === 'done' ? '#8f8' : '#8df');
+        }
+      })
+      .catch(function () {
+        if (window.mvtProg) { window.mvtProg.textContent = '\u25c8 服务未启动'; window.mvtProg.style.color = '#fa0'; }
+      });
+  }
+  if (!window.__mvtPollStarted) {
+    window.__mvtPollStarted = true;
+    setInterval(mvtPollProgress, 2000);
+  }
+
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.37');
+    bar.setAttribute('data-mvt-ver', '2.0.38');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1590,9 +1620,19 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.37';
+    ver.textContent = 'v2.0.38';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
+
+    /* 下载进度显示（轮询新视野服务） */
+    var prog = document.createElement('span');
+    prog.className = 'mvt-prog';
+    prog.textContent = '';
+    prog.style.cssText = 'margin-left:6px;padding:2px 8px;border-radius:4px;font:12px/1.5 system-ui;'
+      + 'background:rgba(255,255,255,.12);color:#8df;white-space:nowrap;max-width:260px;overflow:hidden;text-overflow:ellipsis;';
+    prog.title = '新视野后台下载状态';
+    bar.appendChild(prog);
+    window.mvtProg = prog;
 
     /* --- 倍速 --- */
     rateBtn = mBtn('倍速 1x', true, 'rate-btn');
