@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.23
+// @version      2.0.24
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -624,7 +624,13 @@
        注意 bat 里 %% 会被 cmd 折成 %，所以模板写 %%(ext)s。
        注：dyId 为空时退回 %(id)s 模板；feed 页场景用 dyVid.id 兜底。 */
     var dyKey = dyId || (dyVid && dyVid.id) || '';
-    var dyOut = dyKey ? ('douyin_' + dyKey + '.%%(ext)s') : 'douyin_%%(id)s.%%(ext)s';
+    /* 乱名修复：dyKey 拿不到时不再用 %(id)s（yt-dlp 会把直链 URL 的
+       路径段+查询串拼成文件名，Windows 直接拒绝创建/乱名）。
+       改用页面标题清洗后做文件名，最差兜底 douyin_video。 */
+    var dyDesc = (dyVid && dyVid.desc) || '';
+    var dyOut = dyKey
+      ? ('douyin_' + dyKey + '.%%(ext)s')
+      : ('douyin_' + (dyDesc.replace(/[\\/:*?"<>|%&^!]/g, '_').trim().slice(0, 60) || 'video') + '.%%(ext)s');
     var L = [
       '@echo off',
       'rem This .bat is intentionally ASCII-only (English prompts). cmd.exe has a 4KB read-buffer',
@@ -764,6 +770,24 @@
     L.push('');
     L.push('echo.');
     L.push('if errorlevel 1 ( echo  [mvt] Download failed, see info above. ) else ( echo  [mvt] Done, file in: %OUTDIR% )');
+    if (isDouyin) {
+      L.push('if errorlevel 1 (set "OK=") else (set "OK=1")');
+      L.push('if defined OK set "LATEST="');
+      L.push('if defined OK for /f "delims=" %%F in (\'dir /b /o-d "%OUTDIR%\\douyin_*.mp4" 2^>nul\') do if not defined LATEST set "LATEST=%OUTDIR%\\%%F"');
+      /* 时长自检：ffprobe 输出重定向到临时文件再读（for /f 命令串会吞掉
+         `=` 导致 -of csv=p=0 参数错乱，所以不能直接在 for /f 里跑 ffprobe）。 */
+      L.push('if defined OK if defined LATEST set "TMPDUR=%TEMP%\\mvt_dur.tmp"');
+      L.push('if defined OK if defined LATEST del /f /q "%TMPDUR%" 2>nul');
+      L.push('if defined OK if defined LATEST "%FFDIR%\\ffprobe.exe" -v error -show_entries format=duration -of csv=p=0 "%LATEST%" > "%TMPDUR%" 2>nul');
+      L.push('if defined OK if defined LATEST set /p DUR=<"%TMPDUR%"');
+      L.push('if defined OK if defined LATEST del /f /q "%TMPDUR%" 2>nul');
+      L.push('if defined OK if defined DUR for /f "tokens=1 delims=." %%N in ("%DUR%") do if %%N LSS 15 (');
+      L.push('  echo.');
+      L.push('  echo  [mvt] WARNING: only ~%%Ns downloaded - looks like the 5s preview.');
+      L.push('  echo  [mvt] Log in to douyin.com in your browser, reopen this page, then');
+      L.push('  echo  [mvt] regenerate this bat to get the full video.');
+      L.push(')');
+    }
     L.push('pause');
     L.push('rem Self-delete this bat after the window is closed.');
     L.push('(goto) 2>nul & del "%~f0"');
