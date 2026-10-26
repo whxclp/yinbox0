@@ -1,3022 +1,3043 @@
 {
-  "songs": [
-    {
-      "title": "为内蒙古喝彩（降央卓玛）",
-      "artist": "降央卓玛",
-      "file": "https://whxclp.github.io/yinbox1/为内蒙古喝彩_降央卓玛.mp3",
-      "lrc": "飞跃八千里路云和月乘风而来\n请看草原大地青春焕发的光彩\n跨上我心爱的黑骏马踏歌而行\n奔向你的怀抱飞扬你的神采\n内蒙古 大中华为你齐声喝彩\n各族儿女心相连走进壮美的时代\n跳起安代拉响马头琴纵情歌唱\n欢呼你丰收的喜悦开拓你豪迈\n畅饮金碗奶茶马奶酒香飘四海\n芬芳着你宽广无边的胸怀\n新世纪为你放声喝彩\n满怀激情赞美你飞腾的气派\n内蒙古 新世纪为你放声喝彩\n满怀激情赞美你飞腾的气派"
-    },
-    {
-      "title": "为内蒙古喝彩",
-      "artist": "韩磊 / 任真 / 查汗",
-      "file": "https://whxclp.github.io/yinbox1/为内蒙古喝彩.mp3",
-      "lrc": "飞跃八千里路云和月乘风而来\n请看草原大地青春焕发的光彩\n跨上我心爱的黑骏马踏歌而行\n奔向你的怀抱飞扬你的神采\n内蒙古 大中华为你齐声喝彩\n各族儿女心相连走进壮美的时代\n跳起安代拉响马头琴纵情歌唱\n欢呼你丰收的喜悦开拓你豪迈\n畅饮金碗奶茶马奶酒香飘四海\n芬芳着你宽广无边的胸怀\n新世纪为你放声喝彩\n满怀激情赞美你飞腾的气派\n内蒙古 新世纪为你放声喝彩\n满怀激情赞美你飞腾的气派"
-    },
-    {
-      "title": "云在飞 (对唱版)",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/云在飞 (对唱版).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "众手浇开幸福花（唢呐）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/众手浇开幸福花（唢呐）.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "众手浇开幸福花（曲）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/众手浇开幸福花（曲）.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "天边",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/天边.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "姻缘 (氛围版)",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/姻缘 (氛围版).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "娘啊娘（二胡赵思露）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/娘啊娘（二胡赵思露）.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "娘的眼泪",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/娘的眼泪.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "山歌追上云朵 (Cover 央金拉姆)",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/山歌追上云朵 (Cover 央金拉姆).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "山歌追上云朵(抒情版)",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/山歌追上云朵(抒情版).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "幸福花玲声",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/幸福花玲声.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "我喝了爱情的鹤顶红",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/我喝了爱情的鹤顶红.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "我喝了爱情的鹤顶红男",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/我喝了爱情的鹤顶红男.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "我在纳林湖等着你",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/我在纳林湖等着你.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "月亮之上 自由飞翔 雷鬼舞曲版",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/月亮之上 自由飞翔 雷鬼舞曲版.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "月亮之上(DJ版)",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/月亮之上(DJ版).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "梦中的妈妈",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/梦中的妈妈.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "女人不是月亮（毛阿敏）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/毛阿敏《女人不是月亮》.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "离别草原",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/离别草原.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "红歌4首连唱",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/红歌.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "英雄赞歌",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/英雄赞歌.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "蒲剧 空城计",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/蒲剧《空城计》.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "蒲剧间奏曲",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/蒲剧间奏曲.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "马儿你慢些走",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/马儿你慢些走.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "心愿（刘老师教唱）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/心愿_刘老师教唱.m4a",
-      "lrc": ""
-    },
-    {
-      "title": "心愿（年才让原唱）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/心愿_年才让原唱.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "我被青春撞了一下腰",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/我被青春撞了一下腰.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "娘的眼泪（二胡加长版）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/娘的眼泪（二胡加长版）.m4a",
-      "lrc": ""
-    },
-    {
-      "title": "娘的眼泪（王玉珍原唱全曲）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/娘的眼泪（王玉珍原唱全曲）.m4a",
-      "lrc": ""
-    },
-    {
-      "title": "心愿（MV·刘老师教唱）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/mv_xinyuan.mp4",
-      "type": "mv",
-      "lrc": ""
-    },
-    {
-      "title": "众手浇开幸福花（MV·广场舞完整版）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/mv_zhongshou.mp4",
-      "type": "mv",
-      "lrc": ""
-    },
-    {
-      "title": "我喝了爱情的鹤顶红（MV·归来小易）",
-      "artist": "归来小易",
-      "file": "https://whxclp.github.io/yinbox1/鹤顶红_归来小易.mp4",
-      "type": "mv",
-      "lrc": ""
-    },
-    {
-      "title": "我喝了爱情的鹤顶红（MV·朱梅玲）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/mv_hedinghong.mp4",
-      "type": "mv",
-      "lrc": ""
-    },
-    {
-      "title": "英雄赞歌（MV·张映哲）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/英雄赞歌_精简.mp4",
-      "type": "mv",
-      "lrc": ""
-    },
-    {
-      "title": "微腾花（汉语版）",
-      "artist": "是婉慧吖",
-      "file": "https://whxclp.github.io/yinbox1/微腾花_是婉慧吖.mp3",
-      "lrc": "[00:00.00] 作词 : 科尔沁夫/陈宝成\n[00:00.00] 作曲 : 宝音吉日格乐\n[00:00.00]微腾花科尔沁夫\n[00:08.84]词：科尔沁夫陈宝成\n[00:17.68]曲：宝音吉日格乐\n[00:26.52]你宛若多彩的花芬芳美丽\n[00:34.38]仿佛是悠扬动听的乐曲\n[00:42.39]明亮胜过天边的圆月\n[00:50.40]这就是美丽的微腾花儿呦\n[00:58.41]哎哎咴\n[01:00.48]我已经爱上你\n[01:06.39]美丽的姑娘微腾花儿\n[01:12.42]风儿吹过弯弯的小河\n[01:24.39]琴声飘进你的毡房\n[01:32.43]悠悠牧歌为你歌唱\n[01:40.41]美丽的姑娘微腾花啦嚯\n[01:47.79]哎哎哎嚯我已经爱上你\n[01:56.40]美丽的姑娘微腾花啦嚯\n[02:28.38]心儿想念梦中的眼睛\n[02:36.42]温柔月光洒在你脸上\n[02:44.40]多想亲吻你的善良\n[02:52.41]美丽的姑娘微腾花啦嚯\n[03:00.42]哎哎哎嚯我已经爱上你\n[03:08.43]美丽的姑娘微腾花啦嚯\n[03:16.44]哎哎哎嚯我已经爱上你\n[03:24.42]美丽的姑娘微腾花啦嚯\n[03:34.38]微腾花啦嚯\n[03:45.00]\n"
-    },
-    {
-      "title": "我在问花村等你（广场舞）",
-      "artist": "天生兄妹",
-      "file": "https://whxclp.github.io/yinbox1/我在问花村等你_天生兄妹（广场舞版）.mp3",
-      "lrc": "[00:00.00] 作词 : 西部杨刚\n[00:00.00] 作曲 : 西部杨刚\n[00:00.00]我在问花村等你 (广场舞版) - 天生兄妹\n[00:02.25]词：西部杨刚\n[00:02.73]曲：西部杨刚\n[00:03.64]女：\n[00:13.57]花儿开了你在哪儿\n[00:16.13]快快来看花\n[00:18.50]还在等什么\n[00:21.30]美丽的花儿已开满园\n[00:24.12]我在问花村等你来\n[00:28.56]男：\n[00:29.67]花儿开了你在哪儿\n[00:32.00]花香飘世界\n[00:34.70]花儿露笑脸\n[00:37.15]迎接八方的你到来\n[00:39.95]我在问花村等你来\n[00:44.38]合：\n[00:45.47]梦里的问花村\n[00:47.83]秀美的都江堰\n[00:50.54]欢迎你问花来\n[00:53.04]神奇的世外桃源\n[00:55.87]浪漫的问花村\n[00:58.47]古老的都江堰\n[01:01.28]欢迎你赏花来\n[01:03.76]许下最美心愿\n[01:08.02]梅花岛梅花开\n[01:09.14]梅花坞前结姻缘\n[01:10.50]情人梅前来许愿\n[01:11.76]白素贞\n[01:12.49]青城山下来修仙\n[01:13.77]到四川\n[01:14.44]畅游都江堰\n[01:15.38]到四川\n[01:16.43]问花村里问花来\n[01:17.78]到四川\n[01:18.48]四川话儿学起来\n[01:19.83]到四川\n[01:20.46]康定情歌唱起来\n[01:21.87]跑马溜溜的山上\n[01:24.36]一朵溜溜的云哟\n[01:27.07]端端溜溜的照在\n[01:29.62]康定溜溜的城哟\n[01:32.43]月亮弯弯\n[01:36.41]康定溜溜的城哟\n[01:52.43]梦里的问花村\n[01:54.89]秀美的都江堰\n[01:57.60]欢迎你问花来\n[02:00.18]神奇世外桃源\n[02:01.87]浪漫的问花村\n"
-    },
-    {
-      "title": "蓝色的蒙古高原（德德玛）",
-      "artist": "德德玛",
-      "file": "https://whxclp.github.io/yinbox1/蓝色的蒙古高原_德德玛.mp3",
-      "lrc": "望不尽连绵的山川\n蒙古包像飞落的大雁\n勒勒车赶着太阳游荡在天边\n敖包美丽的神话守护着草原\n我蓝色的蒙古高原\n你给了我希望\n从远古走到今天\n你就是不灭的信念\n把我的爱献给你\n把我的祝福留给你\n轻轻牵走记忆的长线\n漂泊的白云唤起我眷恋\n梦里常出现故乡的容颜\n阿妈亲切的背影仿佛在眼前\n我蓝色的蒙古高原\n你给了我希望\n从远古走到今天\n你就是不灭的信念\n把我的爱献给你\n把我的祝福留给你"
-    },
-    {
-      "title": "爱琴海（云飞）",
-      "artist": "云飞",
-      "file": "https://whxclp.github.io/yinbox1/爱琴海_云飞.mp3",
-      "lrc": "[00:00.00] 作词 : 昂旺文章\n[00:01.00] 作曲 : 郑铭浩（绍兵）\n[00:02.00] 编曲 : 郑铭浩（绍兵）\n[00:08.54]作词：昂旺文章\n[00:13.28]作曲：绍兵\n[00:17.14]编曲：绍兵\n[00:20.97]洞萧：石磊\n[00:24.94]制作人：绍兵\n[00:28.97]音乐总监：绍兵\n[00:30.39]演唱：云飞\n[00:33.09]是不是天边的大海\n[00:41.13]流淌一湾情思\n[00:42.98]留进了高原不再离去\n[00:49.10]像一方五彩的帐篷\n[00:56.99]汇聚的岛屿\n[00:59.10]让雪花编织的美丽\n[01:01.05]回到了港湾\n[01:07.04]爱琴海歌的家园\n[01:15.09]爱琴海舞的天堂\n[01:23.11]手牵着手啊连起心中的哈达\n[01:31.15]手捧着心搭起追寻的舞台\n[01:55.10]是不是天边的大海\n[02:03.09]流淌一湾情思\n[02:05.05]留进了高原不再离去\n[02:11.13]像一方五彩的帐篷\n[02:19.01]汇聚的岛屿\n[02:20.95]让雪花编织的美丽\n[02:23.02]回到了港湾\n[02:29.05]爱琴海歌的家园\n[02:37.03]爱琴海舞的天堂\n[02:45.02]手牵着手啊连起心中的哈达\n[02:53.01]手捧着心搭起追寻的舞台\n[03:01.10]爱琴海歌的家园\n[03:09.01]爱琴海舞的天堂\n[03:17.08]手牵着手连起心中的哈达\n[03:25.04]手捧着心搭起追寻的舞台\n[03:42.57]手捧着心搭起追寻的舞台\n"
-    },
-    {
-      "title": "叫一声哥哥你快回来（王二妮）",
-      "artist": "王二妮",
-      "file": "https://whxclp.github.io/yinbox1/叫一声哥哥你快回来_王二妮.mp3",
-      "lrc": "[00:01.90]叫一声哥哥你快回来\n[00:11.58]\n[00:27.49]上河里的鸭子下河里的鹅\n[00:34.16]一对对毛眼眼照哥哥\n[00:40.79]煮了那个钱钱哟下了那个米\n[00:47.52]大路上搂柴瞭一瞭你\n[00:54.51]\n[01:00.84]清水水的玻璃隔着窗子照\n[01:07.42]满口口白牙牙对着哥哥笑\n[01:14.05]双扇扇的门来哟单扇扇的开\n[01:20.85]叫一声哥哥哟你快回来\n[01:27.49]啊...啊...\n[01:34.22]双扇扇的门来哟单扇扇的开\n[01:40.75]叫一声哥哥哟你快回来\n[01:49.18]\n[02:29.09]上河里的鸭子下河里的鹅\n[02:35.76]一对对毛眼眼照哥哥\n[02:42.46]煮了那个钱钱哟下了那个米\n[02:49.11]大路上搂柴瞭一瞭你\n[02:55.81]啊...啊...\n[03:02.46]双扇扇的门来哟单扇扇的开\n[03:09.10]叫一声哥哥哟你快回来\n[03:17.47]你快回来 你快回来 你快回来\n[03:37.23]\n[03:52.82]你快回来\n[04:03.54]\n"
-    },
-    {
-      "title": "月照老家（瓦特）",
-      "artist": "瓦特",
-      "file": "https://whxclp.github.io/yinbox1/月照老家_瓦特.mp3",
-      "lrc": "[00:09.81]啊\n[00:21.54]啊\n[00:40.53]月照天涯思念老家\n[00:50.10]一轮明月啊高悬在天涯\n[00:59.64]月光如水啊洒满了老家\n[01:09.06]村头老树啊忆起旧年华\n[01:18.75]母亲倚门啊盼儿早归家\n[01:28.14]炊烟袅袅啊升起了晚霞\n[01:37.80]外婆歌谣啊伴我快长大\n[01:47.19]小河弯弯啊绕过了篱笆\n[01:57.60]米酒飘香啊醉透了农家\n[02:06.36]出门在外啊总念着老家\n[02:15.78]行囊沉沉啊装满了牵挂\n[02:25.32]月到中秋啊最是团圆啦\n[02:34.83]千里之外啊共赏此月华\n[02:44.49]故乡月色啊照我走天涯\n[02:53.91]游子心上啊总是念着她\n[03:03.39]走过万水啊心系着老家\n[03:10.86]啊\n[03:32.97]啊\n[03:33.24]啊\n"
-    },
-    {
-      "title": "闯码头 (3D环绕版)",
-      "artist": "乔艳艳",
-      "file": "https://whxclp.github.io/yinbox1/闯码头 (3D环绕版).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "漂亮姑娘就要嫁人了",
-      "artist": "龙梅子&老猫",
-      "file": "https://whxclp.github.io/yinbox1/漂亮姑娘就要嫁人了.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "爱情专属权",
-      "artist": "龙梅子&老猫",
-      "file": "https://whxclp.github.io/yinbox1/爱情专属权.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "寂寞的人伤心的歌(DJ阿远版)",
-      "artist": "龙梅子&DJ阿远&杨海彪",
-      "file": "https://whxclp.github.io/yinbox1/寂寞的人伤心的歌(DJ阿远版).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "下辈子做你的女人 (DJ版)",
-      "artist": "DJ",
-      "file": "https://whxclp.github.io/yinbox1/下辈子做你的女人 (DJ版).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "都说 (DJ何鹏版)",
-      "artist": "龙梅子&老猫&何鹏",
-      "file": "https://whxclp.github.io/yinbox1/都说 (DJ何鹏版).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "痴情冢：二胡 (翻奏: 邓奇奇) (二胡版)",
-      "artist": "邓奇奇",
-      "file": "https://whxclp.github.io/yinbox1/痴情冢：二胡 (翻奏_ 邓奇奇) (二胡版).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "思君黯然 (伤感二胡版)",
-      "artist": "DreamSky",
-      "file": "https://whxclp.github.io/yinbox1/思君黯然 (伤感二胡版).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "葬花吟 (二胡版)",
-      "artist": "李添兵",
-      "file": "https://whxclp.github.io/yinbox1/葬花吟 (二胡版).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "梁祝 (钢琴)",
-      "artist": "Richard Clayderman",
-      "file": "https://whxclp.github.io/yinbox1/梁祝 (钢琴).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "梁祝 (小提琴协奏曲)",
-      "artist": "俞丽拿",
-      "file": "https://whxclp.github.io/yinbox1/梁祝 (小提琴协奏曲).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "梁祝",
-      "artist": "吕思清",
-      "file": "https://whxclp.github.io/yinbox1/梁祝.mp3",
-      "lrc": "",
-      "type": "instrument"
-    },
-    {
-      "title": "梁祝 (古筝)",
-      "artist": "中央民族乐团",
-      "file": "https://whxclp.github.io/yinbox1/梁祝 (古筝).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "二泉映月(阿炳二胡独奏)",
-      "artist": "中国古代十大名曲",
-      "file": "https://whxclp.github.io/yinbox1/二泉映月(阿炳二胡独奏).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "二泉映月 (古筝版)",
-      "artist": "华语群星",
-      "file": "https://whxclp.github.io/yinbox1/二泉映月 (古筝版).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "潇湘子 (电子琴版)",
-      "artist": "小霍霍",
-      "file": "https://whxclp.github.io/yinbox1/潇湘子 (电子琴版).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "虞兮叹 (DJ热歌榜)",
-      "artist": "钱潮",
-      "file": "https://whxclp.github.io/yinbox1/虞兮叹 (DJ热歌榜).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "追梦人",
-      "artist": "凤飞飞",
-      "file": "https://whxclp.github.io/yinbox1/追梦人.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "月朦胧鸟朦胧 (慢三版)",
-      "artist": "凤飞飞",
-      "file": "https://whxclp.github.io/yinbox1/月朦胧鸟朦胧 (慢三版).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "青藏高原 (Live)-原唱：韩红",
-      "artist": "谭晶",
-      "file": "https://whxclp.github.io/yinbox1/九儿 (Live)-原唱：韩红.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "小河淌水 (女声独唱)",
-      "artist": "彭丽媛",
-      "file": "https://whxclp.github.io/yinbox1/小河淌水 (女声独唱).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "九儿，你大胆地往前走 (Live)",
-      "artist": "腾格尔&吴碧霞",
-      "file": "https://whxclp.github.io/yinbox1/九儿，你大胆地往前走 (Live).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "呼伦贝尔大草原",
-      "artist": "布仁巴雅尔",
-      "file": "https://whxclp.github.io/yinbox1/呼伦贝尔大草原.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "雕花的马鞍",
-      "artist": "陈敏中音",
-      "file": "https://whxclp.github.io/yinbox1/雕花的马鞍.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "哭诸葛",
-      "artist": "刘欢",
-      "file": "https://whxclp.github.io/yinbox1/哭诸葛.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "这一拜",
-      "artist": "刘欢",
-      "file": "https://whxclp.github.io/yinbox1/这一拜.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "我和你",
-      "artist": "刘欢 / Sarah Brightman",
-      "file": "https://whxclp.github.io/yinbox1/我和你.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "从头再来",
-      "artist": "刘欢",
-      "file": "https://whxclp.github.io/yinbox1/从头再来.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "崀里咯浪",
-      "artist": "春雷",
-      "file": "https://whxclp.github.io/yinbox1/崀里咯浪.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "山火谣 (你看着我别走开)",
-      "artist": "XKR Studio",
-      "file": "https://whxclp.github.io/yinbox1/山火谣 (你看着我别走开).mp3",
-      "lrc": ""
-    },
-    {
-      "title": "山火谣",
-      "artist": "陈嘉宇",
-      "file": "https://whxclp.github.io/yinbox1/山火谣.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "祝福祖国（合唱版）",
-      "artist": "布丁77",
-      "file": "https://whxclp.github.io/yinbox1/祝福祖国（合唱版）.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "月亮之上",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/10首神仙级中国纯音乐-1.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "我要去西藏",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/10首神仙级中国纯音乐-2.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "陪你一起看草原",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/10首神仙级中国纯音乐-3.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "西海情歌",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/10首神仙级中国纯音乐-4.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "梦江南",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/10首神仙级中国纯音乐-5.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "天路",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/10首神仙级中国纯音乐-6.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "常回家看看",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/10首神仙级中国纯音乐-7.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "泉水叮咚响",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/10首神仙级中国纯音乐-8.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "苗岭的早晨",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/10首神仙级中国纯音乐-9.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "康定情歌",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/10首神仙级中国纯音乐-10.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "乐曲1",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/14首乐曲-1.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "乐曲2",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/14首乐曲-2.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "乐曲3",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/14首乐曲-3.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "乐曲4",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/14首乐曲-4.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "乐曲5",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/14首乐曲-5.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "乐曲6",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/14首乐曲-6.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "乐曲7",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/14首乐曲-7.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "乐曲8",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/14首乐曲-8.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "乐曲9",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/14首乐曲-9.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "乐曲10",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/14首乐曲-10.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "乐曲11",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/14首乐曲-11.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "乐曲12",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/14首乐曲-12.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "乐曲13",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/14首乐曲-13.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "乐曲14",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/14首乐曲-14.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "6小时精选DJ串烧",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-1.mp3",
-      "parts": [
-        "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-1.mp3",
-        "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-2.mp3",
-        "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-3.mp3",
-        "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-4.mp3",
-        "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-5.mp3",
-        "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-6.mp3",
-        "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-7.mp3",
-        "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-8.mp3"
-      ],
-      "lrc": "",
-      "coll": "6小时DJ串烧"
-    },
-    {
-      "title": "清风上南枝",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025最火1.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025最火"
-    },
-    {
-      "title": "江湖夜雨十年灯",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025最火2.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025最火"
-    },
-    {
-      "title": "离别开出花",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025最火3.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025最火"
-    },
-    {
-      "title": "搀扶",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025最火4.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025最火"
-    },
-    {
-      "title": "2025最火5",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025最火5.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025最火"
-    },
-    {
-      "title": "2025最火6",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025最火6.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025最火"
-    },
-    {
-      "title": "黄昏",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025最火7.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025最火"
-    },
-    {
-      "title": "如愿",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025最火8.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025最火"
-    },
-    {
-      "title": "离别开出花",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌1.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "只为你着迷",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌10.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "壁上观",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌11.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "陪我过个冬",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌12.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "人间半途",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌13.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "牵丝戏",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌14.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "越来越不懂",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌15.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "白鸽乌鸦相爱的戏码",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌16.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "春庭雪",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌17.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "落",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌18.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "青丝",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌19.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "土坡上的狗尾草",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌2.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "异客",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌20.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "桃花诺",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌21.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "化风行万里",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌22.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "难却",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌23.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "转身即心痛",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌24.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "唯一",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌25.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "归途的光",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌26.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "阿嬷",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌27.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "青花",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌28.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "我期待的不是雪",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌29.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "放纵L",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌3.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "谁",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌30.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "有风无风皆自由",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌4.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "苹果香",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌5.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "若月亮没有来",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌6.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "会开花的云",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌7.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "列车开往春天",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌8.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "风经过雪飘落",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2025热歌9.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "2025热歌"
-    },
-    {
-      "title": "30首车载DJ串烧",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/30首车载DJ串烧.mp3",
-      "lrc": "",
-      "coll": "整合集"
-    },
-    {
-      "title": "50首经典老歌",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/50首经典老歌.mp3",
-      "lrc": "",
-      "coll": "整合集"
-    },
-    {
-      "title": "牡丹之歌",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/80红歌1.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "吐鲁番的葡萄熟了",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/80红歌10.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "吐鲁番的葡萄熟了",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/80红歌11.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "吐鲁番的葡萄熟了",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/80红歌12.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "驼铃",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/80红歌15.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "大海一样的深情",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/80红歌16.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "红星照我去战斗",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/80红歌18.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "我们的生活充满阳光",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/80红歌19.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "再见吧，妈妈",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/80红歌2.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "太阳岛上",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/80红歌20.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "大海啊，故乡",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/80红歌3.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "永远和你在一道",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/80红歌4.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "永远和你在一道",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/80红歌5.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "泉水叮咚响",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/80红歌6.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "美丽的草原我的家",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/80红歌7.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "外婆的澎湖湾",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/80红歌8.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "我爱你塞北的雪",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/80红歌9.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "mv_yingxiong",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/mv_yingxiong.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "mv_zhongshou_menglv",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/mv_zhongshou_menglv.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "中国红歌1",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/中国红歌1.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "中国红歌"
-    },
-    {
-      "title": "中国红歌10",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/中国红歌10.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "中国红歌"
-    },
-    {
-      "title": "中国红歌11",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/中国红歌11.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "中国红歌"
-    },
-    {
-      "title": "中国红歌12",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/中国红歌12.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "中国红歌"
-    },
-    {
-      "title": "中国红歌13",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/中国红歌13.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "中国红歌"
-    },
-    {
-      "title": "中国红歌14",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/中国红歌14.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "中国红歌"
-    },
-    {
-      "title": "中国红歌15",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/中国红歌15.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "中国红歌"
-    },
-    {
-      "title": "中国红歌16",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/中国红歌16.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "中国红歌"
-    },
-    {
-      "title": "中国红歌17",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/中国红歌17.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "中国红歌"
-    },
-    {
-      "title": "中国红歌18",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/中国红歌18.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "中国红歌"
-    },
-    {
-      "title": "中国红歌2",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/中国红歌2.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "中国红歌"
-    },
-    {
-      "title": "中国红歌3",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/中国红歌3.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "中国红歌"
-    },
-    {
-      "title": "中国红歌4",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/中国红歌4.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "中国红歌"
-    },
-    {
-      "title": "中国红歌5",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/中国红歌5.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "中国红歌"
-    },
-    {
-      "title": "中国红歌6",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/中国红歌6.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "中国红歌"
-    },
-    {
-      "title": "中国红歌7",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/中国红歌7.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "中国红歌"
-    },
-    {
-      "title": "中国红歌8",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/中国红歌8.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "中国红歌"
-    },
-    {
-      "title": "中国红歌9",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/中国红歌9.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "中国红歌"
-    },
-    {
-      "title": "为内蒙古喝彩_2025现场",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/为内蒙古喝彩_2025现场.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "为内蒙古喝彩_2025现场",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/为内蒙古喝彩_2025现场.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "为内蒙古喝彩_现场版",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/为内蒙古喝彩_现场版.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "为内蒙古喝彩_现场版",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/为内蒙古喝彩_现场版.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "佛教歌曲",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/佛教歌曲.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "全球纯音乐1",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐1.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐10",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐10.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐11",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐11.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐12",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐12.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐13",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐13.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐14",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐14.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐15",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐15.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐16",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐16.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐17",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐17.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐18",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐18.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐19",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐19.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐2",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐2.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐20",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐20.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐21",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐21.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐22",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐22.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐23",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐23.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐3",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐3.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐4",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐4.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐5",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐5.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐6",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐6.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐7",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐7.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐8",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐8.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "全球纯音乐9",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/全球纯音乐9.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "全球纯音乐"
-    },
-    {
-      "title": "微腾花_科尔沁夫",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/微腾花_科尔沁夫.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "最远的你是我最近的爱",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/怀旧老歌1.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "样样红",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/怀旧老歌10.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "你的样子",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/怀旧老歌11.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "相思",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/怀旧老歌12.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "只要有你",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/怀旧老歌13.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "九百九十九朵玫瑰",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/怀旧老歌14.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "别问我是谁",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/怀旧老歌15.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "特别的爱给特别的你",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/怀旧老歌16.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "心雨",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/怀旧老歌17.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "渡情",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/怀旧老歌18.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "画心",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/怀旧老歌19.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "牵挂你的人是我",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/怀旧老歌2.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "真的好想你",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/怀旧老歌20.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "日不落",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/怀旧老歌3.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "好想好想",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/怀旧老歌4.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "对你爱不完",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/怀旧老歌5.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "我是不是该安静的走开",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/怀旧老歌6.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "大头皮鞋",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/怀旧老歌7.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "新鸳鸯蝴蝶梦",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/怀旧老歌8.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "再回首",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/怀旧老歌9.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "老哥连唱"
-    },
-    {
-      "title": "我喝了爱情的鹤顶红_美声版",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/我喝了爱情的鹤顶红_美声版.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "我在问花村等你_天生兄妹",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/我在问花村等你_天生兄妹.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "江湖夜雨十年灯",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/抖音热歌1.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "抖音热歌"
-    },
-    {
-      "title": "你本来就很美",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/抖音热歌10.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "抖音热歌"
-    },
-    {
-      "title": "战马",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/抖音热歌11.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "抖音热歌"
-    },
-    {
-      "title": "不能不想你",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/抖音热歌12.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "抖音热歌"
-    },
-    {
-      "title": "有风无风皆自由",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/抖音热歌13.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "抖音热歌"
-    },
-    {
-      "title": "离别开出花",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/抖音热歌14.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "抖音热歌"
-    },
-    {
-      "title": "土坡上的狗尾草",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/抖音热歌15.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "抖音热歌"
-    },
-    {
-      "title": "苍穹唤",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/抖音热歌2.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "抖音热歌"
-    },
-    {
-      "title": "情罪",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/抖音热歌3.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "抖音热歌"
-    },
-    {
-      "title": "搀扶",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/抖音热歌4.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "抖音热歌"
-    },
-    {
-      "title": "童年老家",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/抖音热歌5.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "抖音热歌"
-    },
-    {
-      "title": "空荡的酒杯",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/抖音热歌6.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "抖音热歌"
-    },
-    {
-      "title": "月亮照山川",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/抖音热歌7.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "抖音热歌"
-    },
-    {
-      "title": "化风行万里",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/抖音热歌8.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "抖音热歌"
-    },
-    {
-      "title": "此生无憾",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/抖音热歌9.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "抖音热歌"
-    },
-    {
-      "title": "月照老家_Lie",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/月照老家_Lie.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "月照老家_不见故人归",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/月照老家_不见故人归.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "月照老家_烟嗓王子",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/月照老家_烟嗓王子.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "月照老家_睡眠火山",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/月照老家_睡眠火山.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "月照老家_花草沐雷鬼晚姨",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/月照老家_花草沐雷鬼晚姨.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "月照老家_莉沁",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/月照老家_莉沁.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "月照老家_阿杰",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/月照老家_阿杰.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "爱琴海_央金兰泽",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/爱琴海_央金兰泽.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "经典歌曲",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/经典歌曲.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "绿色兴安_兴安腾格尔",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/绿色兴安_兴安腾格尔.mp3",
-      "lrc": "",
-      "coll": "绿色兴安"
-    },
-    {
-      "title": "绿色兴安_张映龙",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/绿色兴安_张映龙.mp3",
-      "lrc": "",
-      "coll": "绿色兴安"
-    },
-    {
-      "title": "英雄赞歌_精简_hd",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/英雄赞歌_精简_hd.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "醉美草原",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/草原歌曲1.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "草原歌曲"
-    },
-    {
-      "title": "大草原的情歌",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/草原歌曲10.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "草原歌曲"
-    },
-    {
-      "title": "天堂",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/草原歌曲11.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "草原歌曲"
-    },
-    {
-      "title": "我和草原有个约定",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/草原歌曲12.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "草原歌曲"
-    },
-    {
-      "title": "梦回草原",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/草原歌曲13.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "草原歌曲"
-    },
-    {
-      "title": "草原歌曲14",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/草原歌曲14.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "草原歌曲"
-    },
-    {
-      "title": "鸿雁",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/草原歌曲2.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "草原歌曲"
-    },
-    {
-      "title": "火辣辣的情歌",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/草原歌曲3.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "草原歌曲"
-    },
-    {
-      "title": "套马杆",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/草原歌曲4.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "草原歌曲"
-    },
-    {
-      "title": "一路花香",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/草原歌曲5.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "草原歌曲"
-    },
-    {
-      "title": "火火的姑娘",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/草原歌曲6.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "草原歌曲"
-    },
-    {
-      "title": "一曲相送",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/草原歌曲7.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "草原歌曲"
-    },
-    {
-      "title": "美丽的草原我的家",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/草原歌曲8.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "草原歌曲"
-    },
-    {
-      "title": "等你在花开的草原",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/草原歌曲9.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "草原歌曲"
-    },
-    {
-      "title": "我像傻子一样爱你",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/车载音乐1.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "车载音乐"
-    },
-    {
-      "title": "提笔写遗憾",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/车载音乐10.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "车载音乐"
-    },
-    {
-      "title": "那错过的缘分",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/车载音乐2.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "车载音乐"
-    },
-    {
-      "title": "想把我唱给你听",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/车载音乐3.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "车载音乐"
-    },
-    {
-      "title": "再见晚风",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/车载音乐4.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "车载音乐"
-    },
-    {
-      "title": "你不该闯入我心中",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/车载音乐5.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "车载音乐"
-    },
-    {
-      "title": "爱情美酒分给谁",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/车载音乐6.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "车载音乐"
-    },
-    {
-      "title": "明月夜",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/车载音乐7.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "车载音乐"
-    },
-    {
-      "title": "一生爱你千百回",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/车载音乐8.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "车载音乐"
-    },
-    {
-      "title": "来生别再遗憾",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/车载音乐9.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "车载音乐"
-    },
-    {
-      "title": "忧郁的爱",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/轻音乐10.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "轻音乐"
-    },
-    {
-      "title": "伴你一生",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/轻音乐11.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "轻音乐"
-    },
-    {
-      "title": "玫瑰之吻",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/轻音乐12.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "轻音乐"
-    },
-    {
-      "title": "爱的纪念",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/轻音乐13.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "轻音乐"
-    },
-    {
-      "title": "至爱",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/轻音乐14.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "轻音乐"
-    },
-    {
-      "title": "无论如何",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/轻音乐15.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "轻音乐"
-    },
-    {
-      "title": "永志不渝",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/轻音乐16.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "轻音乐"
-    },
-    {
-      "title": "德朗的微笑",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/轻音乐17.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "轻音乐"
-    },
-    {
-      "title": "摇篮曲",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/轻音乐18.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "轻音乐"
-    },
-    {
-      "title": "阿根廷别为我哭泣",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/轻音乐2.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "轻音乐"
-    },
-    {
-      "title": "卡萨布兰卡",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/轻音乐3.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "轻音乐"
-    },
-    {
-      "title": "绿袖子",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/轻音乐4.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "轻音乐"
-    },
-    {
-      "title": "爱情故事",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/轻音乐5.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "轻音乐"
-    },
-    {
-      "title": "爱你在心口难开",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/轻音乐6.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "轻音乐"
-    },
-    {
-      "title": "今夜何等温柔",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/轻音乐7.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "轻音乐"
-    },
-    {
-      "title": "莎啦啦",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/轻音乐8.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "轻音乐"
-    },
-    {
-      "title": "大大世界",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/轻音乐9.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "轻音乐"
-    },
-    {
-      "title": "顶级车震中文DJ",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/顶级车震中文DJ.mp3",
-      "lrc": "",
-      "type": "instrument"
-    },
-    {
-      "title": "云在飞 (原版)",
-      "artist": "云飞",
-      "file": "https://whxclp.github.io/yinbox1/云在飞 (原版).mp3"
-    },
-    {
-      "title": "虞兮叹 (原版)",
-      "artist": "闻人听书",
-      "file": "https://whxclp.github.io/yinbox1/虞兮叹 (原版).mp3"
-    },
-    {
-      "title": "美丽草原我的家",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/美丽草原我的家.mp3"
-    },
-    {
-      "title": "在那遥远的地方",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/在那遥远的地方.mp3"
-    },
-    {
-      "title": "康定情歌",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/康定情歌.mp3"
-    },
-    {
-      "title": "有一个美丽的地方",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/有一个美丽的地方.mp3"
-    },
-    {
-      "title": "龙船调",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/龙船调.mp3"
-    },
-    {
-      "title": "绣荷包",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/绣荷包.mp3"
-    },
-    {
-      "title": "沂蒙山小调",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/沂蒙山小调.mp3"
-    },
-    {
-      "title": "紫竹调",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/紫竹调.mp3"
-    },
-    {
-      "title": "月光下的凤尾竹",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/月光下的凤尾竹.mp3"
-    },
-    {
-      "title": "蒲剧 古风卷轴",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/古风卷轴.mp4",
-      "lrc": "",
-      "type": "mv",
-      "new": true
-    },
-    {
-      "title": "蒲剧 苏三起解",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/苏三起解.mp4",
-      "lrc": "",
-      "type": "mv",
-      "new": true
-    },
-    {
-      "title": "蒲剧 空城计诉往情",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/空城计诉往情.mp4",
-      "lrc": "",
-      "type": "mv",
-      "new": true
-    },
-    {
-      "title": "二人转 红娘大姐（郭旺·赵晓波）",
-      "artist": "郭旺 / 赵晓波",
-      "file": "https://whxclp.github.io/yinbox1/二人转红娘大姐.mp4",
-      "lrc": "",
-      "type": "mv",
-      "new": true,
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "二人转 红娘大姐（郭旺·赵晓波）",
-      "artist": "郭旺 / 赵晓波",
-      "file": "https://whxclp.github.io/yinbox1/二人转红娘大姐.mp3",
-      "lrc": "",
-      "new": true,
-      "coll": "二人转·小帽"
-    },
-    {
-      "title": "二人转 蓝瑞莲（赵晓波·李广文）",
-      "artist": "赵晓波 / 李广文",
-      "file": "https://whxclp.github.io/yinbox1/二人转蓝瑞莲.mp4",
-      "lrc": "",
-      "type": "mv",
-      "new": true,
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "二人转 蓝瑞莲（赵晓波·李广文）",
-      "artist": "赵晓波 / 李广文",
-      "file": "https://whxclp.github.io/yinbox1/二人转蓝瑞莲.mp3",
-      "lrc": "",
-      "new": true,
-      "coll": "二人转·小帽"
-    },
-    {
-      "title": "帝王之声全专辑（韩磊·15首）",
-      "artist": "韩磊",
-      "file": "https://whxclp.github.io/yinbox1/帝王之声全专辑.mp4",
-      "lrc": "",
-      "type": "mv",
-      "new": true
-    },
-    {
-      "title": "二人转 红娘大姐片段（71秒）",
-      "artist": "郭旺 / 赵晓波",
-      "file": "https://whxclp.github.io/yinbox1/二人转红娘大姐片段.mp3",
-      "lrc": "",
-      "new": true,
-      "coll": "二人转·小帽"
-    },
-    {
-      "title": "二人转 娘怀儿十个月",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/二人转娘怀儿十个月.mp3",
-      "lrc": "",
-      "new": true,
-      "coll": "二人转·小帽"
-    },
-    {
-      "title": "二人转 魂断蓝桥",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/二人转魂断蓝桥.mp3",
-      "lrc": "",
-      "new": true,
-      "coll": "二人转·小帽"
-    },
-    {
-      "title": "二人转 映雪读书",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/二人转映雪读书.mp3",
-      "lrc": "",
-      "new": true,
-      "coll": "二人转·小帽"
-    },
-    {
-      "title": "二人转 张庭秀花园相认",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/二人转张庭秀花园相认.mp3",
-      "lrc": "",
-      "new": true,
-      "coll": "二人转·小帽"
-    },
-    {
-      "title": "二人转 崔氏女",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/二人转崔氏女.mp3",
-      "lrc": "",
-      "new": true,
-      "coll": "二人转·小帽"
-    },
-    {
-      "title": "二人转 过门曲（加倍）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/二人转过门曲.mp3",
-      "lrc": "",
-      "new": true,
-      "coll": "二人转·小帽"
-    },
-    {
-      "title": "西河大鼓",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/西河大鼓.mp3",
-      "lrc": "",
-      "new": true
-    },
-    {
-      "title": "二人转 讨饭",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/二人转讨饭.mp3",
-      "lrc": "",
-      "new": true,
-      "coll": "二人转·小帽"
-    },
-    {
-      "title": "最后的倾诉（片头剪辑版）",
-      "artist": "韩磊",
-      "file": "https://whxclp.github.io/yinbox1/最后的倾诉.mp3",
-      "lrc": "",
-      "new": true
-    },
-    {
-      "title": "白兰2026雷鬼合集（1/6）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/白兰雷鬼合集-1.mp3",
-      "lrc": "",
-      "new": true
-    },
-    {
-      "title": "白兰2026雷鬼合集（2/6）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/白兰雷鬼合集-2.mp3",
-      "lrc": "",
-      "new": true
-    },
-    {
-      "title": "白兰2026雷鬼合集（3/6）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/白兰雷鬼合集-3.mp3",
-      "lrc": "",
-      "new": true
-    },
-    {
-      "title": "白兰2026雷鬼合集（4/6）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/白兰雷鬼合集-4.mp3",
-      "lrc": "",
-      "new": true
-    },
-    {
-      "title": "白兰2026雷鬼合集（5/6）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/白兰雷鬼合集-5.mp3",
-      "lrc": "",
-      "new": true
-    },
-    {
-      "title": "白兰2026雷鬼合集（6/6）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/白兰雷鬼合集-6.mp3",
-      "lrc": "",
-      "new": true
-    },
-    {
-      "title": "2026年10首车载音乐连播",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/2026年10首车载音乐连播.mp4",
-      "lrc": "",
-      "type": "mv",
-      "new": true
-    },
-    {
-      "title": "6小时精选DJ串烧-2",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-2.mp3",
-      "lrc": "",
-      "coll": "6小时DJ串烧",
-      "new": true
-    },
-    {
-      "title": "6小时精选DJ串烧-3",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-3.mp3",
-      "lrc": "",
-      "coll": "6小时DJ串烧",
-      "new": true
-    },
-    {
-      "title": "6小时精选DJ串烧-4",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-4.mp3",
-      "lrc": "",
-      "coll": "6小时DJ串烧",
-      "new": true
-    },
-    {
-      "title": "6小时精选DJ串烧-5",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-5.mp3",
-      "lrc": "",
-      "coll": "6小时DJ串烧",
-      "new": true
-    },
-    {
-      "title": "6小时精选DJ串烧-6",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-6.mp3",
-      "lrc": "",
-      "coll": "6小时DJ串烧",
-      "new": true
-    },
-    {
-      "title": "6小时精选DJ串烧-7",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-7.mp3",
-      "lrc": "",
-      "coll": "6小时DJ串烧",
-      "new": true
-    },
-    {
-      "title": "6小时精选DJ串烧-8",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-8.mp3",
-      "lrc": "",
-      "coll": "6小时DJ串烧",
-      "new": true
-    },
-    {
-      "title": "二人转 马前泼水（杨宏伟·徐振武）",
-      "artist": "杨宏伟 / 徐振武",
-      "file": "https://whxclp.github.io/yinbox1/二人转马前泼水.mp4",
-      "lrc": "",
-      "type": "mv",
-      "new": true,
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "美丽的草原我的家",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/10首经典民歌-1.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "在那遥远的地方",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/10首经典民歌-2.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "康定情歌",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/10首经典民歌-3.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "有一个美丽的地方",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/10首经典民歌-4.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "父亲的草原母亲的河",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/10首经典民歌-5.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "龙船调",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/10首经典民歌-6.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "绣荷包",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/10首经典民歌-7.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "沂蒙山小调",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/10首经典民歌-8.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "紫竹调",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/10首经典民歌-9.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "月光下的凤尾竹",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/10首经典民歌-10.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "我求错了人（深情版）",
-      "artist": "乡野低频",
-      "file": "https://whxclp.github.io/yinbox1/songs/我求错了人_乡野低频.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "二人转 包公赔情（完整版）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/二人转包公赔情.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "二人转 回杯记（韩子平·董纬）",
-      "artist": "韩子平 / 董纬",
-      "file": "https://whxclp.github.io/yinbox1/二人转回杯记.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "拉场戏 摔三弦（赵本山）",
-      "artist": "赵本山",
-      "file": "https://whxclp.github.io/yinbox1/拉场戏摔三弦.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "东北二人转歌",
-      "artist": "小沈阳 / 沈春阳",
-      "file": "https://whxclp.github.io/yinbox1/songs/东北二人转歌_小沈阳.mp3",
-      "lrc": "",
-      "coll": "二人转·小帽"
-    },
-    {
-      "title": "蒲剧 烟花泪（完整版）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/蒲剧烟花泪完整版.mp4",
-      "lrc": "",
-      "type": "mv",
-      "new": true,
-      "coll": "蒲剧烟花泪"
-    },
-    {
-      "title": "昨日重现",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/轻音乐1.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "轻音乐"
-    },
-    {
-      "title": "韩宝仪合集（1/3）",
-      "file": "https://whxclp.github.io/yinbox1/韩宝仪合集-1.mp3",
-      "artist": "韩宝仪",
-      "coll": "韩宝仪"
-    },
-    {
-      "title": "韩宝仪合集（2/3）",
-      "file": "https://whxclp.github.io/yinbox1/韩宝仪合集-2.mp3",
-      "artist": "韩宝仪",
-      "coll": "韩宝仪"
-    },
-    {
-      "title": "韩宝仪合集（3/3）",
-      "file": "https://whxclp.github.io/yinbox1/韩宝仪合集-3.mp3",
-      "artist": "韩宝仪",
-      "coll": "韩宝仪"
-    },
-    {
-      "title": "凤凰传奇-月亮之上（原版MV）",
-      "artist": "凤凰传奇",
-      "file": "https://whxclp.github.io/yinbox1/月亮之上原版MV.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "父亲的草原母亲的河（原版MV·布仁巴雅尔）",
-      "artist": "布仁巴雅尔",
-      "file": "https://whxclp.github.io/yinbox1/父亲的草原母亲的河原版MV.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "风从远处来",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/songs/风从远处来.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "我求错了人",
-      "artist": "萨顶顶 / 周深",
-      "file": "https://whxclp.github.io/yinbox1/songs/我求错了人.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "草原清风来",
-      "artist": "SDMAI",
-      "file": "https://whxclp.github.io/yinbox1/songs/草原清风来.mp3",
-      "lrc": ""
-    },
-    {
-      "title": "吉祥（原版MV·春雷）",
-      "artist": "春雷",
-      "file": "https://whxclp.github.io/yinbox1/吉祥原版MV.mp4",
-      "lrc": "",
-      "type": "mv"
-    },
-    {
-      "title": "白兰雷鬼（完整版）",
-      "artist": "",
-      "file": "https://whxclp.github.io/yinbox1/白兰雷鬼完整版.mp3",
-      "lrc": "",
-      "coll": "白兰雷鬼"
-    },
-    {
-      "title": "红美人之歌",
-      "artist": "杜殿虎",
-      "file": "https://whxclp.github.io/yinbox1/红美人之歌.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "杜殿虎歌曲"
-    },
-    {
-      "title": "海南青椰歌",
-      "artist": "杜殿虎",
-      "file": "https://whxclp.github.io/yinbox1/海南青椰歌.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "杜殿虎歌曲"
-    },
-    {
-      "title": "扬州醉",
-      "artist": "杜殿虎",
-      "file": "https://whxclp.github.io/yinbox1/扬州醉.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "杜殿虎歌曲"
-    },
-    {
-      "title": "惠民强国大交通",
-      "artist": "杜殿虎",
-      "file": "https://whxclp.github.io/yinbox1/惠民强国大交通.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "杜殿虎歌曲"
-    },
-    {
-      "title": "最美相遇",
-      "artist": "杜殿虎",
-      "file": "https://whxclp.github.io/yinbox1/最美相遇.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "杜殿虎歌曲"
-    },
-    {
-      "title": "同行美",
-      "artist": "杜殿虎",
-      "file": "https://whxclp.github.io/yinbox1/同行美.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "杜殿虎歌曲"
-    },
-    {
-      "title": "贵州的桥",
-      "artist": "杜殿虎",
-      "file": "https://whxclp.github.io/yinbox1/贵州的桥.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "杜殿虎歌曲"
-    },
-    {
-      "title": "山乡老妈",
-      "artist": "杜殿虎",
-      "file": "https://whxclp.github.io/yinbox1/山乡老妈.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "杜殿虎歌曲"
-    },
-    {
-      "title": "亲亲眷侣",
-      "artist": "杜殿虎",
-      "file": "https://whxclp.github.io/yinbox1/亲亲眷侣.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "杜殿虎歌曲"
-    },
-    {
-      "title": "飞逸的地铁",
-      "artist": "杜殿虎",
-      "file": "https://whxclp.github.io/yinbox1/飞逸的地铁.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "杜殿虎歌曲"
-    },
-    {
-      "title": "咖啡香",
-      "artist": "杜殿虎",
-      "file": "https://whxclp.github.io/yinbox1/咖啡香.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "杜殿虎歌曲"
-    },
-    {
-      "title": "公交好",
-      "artist": "杜殿虎",
-      "file": "https://whxclp.github.io/yinbox1/公交好.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "杜殿虎歌曲"
-    },
-    {
-      "title": "中华舞龙中国路",
-      "artist": "杜殿虎",
-      "file": "https://whxclp.github.io/yinbox1/中华舞龙中国路.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "杜殿虎歌曲"
-    },
-    {
-      "title": "二人转 刘金定观星（韩子平·董玮）",
-      "file": "https://whxclp.github.io/yinbox1/二人转刘金定观星.mp4",
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "二人转 回杯记 老版（董孝芳·李玉琴）",
-      "file": "https://whxclp.github.io/yinbox1/二人转回杯记老版.mp4",
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "二人转 包公赔情 39分钟版（韩子平·董玮）",
-      "file": "https://whxclp.github.io/yinbox1/二人转包公赔情39分钟版.mp4",
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "二人转 深宫欲海（闫学晶·佟长江）",
-      "file": "https://whxclp.github.io/yinbox1/二人转深宫欲海.mp4",
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "二人转 蓝桥新传（张涛·小豆豆）",
-      "file": "https://whxclp.github.io/yinbox1/二人转蓝桥新传.mp4",
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "二人转 西厢观画（赵晓波·郭旺）",
-      "file": "https://whxclp.github.io/yinbox1/二人转西厢观画.mp4",
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "二人转 燕青卖线（丁飞·郭二华）",
-      "file": "https://whxclp.github.io/yinbox1/二人转燕青卖线.mp4",
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "二人转 封神十不该（郭德纲·小豆豆·张小光）",
-      "file": "https://whxclp.github.io/yinbox1/二人转封神十不该.mp4",
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "二人转 辕门斩子（二）",
-      "file": "https://whxclp.github.io/yinbox1/二人转辕门斩子二.mp4",
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "二人转 辕门斩子（一）",
-      "file": "https://whxclp.github.io/yinbox1/二人转辕门斩子一.mp4",
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "二人转 东北神调（孙小宝）",
-      "file": "https://whxclp.github.io/yinbox3/二人转东北神调孙小宝.mp4",
-      "coll": "二人转·小帽"
-    },
-    {
-      "title": "二人转 神调怪王（孙小宝·金玲·赵春雷）",
-      "file": "https://whxclp.github.io/yinbox3/二人转神调怪王.mp4",
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "二人转 蹦迪八大扯（孙小宝·金玲）",
-      "file": "https://whxclp.github.io/yinbox3/二人转蹦迪八大扯.mp4",
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "二人转 蹦迪八大扯（第二部下·孙小宝·金玲）",
-      "file": "https://whxclp.github.io/yinbox3/二人转蹦迪八大扯二部下.mp4",
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "二人转 蹦迪八大扯报歌名（孙小宝·金玲）",
-      "file": "https://whxclp.github.io/yinbox3/二人转蹦迪八大扯报歌名.mp4",
-      "coll": "二人转·小帽"
-    },
-    {
-      "title": "二人转 傻子泡妞（魏三）",
-      "file": "https://whxclp.github.io/yinbox3/二人转傻子泡妞.mp4",
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "二人转 傻男人和坏女人（魏三）",
-      "file": "https://whxclp.github.io/yinbox3/二人转傻男人和坏女人.mp4",
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "二人转 傻男人与坏女人完整版（魏三·何晓影）",
-      "file": "https://whxclp.github.io/yinbox3/二人转傻男人与坏女人完整版.mp4",
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "二人转 包公赔情（魏三·何晓影）",
-      "file": "https://whxclp.github.io/yinbox3/二人转包公赔情魏三.mp4",
-      "coll": "二人转·正戏"
-    },
-    {
-      "title": "再见晚风",
-      "file": "https://whxclp.github.io/yinbox3/再见晚风.mp4"
-    },
-    {
-      "title": "飞（MV·宋祖英）",
-      "artist": "宋祖英",
-      "file": "https://whxclp.github.io/yinbox3/宋祖英《飞》.mp4",
-      "lrc": "",
-      "type": "mv",
-      "new": true
-    },
-    {
-      "title": "二人转 双回门（赵本山·宋祖英）",
-      "artist": "赵本山 / 宋祖英",
-      "file": "https://whxclp.github.io/yinbox3/二人转双回门赵本山宋祖英.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "二人转·小帽",
-      "new": true
-    },
-    {
-      "title": "二人转 王二姐思夫（赵本山）",
-      "artist": "赵本山",
-      "file": "https://whxclp.github.io/yinbox3/二人转王二姐思夫赵本山.mp4",
-      "lrc": "",
-      "type": "mv",
-      "coll": "二人转·正戏",
-      "new": true
-    },
-    {
-      "title": "二人转修复计划合集（B站在线·175集）",
-      "artist": "双林の",
-      "file": "https://space.bilibili.com/326881213/lists/1891254?type=season",
-      "lrc": "",
-      "coll": "二人转·正戏",
-      "new": true
-    },
-    {
-      "title": "蒲剧合集（爱奇艺在线）",
-      "artist": "",
-      "file": "https://www.iqiyi.com/playlist298498302.html",
-      "lrc": "",
-      "new": true
-    },
-    {
-      "title": "蒲剧合集（优酷在线）",
-      "artist": "",
-      "file": "https://list.youku.com/albumlist/show/id_50138317.html",
-      "lrc": "",
-      "new": true
-    },
-    {
-      "title": "蒲剧合集（优酷在线·二）",
-      "artist": "",
-      "file": "https://list.youku.com/albumlist/show/id_22886208.html",
-      "lrc": "",
-      "new": true
-    },
-    {
-      "title": "蒲剧搜索（B站在线）",
-      "artist": "",
-      "file": "https://search.bilibili.com/all?keyword=%E8%92%B2%E5%89%A7&from_source=web_search&spm_id_from=333.1387&search_source=5",
-      "lrc": "",
-      "new": true
-    },
-    {
-      "title": "蒲剧《空城计》十万埋伏一张琴（王天明）",
-      "artist": "王天明",
-      "file": "https://whxclp.github.io/yinbox3/十万埋伏一张琴.mp4",
-      "lrc": "https://whxclp.github.io/yinbox3/十万埋伏一张琴.lrc",
-      "type": "mv",
-      "new": true
-    },
-    {
-      "title": "蒲剧《空城计》兵临城下觅知音（王天明）",
-      "artist": "王天明",
-      "file": "https://whxclp.github.io/yinbox3/兵临城下觅知音.mp4",
-      "lrc": "https://whxclp.github.io/yinbox3/兵临城下觅知音.lrc",
-      "type": "mv",
-      "new": true
-    },
-    {
-      "title": "蒲剧《空城计》冒险退兵互成全（王天明）",
-      "artist": "王天明",
-      "file": "https://whxclp.github.io/yinbox3/冒险退兵互成全.mp4",
-      "lrc": "https://whxclp.github.io/yinbox3/冒险退兵互成全.lrc",
-      "type": "mv",
-      "new": true
-    },
-    {
-      "title": "蒲剧《空城计》全场（1981年演出录像）",
-      "artist": "王天明",
-      "file": "https://whxclp.github.io/yinbox3/蒲剧空城计_完整版.part1.mp4",
-      "parts": [
-        "https://whxclp.github.io/yinbox3/蒲剧空城计_完整版.part1.mp4",
-        "https://whxclp.github.io/yinbox3/蒲剧空城计_完整版.part2.mp4",
-        "https://whxclp.github.io/yinbox3/蒲剧空城计_完整版.part3.mp4",
-        "https://whxclp.github.io/yinbox3/蒲剧空城计_完整版.part4.mp4"
-      ],
-      "type": "mv",
-      "new": true
-    },
-    {
-      "title": "蒲剧《祭灵》（王天明）",
-      "artist": "王天明",
-      "file": "https://whxclp.github.io/yinbox3/蒲剧祭灵_王天明.mp4",
-      "lrc": "https://whxclp.github.io/yinbox3/蒲剧祭灵_王天明.lrc",
-      "type": "mv",
-      "new": true
-    },
-    {
-      "title": "蒲剧《收姜维》（王天明）",
-      "artist": "王天明",
-      "file": "https://whxclp.github.io/yinbox3/蒲剧收姜维_王天明.part1.mp4",
-      "parts": [
-        "https://whxclp.github.io/yinbox3/蒲剧收姜维_王天明.part1.mp4",
-        "https://whxclp.github.io/yinbox3/蒲剧收姜维_王天明.part2.mp4"
-      ],
-      "lrc": "https://whxclp.github.io/yinbox3/蒲剧收姜维_王天明.lrc",
-      "type": "mv",
-      "new": true
-    },
-    {
-      "title": "蒲剧《十五贯》选段（张贵学）",
-      "artist": "张贵学",
-      "file": "https://whxclp.github.io/yinbox3/蒲剧十五贯选段_张贵学唱段.mp4",
-      "type": "mv",
-      "new": true
-    },
-    {
-      "title": "蒲剧《十五贯》选段·伴奏（原唱张庆奎）",
-      "artist": "张庆奎",
-      "file": "https://whxclp.github.io/yinbox3/蒲剧十五贯选段伴奏_张庆奎原唱.mp4",
-      "type": "mv",
-      "new": true
-    },
-    {
-      "title": "蒲剧《十五贯》判斩（张庆奎）",
-      "artist": "张庆奎",
-      "file": "https://whxclp.github.io/yinbox3/蒲剧十五贯判斩_张庆奎.mp4",
-      "type": "mv",
-      "new": true
-    },
-    {
-      "title": "蒲剧《十五贯》见都（张庆奎）",
-      "artist": "张庆奎",
-      "file": "https://whxclp.github.io/yinbox3/蒲剧十五贯见都_张庆奎.mp4",
-      "type": "mv",
-      "new": true
-    }
-  ]
+ "songs": [
+  {
+   "title": "为内蒙古喝彩（降央卓玛）",
+   "artist": "降央卓玛",
+   "file": "https://whxclp.github.io/yinbox1/为内蒙古喝彩_降央卓玛.mp3",
+   "lrc": "飞跃八千里路云和月乘风而来\n请看草原大地青春焕发的光彩\n跨上我心爱的黑骏马踏歌而行\n奔向你的怀抱飞扬你的神采\n内蒙古 大中华为你齐声喝彩\n各族儿女心相连走进壮美的时代\n跳起安代拉响马头琴纵情歌唱\n欢呼你丰收的喜悦开拓你豪迈\n畅饮金碗奶茶马奶酒香飘四海\n芬芳着你宽广无边的胸怀\n新世纪为你放声喝彩\n满怀激情赞美你飞腾的气派\n内蒙古 新世纪为你放声喝彩\n满怀激情赞美你飞腾的气派"
+  },
+  {
+   "title": "为内蒙古喝彩",
+   "artist": "韩磊 / 任真 / 查汗",
+   "file": "https://whxclp.github.io/yinbox1/为内蒙古喝彩.mp3",
+   "lrc": "飞跃八千里路云和月乘风而来\n请看草原大地青春焕发的光彩\n跨上我心爱的黑骏马踏歌而行\n奔向你的怀抱飞扬你的神采\n内蒙古 大中华为你齐声喝彩\n各族儿女心相连走进壮美的时代\n跳起安代拉响马头琴纵情歌唱\n欢呼你丰收的喜悦开拓你豪迈\n畅饮金碗奶茶马奶酒香飘四海\n芬芳着你宽广无边的胸怀\n新世纪为你放声喝彩\n满怀激情赞美你飞腾的气派\n内蒙古 新世纪为你放声喝彩\n满怀激情赞美你飞腾的气派"
+  },
+  {
+   "title": "云在飞 (对唱版)",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/云在飞 (对唱版).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "众手浇开幸福花（唢呐）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/众手浇开幸福花（唢呐）.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "众手浇开幸福花（曲）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/众手浇开幸福花（曲）.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "天边",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/天边.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "姻缘 (氛围版)",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/姻缘 (氛围版).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "娘啊娘（二胡赵思露）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/娘啊娘（二胡赵思露）.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "娘的眼泪",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/娘的眼泪.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "山歌追上云朵 (Cover 央金拉姆)",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/山歌追上云朵 (Cover 央金拉姆).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "山歌追上云朵(抒情版)",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/山歌追上云朵(抒情版).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "幸福花玲声",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/幸福花玲声.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "我喝了爱情的鹤顶红",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/我喝了爱情的鹤顶红.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "我喝了爱情的鹤顶红男",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/我喝了爱情的鹤顶红男.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "我在纳林湖等着你",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/我在纳林湖等着你.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "月亮之上 自由飞翔 雷鬼舞曲版",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/月亮之上 自由飞翔 雷鬼舞曲版.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "月亮之上(DJ版)",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/月亮之上(DJ版).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "梦中的妈妈",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/梦中的妈妈.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "女人不是月亮（毛阿敏）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/毛阿敏《女人不是月亮》.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "离别草原",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/离别草原.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "红歌4首连唱",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/红歌.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "英雄赞歌",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/英雄赞歌.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "蒲剧 空城计",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/蒲剧《空城计》.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "蒲剧间奏曲",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/蒲剧间奏曲.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "马儿你慢些走",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/马儿你慢些走.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "心愿（刘老师教唱）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/心愿_刘老师教唱.m4a",
+   "lrc": ""
+  },
+  {
+   "title": "心愿（年才让原唱）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/心愿_年才让原唱.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "我被青春撞了一下腰",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/我被青春撞了一下腰.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "娘的眼泪（二胡加长版）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/娘的眼泪（二胡加长版）.m4a",
+   "lrc": ""
+  },
+  {
+   "title": "娘的眼泪（王玉珍原唱全曲）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/娘的眼泪（王玉珍原唱全曲）.m4a",
+   "lrc": ""
+  },
+  {
+   "title": "心愿（MV·刘老师教唱）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/mv_xinyuan.mp4",
+   "type": "mv",
+   "lrc": ""
+  },
+  {
+   "title": "众手浇开幸福花（MV·广场舞完整版）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/mv_zhongshou.mp4",
+   "type": "mv",
+   "lrc": ""
+  },
+  {
+   "title": "我喝了爱情的鹤顶红（MV·归来小易）",
+   "artist": "归来小易",
+   "file": "https://whxclp.github.io/yinbox1/鹤顶红_归来小易.mp4",
+   "type": "mv",
+   "lrc": ""
+  },
+  {
+   "title": "我喝了爱情的鹤顶红（MV·朱梅玲）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/mv_hedinghong.mp4",
+   "type": "mv",
+   "lrc": ""
+  },
+  {
+   "title": "英雄赞歌（MV·张映哲）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/英雄赞歌_精简.mp4",
+   "type": "mv",
+   "lrc": ""
+  },
+  {
+   "title": "微腾花（汉语版）",
+   "artist": "是婉慧吖",
+   "file": "https://whxclp.github.io/yinbox1/微腾花_是婉慧吖.mp3",
+   "lrc": "[00:00.00] 作词 : 科尔沁夫/陈宝成\n[00:00.00] 作曲 : 宝音吉日格乐\n[00:00.00]微腾花科尔沁夫\n[00:08.84]词：科尔沁夫陈宝成\n[00:17.68]曲：宝音吉日格乐\n[00:26.52]你宛若多彩的花芬芳美丽\n[00:34.38]仿佛是悠扬动听的乐曲\n[00:42.39]明亮胜过天边的圆月\n[00:50.40]这就是美丽的微腾花儿呦\n[00:58.41]哎哎咴\n[01:00.48]我已经爱上你\n[01:06.39]美丽的姑娘微腾花儿\n[01:12.42]风儿吹过弯弯的小河\n[01:24.39]琴声飘进你的毡房\n[01:32.43]悠悠牧歌为你歌唱\n[01:40.41]美丽的姑娘微腾花啦嚯\n[01:47.79]哎哎哎嚯我已经爱上你\n[01:56.40]美丽的姑娘微腾花啦嚯\n[02:28.38]心儿想念梦中的眼睛\n[02:36.42]温柔月光洒在你脸上\n[02:44.40]多想亲吻你的善良\n[02:52.41]美丽的姑娘微腾花啦嚯\n[03:00.42]哎哎哎嚯我已经爱上你\n[03:08.43]美丽的姑娘微腾花啦嚯\n[03:16.44]哎哎哎嚯我已经爱上你\n[03:24.42]美丽的姑娘微腾花啦嚯\n[03:34.38]微腾花啦嚯\n[03:45.00]\n"
+  },
+  {
+   "title": "我在问花村等你（广场舞）",
+   "artist": "天生兄妹",
+   "file": "https://whxclp.github.io/yinbox1/我在问花村等你_天生兄妹（广场舞版）.mp3",
+   "lrc": "[00:00.00] 作词 : 西部杨刚\n[00:00.00] 作曲 : 西部杨刚\n[00:00.00]我在问花村等你 (广场舞版) - 天生兄妹\n[00:02.25]词：西部杨刚\n[00:02.73]曲：西部杨刚\n[00:03.64]女：\n[00:13.57]花儿开了你在哪儿\n[00:16.13]快快来看花\n[00:18.50]还在等什么\n[00:21.30]美丽的花儿已开满园\n[00:24.12]我在问花村等你来\n[00:28.56]男：\n[00:29.67]花儿开了你在哪儿\n[00:32.00]花香飘世界\n[00:34.70]花儿露笑脸\n[00:37.15]迎接八方的你到来\n[00:39.95]我在问花村等你来\n[00:44.38]合：\n[00:45.47]梦里的问花村\n[00:47.83]秀美的都江堰\n[00:50.54]欢迎你问花来\n[00:53.04]神奇的世外桃源\n[00:55.87]浪漫的问花村\n[00:58.47]古老的都江堰\n[01:01.28]欢迎你赏花来\n[01:03.76]许下最美心愿\n[01:08.02]梅花岛梅花开\n[01:09.14]梅花坞前结姻缘\n[01:10.50]情人梅前来许愿\n[01:11.76]白素贞\n[01:12.49]青城山下来修仙\n[01:13.77]到四川\n[01:14.44]畅游都江堰\n[01:15.38]到四川\n[01:16.43]问花村里问花来\n[01:17.78]到四川\n[01:18.48]四川话儿学起来\n[01:19.83]到四川\n[01:20.46]康定情歌唱起来\n[01:21.87]跑马溜溜的山上\n[01:24.36]一朵溜溜的云哟\n[01:27.07]端端溜溜的照在\n[01:29.62]康定溜溜的城哟\n[01:32.43]月亮弯弯\n[01:36.41]康定溜溜的城哟\n[01:52.43]梦里的问花村\n[01:54.89]秀美的都江堰\n[01:57.60]欢迎你问花来\n[02:00.18]神奇世外桃源\n[02:01.87]浪漫的问花村\n"
+  },
+  {
+   "title": "蓝色的蒙古高原（德德玛）",
+   "artist": "德德玛",
+   "file": "https://whxclp.github.io/yinbox1/蓝色的蒙古高原_德德玛.mp3",
+   "lrc": "望不尽连绵的山川\n蒙古包像飞落的大雁\n勒勒车赶着太阳游荡在天边\n敖包美丽的神话守护着草原\n我蓝色的蒙古高原\n你给了我希望\n从远古走到今天\n你就是不灭的信念\n把我的爱献给你\n把我的祝福留给你\n轻轻牵走记忆的长线\n漂泊的白云唤起我眷恋\n梦里常出现故乡的容颜\n阿妈亲切的背影仿佛在眼前\n我蓝色的蒙古高原\n你给了我希望\n从远古走到今天\n你就是不灭的信念\n把我的爱献给你\n把我的祝福留给你"
+  },
+  {
+   "title": "爱琴海（云飞）",
+   "artist": "云飞",
+   "file": "https://whxclp.github.io/yinbox1/爱琴海_云飞.mp3",
+   "lrc": "[00:00.00] 作词 : 昂旺文章\n[00:01.00] 作曲 : 郑铭浩（绍兵）\n[00:02.00] 编曲 : 郑铭浩（绍兵）\n[00:08.54]作词：昂旺文章\n[00:13.28]作曲：绍兵\n[00:17.14]编曲：绍兵\n[00:20.97]洞萧：石磊\n[00:24.94]制作人：绍兵\n[00:28.97]音乐总监：绍兵\n[00:30.39]演唱：云飞\n[00:33.09]是不是天边的大海\n[00:41.13]流淌一湾情思\n[00:42.98]留进了高原不再离去\n[00:49.10]像一方五彩的帐篷\n[00:56.99]汇聚的岛屿\n[00:59.10]让雪花编织的美丽\n[01:01.05]回到了港湾\n[01:07.04]爱琴海歌的家园\n[01:15.09]爱琴海舞的天堂\n[01:23.11]手牵着手啊连起心中的哈达\n[01:31.15]手捧着心搭起追寻的舞台\n[01:55.10]是不是天边的大海\n[02:03.09]流淌一湾情思\n[02:05.05]留进了高原不再离去\n[02:11.13]像一方五彩的帐篷\n[02:19.01]汇聚的岛屿\n[02:20.95]让雪花编织的美丽\n[02:23.02]回到了港湾\n[02:29.05]爱琴海歌的家园\n[02:37.03]爱琴海舞的天堂\n[02:45.02]手牵着手啊连起心中的哈达\n[02:53.01]手捧着心搭起追寻的舞台\n[03:01.10]爱琴海歌的家园\n[03:09.01]爱琴海舞的天堂\n[03:17.08]手牵着手连起心中的哈达\n[03:25.04]手捧着心搭起追寻的舞台\n[03:42.57]手捧着心搭起追寻的舞台\n"
+  },
+  {
+   "title": "叫一声哥哥你快回来（王二妮）",
+   "artist": "王二妮",
+   "file": "https://whxclp.github.io/yinbox1/叫一声哥哥你快回来_王二妮.mp3",
+   "lrc": "[00:01.90]叫一声哥哥你快回来\n[00:11.58]\n[00:27.49]上河里的鸭子下河里的鹅\n[00:34.16]一对对毛眼眼照哥哥\n[00:40.79]煮了那个钱钱哟下了那个米\n[00:47.52]大路上搂柴瞭一瞭你\n[00:54.51]\n[01:00.84]清水水的玻璃隔着窗子照\n[01:07.42]满口口白牙牙对着哥哥笑\n[01:14.05]双扇扇的门来哟单扇扇的开\n[01:20.85]叫一声哥哥哟你快回来\n[01:27.49]啊...啊...\n[01:34.22]双扇扇的门来哟单扇扇的开\n[01:40.75]叫一声哥哥哟你快回来\n[01:49.18]\n[02:29.09]上河里的鸭子下河里的鹅\n[02:35.76]一对对毛眼眼照哥哥\n[02:42.46]煮了那个钱钱哟下了那个米\n[02:49.11]大路上搂柴瞭一瞭你\n[02:55.81]啊...啊...\n[03:02.46]双扇扇的门来哟单扇扇的开\n[03:09.10]叫一声哥哥哟你快回来\n[03:17.47]你快回来 你快回来 你快回来\n[03:37.23]\n[03:52.82]你快回来\n[04:03.54]\n"
+  },
+  {
+   "title": "月照老家（瓦特）",
+   "artist": "瓦特",
+   "file": "https://whxclp.github.io/yinbox1/月照老家_瓦特.mp3",
+   "lrc": "[00:09.81]啊\n[00:21.54]啊\n[00:40.53]月照天涯思念老家\n[00:50.10]一轮明月啊高悬在天涯\n[00:59.64]月光如水啊洒满了老家\n[01:09.06]村头老树啊忆起旧年华\n[01:18.75]母亲倚门啊盼儿早归家\n[01:28.14]炊烟袅袅啊升起了晚霞\n[01:37.80]外婆歌谣啊伴我快长大\n[01:47.19]小河弯弯啊绕过了篱笆\n[01:57.60]米酒飘香啊醉透了农家\n[02:06.36]出门在外啊总念着老家\n[02:15.78]行囊沉沉啊装满了牵挂\n[02:25.32]月到中秋啊最是团圆啦\n[02:34.83]千里之外啊共赏此月华\n[02:44.49]故乡月色啊照我走天涯\n[02:53.91]游子心上啊总是念着她\n[03:03.39]走过万水啊心系着老家\n[03:10.86]啊\n[03:32.97]啊\n[03:33.24]啊\n"
+  },
+  {
+   "title": "闯码头 (3D环绕版)",
+   "artist": "乔艳艳",
+   "file": "https://whxclp.github.io/yinbox1/闯码头 (3D环绕版).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "漂亮姑娘就要嫁人了",
+   "artist": "龙梅子&老猫",
+   "file": "https://whxclp.github.io/yinbox1/漂亮姑娘就要嫁人了.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "爱情专属权",
+   "artist": "龙梅子&老猫",
+   "file": "https://whxclp.github.io/yinbox1/爱情专属权.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "寂寞的人伤心的歌(DJ阿远版)",
+   "artist": "龙梅子&DJ阿远&杨海彪",
+   "file": "https://whxclp.github.io/yinbox1/寂寞的人伤心的歌(DJ阿远版).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "下辈子做你的女人 (DJ版)",
+   "artist": "DJ",
+   "file": "https://whxclp.github.io/yinbox1/下辈子做你的女人 (DJ版).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "都说 (DJ何鹏版)",
+   "artist": "龙梅子&老猫&何鹏",
+   "file": "https://whxclp.github.io/yinbox1/都说 (DJ何鹏版).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "痴情冢：二胡 (翻奏: 邓奇奇) (二胡版)",
+   "artist": "邓奇奇",
+   "file": "https://whxclp.github.io/yinbox1/痴情冢：二胡 (翻奏_ 邓奇奇) (二胡版).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "思君黯然 (伤感二胡版)",
+   "artist": "DreamSky",
+   "file": "https://whxclp.github.io/yinbox1/思君黯然 (伤感二胡版).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "葬花吟 (二胡版)",
+   "artist": "李添兵",
+   "file": "https://whxclp.github.io/yinbox1/葬花吟 (二胡版).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "梁祝 (钢琴)",
+   "artist": "Richard Clayderman",
+   "file": "https://whxclp.github.io/yinbox1/梁祝 (钢琴).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "梁祝 (小提琴协奏曲)",
+   "artist": "俞丽拿",
+   "file": "https://whxclp.github.io/yinbox1/梁祝 (小提琴协奏曲).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "梁祝",
+   "artist": "吕思清",
+   "file": "https://whxclp.github.io/yinbox1/梁祝.mp3",
+   "lrc": "",
+   "type": "instrument"
+  },
+  {
+   "title": "梁祝 (古筝)",
+   "artist": "中央民族乐团",
+   "file": "https://whxclp.github.io/yinbox1/梁祝 (古筝).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "二泉映月(阿炳二胡独奏)",
+   "artist": "中国古代十大名曲",
+   "file": "https://whxclp.github.io/yinbox1/二泉映月(阿炳二胡独奏).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "二泉映月 (古筝版)",
+   "artist": "华语群星",
+   "file": "https://whxclp.github.io/yinbox1/二泉映月 (古筝版).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "潇湘子 (电子琴版)",
+   "artist": "小霍霍",
+   "file": "https://whxclp.github.io/yinbox1/潇湘子 (电子琴版).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "虞兮叹 (DJ热歌榜)",
+   "artist": "钱潮",
+   "file": "https://whxclp.github.io/yinbox1/虞兮叹 (DJ热歌榜).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "追梦人",
+   "artist": "凤飞飞",
+   "file": "https://whxclp.github.io/yinbox1/追梦人.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "月朦胧鸟朦胧 (慢三版)",
+   "artist": "凤飞飞",
+   "file": "https://whxclp.github.io/yinbox1/月朦胧鸟朦胧 (慢三版).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "青藏高原 (Live)-原唱：韩红",
+   "artist": "谭晶",
+   "file": "https://whxclp.github.io/yinbox1/九儿 (Live)-原唱：韩红.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "小河淌水 (女声独唱)",
+   "artist": "彭丽媛",
+   "file": "https://whxclp.github.io/yinbox1/小河淌水 (女声独唱).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "九儿，你大胆地往前走 (Live)",
+   "artist": "腾格尔&吴碧霞",
+   "file": "https://whxclp.github.io/yinbox1/九儿，你大胆地往前走 (Live).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "呼伦贝尔大草原",
+   "artist": "布仁巴雅尔",
+   "file": "https://whxclp.github.io/yinbox1/呼伦贝尔大草原.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "雕花的马鞍",
+   "artist": "陈敏中音",
+   "file": "https://whxclp.github.io/yinbox1/雕花的马鞍.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "哭诸葛",
+   "artist": "刘欢",
+   "file": "https://whxclp.github.io/yinbox1/哭诸葛.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "这一拜",
+   "artist": "刘欢",
+   "file": "https://whxclp.github.io/yinbox1/这一拜.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "我和你",
+   "artist": "刘欢 / Sarah Brightman",
+   "file": "https://whxclp.github.io/yinbox1/我和你.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "从头再来",
+   "artist": "刘欢",
+   "file": "https://whxclp.github.io/yinbox1/从头再来.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "崀里咯浪",
+   "artist": "春雷",
+   "file": "https://whxclp.github.io/yinbox1/崀里咯浪.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "山火谣 (你看着我别走开)",
+   "artist": "XKR Studio",
+   "file": "https://whxclp.github.io/yinbox1/山火谣 (你看着我别走开).mp3",
+   "lrc": ""
+  },
+  {
+   "title": "山火谣",
+   "artist": "陈嘉宇",
+   "file": "https://whxclp.github.io/yinbox1/山火谣.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "祝福祖国（合唱版）",
+   "artist": "布丁77",
+   "file": "https://whxclp.github.io/yinbox1/祝福祖国（合唱版）.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "月亮之上",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/10首神仙级中国纯音乐-1.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "我要去西藏",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/10首神仙级中国纯音乐-2.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "陪你一起看草原",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/10首神仙级中国纯音乐-3.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "西海情歌",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/10首神仙级中国纯音乐-4.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "梦江南",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/10首神仙级中国纯音乐-5.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "天路",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/10首神仙级中国纯音乐-6.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "常回家看看",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/10首神仙级中国纯音乐-7.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "泉水叮咚响",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/10首神仙级中国纯音乐-8.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "苗岭的早晨",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/10首神仙级中国纯音乐-9.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "康定情歌",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/10首神仙级中国纯音乐-10.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "乐曲1",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/14首乐曲-1.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "乐曲2",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/14首乐曲-2.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "乐曲3",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/14首乐曲-3.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "乐曲4",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/14首乐曲-4.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "乐曲5",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/14首乐曲-5.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "乐曲6",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/14首乐曲-6.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "乐曲7",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/14首乐曲-7.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "乐曲8",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/14首乐曲-8.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "乐曲9",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/14首乐曲-9.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "乐曲10",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/14首乐曲-10.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "乐曲11",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/14首乐曲-11.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "乐曲12",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/14首乐曲-12.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "乐曲13",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/14首乐曲-13.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "乐曲14",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/14首乐曲-14.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "6小时精选DJ串烧",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-1.mp3",
+   "parts": [
+    "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-1.mp3",
+    "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-2.mp3",
+    "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-3.mp3",
+    "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-4.mp3",
+    "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-5.mp3",
+    "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-6.mp3",
+    "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-7.mp3",
+    "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-8.mp3"
+   ],
+   "lrc": "",
+   "coll": "6小时DJ串烧"
+  },
+  {
+   "title": "清风上南枝",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025最火1.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025最火"
+  },
+  {
+   "title": "江湖夜雨十年灯",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025最火2.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025最火"
+  },
+  {
+   "title": "离别开出花",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025最火3.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025最火"
+  },
+  {
+   "title": "搀扶",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025最火4.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025最火"
+  },
+  {
+   "title": "2025最火5",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025最火5.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025最火"
+  },
+  {
+   "title": "2025最火6",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025最火6.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025最火"
+  },
+  {
+   "title": "黄昏",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025最火7.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025最火"
+  },
+  {
+   "title": "如愿",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025最火8.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025最火"
+  },
+  {
+   "title": "离别开出花",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌1.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "只为你着迷",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌10.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "壁上观",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌11.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "陪我过个冬",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌12.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "人间半途",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌13.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "牵丝戏",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌14.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "越来越不懂",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌15.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "白鸽乌鸦相爱的戏码",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌16.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "春庭雪",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌17.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "落",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌18.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "青丝",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌19.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "土坡上的狗尾草",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌2.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "异客",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌20.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "桃花诺",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌21.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "化风行万里",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌22.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "难却",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌23.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "转身即心痛",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌24.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "唯一",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌25.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "归途的光",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌26.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "阿嬷",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌27.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "青花",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌28.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "我期待的不是雪",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌29.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "放纵L",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌3.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "谁",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌30.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "有风无风皆自由",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌4.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "苹果香",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌5.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "若月亮没有来",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌6.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "会开花的云",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌7.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "列车开往春天",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌8.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "风经过雪飘落",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2025热歌9.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "2025热歌"
+  },
+  {
+   "title": "30首车载DJ串烧",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/30首车载DJ串烧.mp3",
+   "lrc": "",
+   "coll": "整合集"
+  },
+  {
+   "title": "50首经典老歌",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/50首经典老歌.mp3",
+   "lrc": "",
+   "coll": "整合集"
+  },
+  {
+   "title": "牡丹之歌",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/80红歌1.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "吐鲁番的葡萄熟了",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/80红歌10.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "吐鲁番的葡萄熟了",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/80红歌11.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "吐鲁番的葡萄熟了",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/80红歌12.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "驼铃",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/80红歌15.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "大海一样的深情",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/80红歌16.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "红星照我去战斗",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/80红歌18.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "我们的生活充满阳光",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/80红歌19.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "再见吧，妈妈",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/80红歌2.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "太阳岛上",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/80红歌20.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "大海啊，故乡",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/80红歌3.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "永远和你在一道",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/80红歌4.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "永远和你在一道",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/80红歌5.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "泉水叮咚响",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/80红歌6.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "美丽的草原我的家",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/80红歌7.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "外婆的澎湖湾",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/80红歌8.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "我爱你塞北的雪",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/80红歌9.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "mv_yingxiong",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/mv_yingxiong.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "mv_zhongshou_menglv",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/mv_zhongshou_menglv.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "中国红歌1",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/中国红歌1.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "中国红歌"
+  },
+  {
+   "title": "中国红歌10",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/中国红歌10.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "中国红歌"
+  },
+  {
+   "title": "中国红歌11",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/中国红歌11.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "中国红歌"
+  },
+  {
+   "title": "中国红歌12",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/中国红歌12.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "中国红歌"
+  },
+  {
+   "title": "中国红歌13",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/中国红歌13.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "中国红歌"
+  },
+  {
+   "title": "中国红歌14",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/中国红歌14.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "中国红歌"
+  },
+  {
+   "title": "中国红歌15",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/中国红歌15.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "中国红歌"
+  },
+  {
+   "title": "中国红歌16",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/中国红歌16.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "中国红歌"
+  },
+  {
+   "title": "中国红歌17",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/中国红歌17.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "中国红歌"
+  },
+  {
+   "title": "中国红歌18",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/中国红歌18.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "中国红歌"
+  },
+  {
+   "title": "中国红歌2",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/中国红歌2.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "中国红歌"
+  },
+  {
+   "title": "中国红歌3",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/中国红歌3.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "中国红歌"
+  },
+  {
+   "title": "中国红歌4",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/中国红歌4.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "中国红歌"
+  },
+  {
+   "title": "中国红歌5",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/中国红歌5.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "中国红歌"
+  },
+  {
+   "title": "中国红歌6",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/中国红歌6.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "中国红歌"
+  },
+  {
+   "title": "中国红歌7",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/中国红歌7.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "中国红歌"
+  },
+  {
+   "title": "中国红歌8",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/中国红歌8.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "中国红歌"
+  },
+  {
+   "title": "中国红歌9",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/中国红歌9.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "中国红歌"
+  },
+  {
+   "title": "为内蒙古喝彩_2025现场",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/为内蒙古喝彩_2025现场.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "为内蒙古喝彩_2025现场",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/为内蒙古喝彩_2025现场.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "为内蒙古喝彩_现场版",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/为内蒙古喝彩_现场版.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "为内蒙古喝彩_现场版",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/为内蒙古喝彩_现场版.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "佛教歌曲",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/佛教歌曲.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "全球纯音乐1",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐1.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐10",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐10.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐11",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐11.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐12",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐12.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐13",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐13.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐14",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐14.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐15",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐15.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐16",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐16.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐17",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐17.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐18",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐18.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐19",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐19.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐2",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐2.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐20",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐20.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐21",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐21.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐22",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐22.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐23",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐23.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐3",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐3.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐4",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐4.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐5",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐5.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐6",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐6.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐7",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐7.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐8",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐8.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "全球纯音乐9",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/全球纯音乐9.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "全球纯音乐"
+  },
+  {
+   "title": "微腾花_科尔沁夫",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/微腾花_科尔沁夫.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "最远的你是我最近的爱",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/怀旧老歌1.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "样样红",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/怀旧老歌10.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "你的样子",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/怀旧老歌11.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "相思",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/怀旧老歌12.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "只要有你",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/怀旧老歌13.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "九百九十九朵玫瑰",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/怀旧老歌14.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "别问我是谁",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/怀旧老歌15.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "特别的爱给特别的你",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/怀旧老歌16.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "心雨",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/怀旧老歌17.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "渡情",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/怀旧老歌18.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "画心",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/怀旧老歌19.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "牵挂你的人是我",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/怀旧老歌2.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "真的好想你",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/怀旧老歌20.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "日不落",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/怀旧老歌3.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "好想好想",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/怀旧老歌4.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "对你爱不完",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/怀旧老歌5.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "我是不是该安静的走开",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/怀旧老歌6.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "大头皮鞋",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/怀旧老歌7.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "新鸳鸯蝴蝶梦",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/怀旧老歌8.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "再回首",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/怀旧老歌9.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "老哥连唱"
+  },
+  {
+   "title": "我喝了爱情的鹤顶红_美声版",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/我喝了爱情的鹤顶红_美声版.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "我在问花村等你_天生兄妹",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/我在问花村等你_天生兄妹.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "江湖夜雨十年灯",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/抖音热歌1.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "抖音热歌"
+  },
+  {
+   "title": "你本来就很美",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/抖音热歌10.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "抖音热歌"
+  },
+  {
+   "title": "战马",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/抖音热歌11.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "抖音热歌"
+  },
+  {
+   "title": "不能不想你",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/抖音热歌12.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "抖音热歌"
+  },
+  {
+   "title": "有风无风皆自由",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/抖音热歌13.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "抖音热歌"
+  },
+  {
+   "title": "离别开出花",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/抖音热歌14.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "抖音热歌"
+  },
+  {
+   "title": "土坡上的狗尾草",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/抖音热歌15.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "抖音热歌"
+  },
+  {
+   "title": "苍穹唤",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/抖音热歌2.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "抖音热歌"
+  },
+  {
+   "title": "情罪",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/抖音热歌3.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "抖音热歌"
+  },
+  {
+   "title": "搀扶",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/抖音热歌4.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "抖音热歌"
+  },
+  {
+   "title": "童年老家",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/抖音热歌5.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "抖音热歌"
+  },
+  {
+   "title": "空荡的酒杯",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/抖音热歌6.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "抖音热歌"
+  },
+  {
+   "title": "月亮照山川",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/抖音热歌7.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "抖音热歌"
+  },
+  {
+   "title": "化风行万里",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/抖音热歌8.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "抖音热歌"
+  },
+  {
+   "title": "此生无憾",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/抖音热歌9.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "抖音热歌"
+  },
+  {
+   "title": "月照老家_Lie",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/月照老家_Lie.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "月照老家_不见故人归",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/月照老家_不见故人归.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "月照老家_烟嗓王子",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/月照老家_烟嗓王子.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "月照老家_睡眠火山",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/月照老家_睡眠火山.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "月照老家_花草沐雷鬼晚姨",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/月照老家_花草沐雷鬼晚姨.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "月照老家_莉沁",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/月照老家_莉沁.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "月照老家_阿杰",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/月照老家_阿杰.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "爱琴海_央金兰泽",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/爱琴海_央金兰泽.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "经典歌曲",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/经典歌曲.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "绿色兴安_兴安腾格尔",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/绿色兴安_兴安腾格尔.mp3",
+   "lrc": "",
+   "coll": "绿色兴安"
+  },
+  {
+   "title": "绿色兴安_张映龙",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/绿色兴安_张映龙.mp3",
+   "lrc": "",
+   "coll": "绿色兴安"
+  },
+  {
+   "title": "英雄赞歌_精简_hd",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/英雄赞歌_精简_hd.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "醉美草原",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/草原歌曲1.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "草原歌曲"
+  },
+  {
+   "title": "大草原的情歌",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/草原歌曲10.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "草原歌曲"
+  },
+  {
+   "title": "天堂",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/草原歌曲11.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "草原歌曲"
+  },
+  {
+   "title": "我和草原有个约定",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/草原歌曲12.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "草原歌曲"
+  },
+  {
+   "title": "梦回草原",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/草原歌曲13.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "草原歌曲"
+  },
+  {
+   "title": "草原歌曲14",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/草原歌曲14.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "草原歌曲"
+  },
+  {
+   "title": "鸿雁",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/草原歌曲2.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "草原歌曲"
+  },
+  {
+   "title": "火辣辣的情歌",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/草原歌曲3.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "草原歌曲"
+  },
+  {
+   "title": "套马杆",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/草原歌曲4.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "草原歌曲"
+  },
+  {
+   "title": "一路花香",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/草原歌曲5.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "草原歌曲"
+  },
+  {
+   "title": "火火的姑娘",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/草原歌曲6.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "草原歌曲"
+  },
+  {
+   "title": "一曲相送",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/草原歌曲7.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "草原歌曲"
+  },
+  {
+   "title": "美丽的草原我的家",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/草原歌曲8.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "草原歌曲"
+  },
+  {
+   "title": "等你在花开的草原",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/草原歌曲9.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "草原歌曲"
+  },
+  {
+   "title": "我像傻子一样爱你",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/车载音乐1.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "车载音乐"
+  },
+  {
+   "title": "提笔写遗憾",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/车载音乐10.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "车载音乐"
+  },
+  {
+   "title": "那错过的缘分",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/车载音乐2.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "车载音乐"
+  },
+  {
+   "title": "想把我唱给你听",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/车载音乐3.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "车载音乐"
+  },
+  {
+   "title": "再见晚风",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/车载音乐4.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "车载音乐"
+  },
+  {
+   "title": "你不该闯入我心中",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/车载音乐5.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "车载音乐"
+  },
+  {
+   "title": "爱情美酒分给谁",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/车载音乐6.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "车载音乐"
+  },
+  {
+   "title": "明月夜",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/车载音乐7.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "车载音乐"
+  },
+  {
+   "title": "一生爱你千百回",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/车载音乐8.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "车载音乐"
+  },
+  {
+   "title": "来生别再遗憾",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/车载音乐9.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "车载音乐"
+  },
+  {
+   "title": "忧郁的爱",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/轻音乐10.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "轻音乐"
+  },
+  {
+   "title": "伴你一生",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/轻音乐11.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "轻音乐"
+  },
+  {
+   "title": "玫瑰之吻",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/轻音乐12.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "轻音乐"
+  },
+  {
+   "title": "爱的纪念",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/轻音乐13.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "轻音乐"
+  },
+  {
+   "title": "至爱",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/轻音乐14.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "轻音乐"
+  },
+  {
+   "title": "无论如何",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/轻音乐15.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "轻音乐"
+  },
+  {
+   "title": "永志不渝",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/轻音乐16.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "轻音乐"
+  },
+  {
+   "title": "德朗的微笑",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/轻音乐17.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "轻音乐"
+  },
+  {
+   "title": "摇篮曲",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/轻音乐18.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "轻音乐"
+  },
+  {
+   "title": "阿根廷别为我哭泣",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/轻音乐2.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "轻音乐"
+  },
+  {
+   "title": "卡萨布兰卡",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/轻音乐3.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "轻音乐"
+  },
+  {
+   "title": "绿袖子",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/轻音乐4.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "轻音乐"
+  },
+  {
+   "title": "爱情故事",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/轻音乐5.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "轻音乐"
+  },
+  {
+   "title": "爱你在心口难开",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/轻音乐6.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "轻音乐"
+  },
+  {
+   "title": "今夜何等温柔",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/轻音乐7.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "轻音乐"
+  },
+  {
+   "title": "莎啦啦",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/轻音乐8.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "轻音乐"
+  },
+  {
+   "title": "大大世界",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/轻音乐9.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "轻音乐"
+  },
+  {
+   "title": "顶级车震中文DJ",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/顶级车震中文DJ.mp3",
+   "lrc": "",
+   "type": "instrument"
+  },
+  {
+   "title": "云在飞 (原版)",
+   "artist": "云飞",
+   "file": "https://whxclp.github.io/yinbox1/云在飞 (原版).mp3"
+  },
+  {
+   "title": "虞兮叹 (原版)",
+   "artist": "闻人听书",
+   "file": "https://whxclp.github.io/yinbox1/虞兮叹 (原版).mp3"
+  },
+  {
+   "title": "美丽草原我的家",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/美丽草原我的家.mp3"
+  },
+  {
+   "title": "在那遥远的地方",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/在那遥远的地方.mp3"
+  },
+  {
+   "title": "康定情歌",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/康定情歌.mp3"
+  },
+  {
+   "title": "有一个美丽的地方",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/有一个美丽的地方.mp3"
+  },
+  {
+   "title": "龙船调",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/龙船调.mp3"
+  },
+  {
+   "title": "绣荷包",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/绣荷包.mp3"
+  },
+  {
+   "title": "沂蒙山小调",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/沂蒙山小调.mp3"
+  },
+  {
+   "title": "紫竹调",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/紫竹调.mp3"
+  },
+  {
+   "title": "月光下的凤尾竹",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/月光下的凤尾竹.mp3"
+  },
+  {
+   "title": "蒲剧 古风卷轴",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/古风卷轴.mp4",
+   "lrc": "",
+   "type": "mv",
+   "new": true
+  },
+  {
+   "title": "蒲剧 苏三起解",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/苏三起解.mp4",
+   "lrc": "",
+   "type": "mv",
+   "new": true
+  },
+  {
+   "title": "蒲剧 空城计诉往情",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/空城计诉往情.mp4",
+   "lrc": "",
+   "type": "mv",
+   "new": true
+  },
+  {
+   "title": "二人转 红娘大姐（郭旺·赵晓波）",
+   "artist": "郭旺 / 赵晓波",
+   "file": "https://whxclp.github.io/yinbox1/二人转红娘大姐.mp4",
+   "lrc": "",
+   "type": "mv",
+   "new": true,
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "二人转 红娘大姐（郭旺·赵晓波）",
+   "artist": "郭旺 / 赵晓波",
+   "file": "https://whxclp.github.io/yinbox1/二人转红娘大姐.mp3",
+   "lrc": "",
+   "new": true,
+   "coll": "二人转·小帽"
+  },
+  {
+   "title": "二人转 蓝瑞莲（赵晓波·李广文）",
+   "artist": "赵晓波 / 李广文",
+   "file": "https://whxclp.github.io/yinbox1/二人转蓝瑞莲.mp4",
+   "lrc": "",
+   "type": "mv",
+   "new": true,
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "二人转 蓝瑞莲（赵晓波·李广文）",
+   "artist": "赵晓波 / 李广文",
+   "file": "https://whxclp.github.io/yinbox1/二人转蓝瑞莲.mp3",
+   "lrc": "",
+   "new": true,
+   "coll": "二人转·小帽"
+  },
+  {
+   "title": "帝王之声全专辑（韩磊·15首）",
+   "artist": "韩磊",
+   "file": "https://whxclp.github.io/yinbox1/帝王之声全专辑.mp4",
+   "lrc": "",
+   "type": "mv",
+   "new": true
+  },
+  {
+   "title": "二人转 红娘大姐片段（71秒）",
+   "artist": "郭旺 / 赵晓波",
+   "file": "https://whxclp.github.io/yinbox1/二人转红娘大姐片段.mp3",
+   "lrc": "",
+   "new": true,
+   "coll": "二人转·小帽"
+  },
+  {
+   "title": "二人转 娘怀儿十个月",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/二人转娘怀儿十个月.mp3",
+   "lrc": "",
+   "new": true,
+   "coll": "二人转·小帽"
+  },
+  {
+   "title": "二人转 魂断蓝桥",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/二人转魂断蓝桥.mp3",
+   "lrc": "",
+   "new": true,
+   "coll": "二人转·小帽"
+  },
+  {
+   "title": "二人转 映雪读书",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/二人转映雪读书.mp3",
+   "lrc": "",
+   "new": true,
+   "coll": "二人转·小帽"
+  },
+  {
+   "title": "二人转 张庭秀花园相认",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/二人转张庭秀花园相认.mp3",
+   "lrc": "",
+   "new": true,
+   "coll": "二人转·小帽"
+  },
+  {
+   "title": "二人转 崔氏女",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/二人转崔氏女.mp3",
+   "lrc": "",
+   "new": true,
+   "coll": "二人转·小帽"
+  },
+  {
+   "title": "二人转 过门曲（加倍）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/二人转过门曲.mp3",
+   "lrc": "",
+   "new": true,
+   "coll": "二人转·小帽"
+  },
+  {
+   "title": "西河大鼓",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/西河大鼓.mp3",
+   "lrc": "",
+   "new": true
+  },
+  {
+   "title": "二人转 讨饭",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/二人转讨饭.mp3",
+   "lrc": "",
+   "new": true,
+   "coll": "二人转·小帽"
+  },
+  {
+   "title": "最后的倾诉（片头剪辑版）",
+   "artist": "韩磊",
+   "file": "https://whxclp.github.io/yinbox1/最后的倾诉.mp3",
+   "lrc": "",
+   "new": true
+  },
+  {
+   "title": "白兰2026雷鬼合集（1/6）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/白兰雷鬼合集-1.mp3",
+   "lrc": "",
+   "new": true
+  },
+  {
+   "title": "白兰2026雷鬼合集（2/6）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/白兰雷鬼合集-2.mp3",
+   "lrc": "",
+   "new": true
+  },
+  {
+   "title": "白兰2026雷鬼合集（3/6）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/白兰雷鬼合集-3.mp3",
+   "lrc": "",
+   "new": true
+  },
+  {
+   "title": "白兰2026雷鬼合集（4/6）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/白兰雷鬼合集-4.mp3",
+   "lrc": "",
+   "new": true
+  },
+  {
+   "title": "白兰2026雷鬼合集（5/6）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/白兰雷鬼合集-5.mp3",
+   "lrc": "",
+   "new": true
+  },
+  {
+   "title": "白兰2026雷鬼合集（6/6）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/白兰雷鬼合集-6.mp3",
+   "lrc": "",
+   "new": true
+  },
+  {
+   "title": "2026年10首车载音乐连播",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/2026年10首车载音乐连播.mp4",
+   "lrc": "",
+   "type": "mv",
+   "new": true
+  },
+  {
+   "title": "6小时精选DJ串烧-2",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-2.mp3",
+   "lrc": "",
+   "coll": "6小时DJ串烧",
+   "new": true
+  },
+  {
+   "title": "6小时精选DJ串烧-3",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-3.mp3",
+   "lrc": "",
+   "coll": "6小时DJ串烧",
+   "new": true
+  },
+  {
+   "title": "6小时精选DJ串烧-4",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-4.mp3",
+   "lrc": "",
+   "coll": "6小时DJ串烧",
+   "new": true
+  },
+  {
+   "title": "6小时精选DJ串烧-5",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-5.mp3",
+   "lrc": "",
+   "coll": "6小时DJ串烧",
+   "new": true
+  },
+  {
+   "title": "6小时精选DJ串烧-6",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-6.mp3",
+   "lrc": "",
+   "coll": "6小时DJ串烧",
+   "new": true
+  },
+  {
+   "title": "6小时精选DJ串烧-7",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-7.mp3",
+   "lrc": "",
+   "coll": "6小时DJ串烧",
+   "new": true
+  },
+  {
+   "title": "6小时精选DJ串烧-8",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/6小时精选DJ串烧-8.mp3",
+   "lrc": "",
+   "coll": "6小时DJ串烧",
+   "new": true
+  },
+  {
+   "title": "二人转 马前泼水（杨宏伟·徐振武）",
+   "artist": "杨宏伟 / 徐振武",
+   "file": "https://whxclp.github.io/yinbox1/二人转马前泼水.mp4",
+   "lrc": "",
+   "type": "mv",
+   "new": true,
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "美丽的草原我的家",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/10首经典民歌-1.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "在那遥远的地方",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/10首经典民歌-2.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "康定情歌",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/10首经典民歌-3.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "有一个美丽的地方",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/10首经典民歌-4.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "父亲的草原母亲的河",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/10首经典民歌-5.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "龙船调",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/10首经典民歌-6.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "绣荷包",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/10首经典民歌-7.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "沂蒙山小调",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/10首经典民歌-8.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "紫竹调",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/10首经典民歌-9.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "月光下的凤尾竹",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/10首经典民歌-10.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "我求错了人（深情版）",
+   "artist": "乡野低频",
+   "file": "https://whxclp.github.io/yinbox1/songs/我求错了人_乡野低频.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "二人转 包公赔情（完整版）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/二人转包公赔情.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "二人转 回杯记（韩子平·董纬）",
+   "artist": "韩子平 / 董纬",
+   "file": "https://whxclp.github.io/yinbox1/二人转回杯记.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "拉场戏 摔三弦（赵本山）",
+   "artist": "赵本山",
+   "file": "https://whxclp.github.io/yinbox1/拉场戏摔三弦.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "东北二人转歌",
+   "artist": "小沈阳 / 沈春阳",
+   "file": "https://whxclp.github.io/yinbox1/songs/东北二人转歌_小沈阳.mp3",
+   "lrc": "",
+   "coll": "二人转·小帽"
+  },
+  {
+   "title": "蒲剧 烟花泪（完整版）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/蒲剧烟花泪完整版.mp4",
+   "lrc": "",
+   "type": "mv",
+   "new": true,
+   "coll": "蒲剧烟花泪"
+  },
+  {
+   "title": "昨日重现",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/轻音乐1.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "轻音乐"
+  },
+  {
+   "title": "韩宝仪合集（1/3）",
+   "file": "https://whxclp.github.io/yinbox1/韩宝仪合集-1.mp3",
+   "artist": "韩宝仪",
+   "coll": "韩宝仪"
+  },
+  {
+   "title": "韩宝仪合集（2/3）",
+   "file": "https://whxclp.github.io/yinbox1/韩宝仪合集-2.mp3",
+   "artist": "韩宝仪",
+   "coll": "韩宝仪"
+  },
+  {
+   "title": "韩宝仪合集（3/3）",
+   "file": "https://whxclp.github.io/yinbox1/韩宝仪合集-3.mp3",
+   "artist": "韩宝仪",
+   "coll": "韩宝仪"
+  },
+  {
+   "title": "凤凰传奇-月亮之上（原版MV）",
+   "artist": "凤凰传奇",
+   "file": "https://whxclp.github.io/yinbox1/月亮之上原版MV.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "父亲的草原母亲的河（原版MV·布仁巴雅尔）",
+   "artist": "布仁巴雅尔",
+   "file": "https://whxclp.github.io/yinbox1/父亲的草原母亲的河原版MV.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "风从远处来",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/songs/风从远处来.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "我求错了人",
+   "artist": "萨顶顶 / 周深",
+   "file": "https://whxclp.github.io/yinbox1/songs/我求错了人.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "草原清风来",
+   "artist": "SDMAI",
+   "file": "https://whxclp.github.io/yinbox1/songs/草原清风来.mp3",
+   "lrc": ""
+  },
+  {
+   "title": "吉祥（原版MV·春雷）",
+   "artist": "春雷",
+   "file": "https://whxclp.github.io/yinbox1/吉祥原版MV.mp4",
+   "lrc": "",
+   "type": "mv"
+  },
+  {
+   "title": "白兰雷鬼（完整版）",
+   "artist": "",
+   "file": "https://whxclp.github.io/yinbox1/白兰雷鬼完整版.mp3",
+   "lrc": "",
+   "coll": "白兰雷鬼"
+  },
+  {
+   "title": "红美人之歌",
+   "artist": "杜殿虎",
+   "file": "https://whxclp.github.io/yinbox1/红美人之歌.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "杜殿虎歌曲"
+  },
+  {
+   "title": "海南青椰歌",
+   "artist": "杜殿虎",
+   "file": "https://whxclp.github.io/yinbox1/海南青椰歌.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "杜殿虎歌曲"
+  },
+  {
+   "title": "扬州醉",
+   "artist": "杜殿虎",
+   "file": "https://whxclp.github.io/yinbox1/扬州醉.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "杜殿虎歌曲"
+  },
+  {
+   "title": "惠民强国大交通",
+   "artist": "杜殿虎",
+   "file": "https://whxclp.github.io/yinbox1/惠民强国大交通.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "杜殿虎歌曲"
+  },
+  {
+   "title": "最美相遇",
+   "artist": "杜殿虎",
+   "file": "https://whxclp.github.io/yinbox1/最美相遇.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "杜殿虎歌曲"
+  },
+  {
+   "title": "同行美",
+   "artist": "杜殿虎",
+   "file": "https://whxclp.github.io/yinbox1/同行美.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "杜殿虎歌曲"
+  },
+  {
+   "title": "贵州的桥",
+   "artist": "杜殿虎",
+   "file": "https://whxclp.github.io/yinbox1/贵州的桥.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "杜殿虎歌曲"
+  },
+  {
+   "title": "山乡老妈",
+   "artist": "杜殿虎",
+   "file": "https://whxclp.github.io/yinbox1/山乡老妈.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "杜殿虎歌曲"
+  },
+  {
+   "title": "亲亲眷侣",
+   "artist": "杜殿虎",
+   "file": "https://whxclp.github.io/yinbox1/亲亲眷侣.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "杜殿虎歌曲"
+  },
+  {
+   "title": "飞逸的地铁",
+   "artist": "杜殿虎",
+   "file": "https://whxclp.github.io/yinbox1/飞逸的地铁.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "杜殿虎歌曲"
+  },
+  {
+   "title": "咖啡香",
+   "artist": "杜殿虎",
+   "file": "https://whxclp.github.io/yinbox1/咖啡香.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "杜殿虎歌曲"
+  },
+  {
+   "title": "公交好",
+   "artist": "杜殿虎",
+   "file": "https://whxclp.github.io/yinbox1/公交好.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "杜殿虎歌曲"
+  },
+  {
+   "title": "中华舞龙中国路",
+   "artist": "杜殿虎",
+   "file": "https://whxclp.github.io/yinbox1/中华舞龙中国路.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "杜殿虎歌曲"
+  },
+  {
+   "title": "二人转 刘金定观星（韩子平·董玮）",
+   "file": "https://whxclp.github.io/yinbox1/二人转刘金定观星.mp4",
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "二人转 回杯记 老版（董孝芳·李玉琴）",
+   "file": "https://whxclp.github.io/yinbox1/二人转回杯记老版.mp4",
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "二人转 包公赔情 39分钟版（韩子平·董玮）",
+   "file": "https://whxclp.github.io/yinbox1/二人转包公赔情39分钟版.mp4",
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "二人转 深宫欲海（闫学晶·佟长江）",
+   "file": "https://whxclp.github.io/yinbox1/二人转深宫欲海.mp4",
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "二人转 蓝桥新传（张涛·小豆豆）",
+   "file": "https://whxclp.github.io/yinbox1/二人转蓝桥新传.mp4",
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "二人转 西厢观画（赵晓波·郭旺）",
+   "file": "https://whxclp.github.io/yinbox1/二人转西厢观画.mp4",
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "二人转 燕青卖线（丁飞·郭二华）",
+   "file": "https://whxclp.github.io/yinbox1/二人转燕青卖线.mp4",
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "二人转 封神十不该（郭德纲·小豆豆·张小光）",
+   "file": "https://whxclp.github.io/yinbox1/二人转封神十不该.mp4",
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "二人转 辕门斩子（二）",
+   "file": "https://whxclp.github.io/yinbox1/二人转辕门斩子二.mp4",
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "二人转 辕门斩子（一）",
+   "file": "https://whxclp.github.io/yinbox1/二人转辕门斩子一.mp4",
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "二人转 东北神调（孙小宝）",
+   "file": "https://whxclp.github.io/yinbox3/二人转东北神调孙小宝.mp4",
+   "coll": "二人转·小帽"
+  },
+  {
+   "title": "二人转 神调怪王（孙小宝·金玲·赵春雷）",
+   "file": "https://whxclp.github.io/yinbox3/二人转神调怪王.mp4",
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "二人转 蹦迪八大扯（孙小宝·金玲）",
+   "file": "https://whxclp.github.io/yinbox3/二人转蹦迪八大扯.mp4",
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "二人转 蹦迪八大扯（第二部下·孙小宝·金玲）",
+   "file": "https://whxclp.github.io/yinbox3/二人转蹦迪八大扯二部下.mp4",
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "二人转 蹦迪八大扯报歌名（孙小宝·金玲）",
+   "file": "https://whxclp.github.io/yinbox3/二人转蹦迪八大扯报歌名.mp4",
+   "coll": "二人转·小帽"
+  },
+  {
+   "title": "二人转 傻子泡妞（魏三）",
+   "file": "https://whxclp.github.io/yinbox3/二人转傻子泡妞.mp4",
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "二人转 傻男人和坏女人（魏三）",
+   "file": "https://whxclp.github.io/yinbox3/二人转傻男人和坏女人.mp4",
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "二人转 傻男人与坏女人完整版（魏三·何晓影）",
+   "file": "https://whxclp.github.io/yinbox3/二人转傻男人与坏女人完整版.mp4",
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "二人转 包公赔情（魏三·何晓影）",
+   "file": "https://whxclp.github.io/yinbox3/二人转包公赔情魏三.mp4",
+   "coll": "二人转·正戏"
+  },
+  {
+   "title": "再见晚风",
+   "file": "https://whxclp.github.io/yinbox3/再见晚风.mp4"
+  },
+  {
+   "title": "飞（MV·宋祖英）",
+   "artist": "宋祖英",
+   "file": "https://whxclp.github.io/yinbox3/宋祖英《飞》.mp4",
+   "lrc": "",
+   "type": "mv",
+   "new": true
+  },
+  {
+   "title": "二人转 双回门（赵本山·宋祖英）",
+   "artist": "赵本山 / 宋祖英",
+   "file": "https://whxclp.github.io/yinbox3/二人转双回门赵本山宋祖英.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "二人转·小帽",
+   "new": true
+  },
+  {
+   "title": "二人转 王二姐思夫（赵本山）",
+   "artist": "赵本山",
+   "file": "https://whxclp.github.io/yinbox3/二人转王二姐思夫赵本山.mp4",
+   "lrc": "",
+   "type": "mv",
+   "coll": "二人转·正戏",
+   "new": true
+  },
+  {
+   "title": "二人转修复计划合集（B站在线·175集）",
+   "artist": "双林の",
+   "file": "https://space.bilibili.com/326881213/lists/1891254?type=season",
+   "lrc": "",
+   "coll": "二人转·正戏",
+   "new": true
+  },
+  {
+   "title": "蒲剧合集（爱奇艺在线）",
+   "artist": "",
+   "file": "https://www.iqiyi.com/playlist298498302.html",
+   "lrc": "",
+   "new": true
+  },
+  {
+   "title": "蒲剧合集（优酷在线）",
+   "artist": "",
+   "file": "https://list.youku.com/albumlist/show/id_50138317.html",
+   "lrc": "",
+   "new": true
+  },
+  {
+   "title": "蒲剧合集（优酷在线·二）",
+   "artist": "",
+   "file": "https://list.youku.com/albumlist/show/id_22886208.html",
+   "lrc": "",
+   "new": true
+  },
+  {
+   "title": "蒲剧搜索（B站在线）",
+   "artist": "",
+   "file": "https://search.bilibili.com/all?keyword=%E8%92%B2%E5%89%A7&from_source=web_search&spm_id_from=333.1387&search_source=5",
+   "lrc": "",
+   "new": true
+  },
+  {
+   "title": "蒲剧《空城计》十万埋伏一张琴（王天明）",
+   "artist": "王天明",
+   "file": "https://whxclp.github.io/yinbox3/十万埋伏一张琴.mp4",
+   "lrc": "https://whxclp.github.io/yinbox3/十万埋伏一张琴.lrc",
+   "type": "mv",
+   "new": true
+  },
+  {
+   "title": "蒲剧《空城计》兵临城下觅知音（王天明）",
+   "artist": "王天明",
+   "file": "https://whxclp.github.io/yinbox3/兵临城下觅知音.mp4",
+   "lrc": "https://whxclp.github.io/yinbox3/兵临城下觅知音.lrc",
+   "type": "mv",
+   "new": true
+  },
+  {
+   "title": "蒲剧《空城计》冒险退兵互成全（王天明）",
+   "artist": "王天明",
+   "file": "https://whxclp.github.io/yinbox3/冒险退兵互成全.mp4",
+   "lrc": "https://whxclp.github.io/yinbox3/冒险退兵互成全.lrc",
+   "type": "mv",
+   "new": true
+  },
+  {
+   "title": "蒲剧《空城计》全场（1981年演出录像）",
+   "artist": "王天明",
+   "file": "https://whxclp.github.io/yinbox3/蒲剧空城计_完整版.part1.mp4",
+   "parts": [
+    "https://whxclp.github.io/yinbox3/蒲剧空城计_完整版.part1.mp4",
+    "https://whxclp.github.io/yinbox3/蒲剧空城计_完整版.part2.mp4",
+    "https://whxclp.github.io/yinbox3/蒲剧空城计_完整版.part3.mp4",
+    "https://whxclp.github.io/yinbox3/蒲剧空城计_完整版.part4.mp4"
+   ],
+   "type": "mv",
+   "new": true
+  },
+  {
+   "title": "蒲剧《祭灵》（王天明）",
+   "artist": "王天明",
+   "file": "https://whxclp.github.io/yinbox3/蒲剧祭灵_王天明.mp4",
+   "lrc": "https://whxclp.github.io/yinbox3/蒲剧祭灵_王天明.lrc",
+   "type": "mv",
+   "new": true
+  },
+  {
+   "title": "蒲剧《收姜维》（王天明）",
+   "artist": "王天明",
+   "file": "https://whxclp.github.io/yinbox3/蒲剧收姜维_王天明.part1.mp4",
+   "parts": [
+    "https://whxclp.github.io/yinbox3/蒲剧收姜维_王天明.part1.mp4",
+    "https://whxclp.github.io/yinbox3/蒲剧收姜维_王天明.part2.mp4"
+   ],
+   "lrc": "https://whxclp.github.io/yinbox3/蒲剧收姜维_王天明.lrc",
+   "type": "mv",
+   "new": true
+  },
+  {
+   "title": "蒲剧《十五贯》选段（张贵学）",
+   "artist": "张贵学",
+   "file": "https://whxclp.github.io/yinbox3/蒲剧十五贯选段_张贵学唱段.mp4",
+   "type": "mv",
+   "new": true
+  },
+  {
+   "title": "蒲剧《十五贯》选段·伴奏（原唱张庆奎）",
+   "artist": "张庆奎",
+   "file": "https://whxclp.github.io/yinbox3/蒲剧十五贯选段伴奏_张庆奎原唱.mp4",
+   "type": "mv",
+   "new": true
+  },
+  {
+   "title": "蒲剧《十五贯》判斩（张庆奎）",
+   "artist": "张庆奎",
+   "file": "https://whxclp.github.io/yinbox3/蒲剧十五贯判斩_张庆奎.mp4",
+   "type": "mv",
+   "new": true
+  },
+  {
+   "title": "蒲剧《十五贯》见都（张庆奎）",
+   "artist": "张庆奎",
+   "file": "https://whxclp.github.io/yinbox3/蒲剧十五贯见都_张庆奎.mp4",
+   "type": "mv",
+   "new": true
+  },
+  {
+   "title": "大火烧山（完整版）",
+   "file": "https://whxclp.github.io/yinbox3/%E5%A4%A7%E7%81%AB%E7%83%A7%E5%B1%B1%E5%AE%8C%E6%95%B4%E7%89%88.webm"
+  },
+  {
+   "title": "二人转DJ",
+   "file": "https://whxclp.github.io/yinbox3/%E4%BA%8C%E4%BA%BA%E8%BD%ACDJ.mp4"
+  },
+  {
+   "title": "大火烧山",
+   "file": "https://whxclp.github.io/yinbox3/%E5%A4%A7%E7%81%AB%E7%83%A7%E5%B1%B1.mp4"
+  },
+  {
+   "title": "情人迷",
+   "file": "https://whxclp.github.io/yinbox3/%E6%83%85%E4%BA%BA%E8%BF%B7-%E6%9D%8E%E9%B9%8F%E9%A3%9E%E6%BD%98%E8%99%B9.mp3",
+   "artist": "李鹏飞 潘虹"
+  },
+  {
+   "title": "落日最美的地方",
+   "file": "https://whxclp.github.io/yinbox3/%E8%90%BD%E6%97%A5%E6%9C%80%E7%BE%8E%E7%9A%84%E5%9C%B0%E6%96%B9.mp4"
+  }
+ ]
 }
