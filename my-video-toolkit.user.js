@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.29
+// @version      2.0.30
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -995,7 +995,7 @@
     var ct = v.currentTime;
     var page = String(location.href || '').split('#')[0];
     var url = page;
-    if (!/bilibili\.com/i.test(url) && cur) {
+    if (!/bilibili\.com/i.test(url) && !/douyin\.com/i.test(url) && cur) {
       var s = cur.currentSrc || cur.src || '';
       if (s && s.indexOf('http') === 0) url = s;
     }
@@ -1255,14 +1255,14 @@
    * 不依赖本机 Python / WinGet，重装系统后也能用。等价桌面那个 视频下载合并.bat。 */
   function genDownBat() {
     var url = String(location.href || '').split('#')[0];
-    if (!/bilibili\.com/i.test(url) && cur) {
+    if (!/bilibili\.com/i.test(url) && !/douyin\.com/i.test(url) && cur) {
       var s = cur.currentSrc || cur.src || '';
       if (s && s.indexOf('http') === 0) url = s;
     }
     if (!url) { toast('拿不到当前视频地址', 3000); return; }
 
     /* 抖音：modal_id 转单视频页；再从页面数据提取直链（零 cookie 首选方案） */
-    var isDouyin = /douyin\.com/i.test(url);
+    var isDouyin = /douyin\.com/i.test(location.href) || /douyin\.com/i.test(url);
     var dyId = '', dyVid = null;
     if (isDouyin) {
       var m = url.match(/[?&]modal_id=(\d+)/i);
@@ -1495,7 +1495,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.29');
+    bar.setAttribute('data-mvt-ver', '2.0.30');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1505,7 +1505,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.29';
+    ver.textContent = 'v2.0.30';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
