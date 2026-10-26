@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.28
+// @version      2.0.29
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -168,6 +168,20 @@
         && typeof mu.play_url.url_list[0] === 'string') {
       musicUrl = mu.play_url.url_list[0];
     }
+    /* 封面图：视频封面优先，图文作品取第一张图（合成音乐视频用） */
+    var coverUrl = '';
+    var cv = v && (v.cover || v.origin_cover || v.dynamic_cover);
+    if (cv && Array.isArray(cv.url_list) && cv.url_list.length
+        && typeof cv.url_list[0] === 'string') {
+      coverUrl = cv.url_list[0];
+    }
+    if (!coverUrl && Array.isArray(aweme.images) && aweme.images.length) {
+      var im0 = aweme.images[0];
+      if (im0 && Array.isArray(im0.url_list) && im0.url_list.length
+          && typeof im0.url_list[0] === 'string') {
+        coverUrl = im0.url_list[0];
+      }
+    }
     if (!cands.length && !musicUrl) return null;
     cands.sort(function (a, b2) { return (b2.br - a.br) || (b2.h - a.h); });
     var best = cands[0] || {};
@@ -178,7 +192,8 @@
       desc: String(aweme.desc || '').slice(0, 80),
       duration: v.duration || 0,
       width: best.w, height: best.h, size: best.size,
-      musicUrl: musicUrl
+      musicUrl: musicUrl,
+      coverUrl: coverUrl
     };
   }
 
@@ -649,6 +664,7 @@
        优先 aweme.music，其次播放器音频钩子（DY.media），最后视频直链 */
     var isNote = /\/note\//i.test(bakedUrl || '');
     var _mSrc = (dyVid && dyVid.musicUrl) || (DY.media && DY.media.length ? DY.media[0] : '');
+    var coverSrc = (dyVid && dyVid.coverUrl) || '';
     var _directSrc = dyVid && (isNote ? (_mSrc || dyVid.url) : (dyVid.url || _mSrc));
     var direct = _directSrc ? String(_directSrc) : '';
     var ref = direct ? 'https://www.douyin.com/'
@@ -666,7 +682,7 @@
        改用页面标题清洗后做文件名，最差兜底 douyin_video。 */
     var dyDesc = (dyVid && dyVid.desc) || '';
     var dyOut = (isNote && _mSrc)
-      ? ('douyin_music_' + (dyDesc.replace(/[\\/:*?"<>|%&^!]/g, '_').trim().slice(0, 60) || dyKey || 'note') + '.%%(ext)s')
+      ? ('douyin_music_' + (dyKey || 'note') + '.%%(ext)s')
       : (dyKey
         ? ('douyin_' + dyKey + '.%%(ext)s')
         : ('douyin_' + (dyDesc.replace(/[\\/:*?"<>|%&^!]/g, '_').trim().slice(0, 60) || 'video') + '.%%(ext)s'));
@@ -758,6 +774,26 @@
       L.push('echo  [mvt] No cookies needed. The link is signed and expires within hours,');
       L.push('echo  [mvt] so run this bat soon after generating it.');
       L.push('"%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --user-agent "%UA%" --referer "%REFERER%" -o "%OUTDIR%\\' + dyOut + '" -P "%OUTDIR%" --no-mtime "%URL%"');
+      if (isNote && _mSrc && coverSrc) {
+        var _mk2 = (dyKey || 'note');
+        var _mp3n = 'douyin_music_' + _mk2 + '.mp3';
+        var _mp4n = 'douyin_music_' + _mk2 + '.mp4';
+        L.push('echo.');
+        L.push('echo  [mvt] Note music: merging cover + mp3 into a music video ...');
+        L.push('set "COVER=' + coverSrc + '"');
+        L.push('curl.exe -L --ssl-no-revoke -A "%UA%" -o "%OUTDIR%\\__mvt_cover.jpg" "%COVER%" >nul 2>nul');
+        L.push('if exist "%OUTDIR%\\__mvt_cover.jpg" (');
+        L.push('  "%FFDIR%\\ffmpeg.exe" -y -loop 1 -i "%OUTDIR%\\__mvt_cover.jpg" -i "%OUTDIR%\\' + _mp3n + '" -shortest -c:v libx264 -pix_fmt yuv420p -c:a aac -b:a 128k "%OUTDIR%\\' + _mp4n + '"');
+        L.push('  if not errorlevel 1 (');
+        L.push('    del /f /q "%OUTDIR%\\' + _mp3n + '" "%OUTDIR%\\__mvt_cover.jpg" >nul 2>nul');
+        L.push('    echo  [mvt] Music video created: ' + _mp4n);
+        L.push('  ) else (');
+        L.push('    echo  [mvt] ffmpeg merge failed, MP3 kept: ' + _mp3n);
+        L.push('  )');
+        L.push(') else (');
+        L.push('  echo  [mvt] Cover download failed, MP3 kept: ' + _mp3n);
+        L.push(')');
+      }
       L.push('if errorlevel 1 (');
       L.push('  echo.');
       L.push('  echo  [mvt] ================ Direct link failed ================');
@@ -1459,7 +1495,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.28');
+    bar.setAttribute('data-mvt-ver', '2.0.29');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1469,7 +1505,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.28';
+    ver.textContent = 'v2.0.29';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
