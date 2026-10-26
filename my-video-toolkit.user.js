@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.32
+// @version      2.0.33
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -182,7 +182,7 @@
         coverUrl = im0.url_list[0];
       }
     }
-    if (!cands.length && !musicUrl) return null;
+    if (!cands.length && !musicUrl && !(DY.media && DY.media.length)) return null;
     cands.sort(function (a, b2) { return (b2.br - a.br) || (b2.h - a.h); });
     var best = cands[0] || {};
     return {
@@ -192,7 +192,7 @@
       desc: String(aweme.desc || '').slice(0, 80),
       duration: v.duration || 0,
       width: best.w, height: best.h, size: best.size,
-      musicUrl: musicUrl,
+      musicUrl: musicUrl || (DY.media && DY.media.length ? DY.media[0] : ''),
       coverUrl: coverUrl
     };
   }
@@ -321,6 +321,15 @@
      返回 {url, backUrls, id, desc, duration, width, height, size} 或 null */
   function dyGetVideo(awemeId) {
     var id = awemeId ? String(awemeId) : '';
+    /* DOM 音频兜底：播放器已加载的 audio 元素（钩子没抓到也能拿直链） */
+    try {
+      var _as = document.querySelectorAll('audio');
+      for (var _ai = 0; _ai < _as.length; _ai++) {
+        var _au = String(_as[_ai].currentSrc || _as[_ai].src || '').split('#')[0];
+        if (_au && /^https?:/i.test(_au) && /\.(mp3|m4a|aac)(\?|$)/i.test(_au)
+            && DY.media.indexOf(_au) < 0) DY.media.push(_au);
+      }
+    } catch (e) {}
     /* 1) 网络钩子已抓到的（最可靠，清晰度列表最全） */
     if (id && DY.map[id]) return dyPickVideo(DY.map[id]);
     /* 2) 页面 SSR 数据 */
@@ -1508,7 +1517,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.32');
+    bar.setAttribute('data-mvt-ver', '2.0.33');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1518,7 +1527,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.32';
+    ver.textContent = 'v2.0.33';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
