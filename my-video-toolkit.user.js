@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.34
+// @version      2.0.35
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -1287,31 +1287,43 @@
 
   function mvtDouyinBackground(url, dyId, dyVid) {
     var ref = String(location.href || url);
-    var desc = (dyVid && dyVid.desc) || document.title || 'douyin';
-    var subs = [];
-    var isNote = /\/note\//i.test(ref) || (dyVid && dyVid.musicUrl) || (DY.media && DY.media.length);
-    if (isNote) {
-      var segs = [];
-      if (DY.media && DY.media.length) segs = segs.concat(DY.media);
-      if (dyVid && dyVid.musicUrl && segs.indexOf(dyVid.musicUrl) < 0) segs.unshift(dyVid.musicUrl);
-      if (!segs.length) { toast('未提取到音频直链：请先点播放（等进度条走动几秒）后再点下载', 6000); return; }
-      for (var si = 0; si < segs.length; si++) {
-        subs.push({ url: segs[si], out: 'douyin_music_' + (segs.length > 1 ? (si + 1) : (dyId || 'note')) + '.%(ext)s' });
+    var desc0 = (dyVid && dyVid.desc) || document.title || 'douyin';
+    var id0 = dyId || '';
+    /* 自动触发播放：note 完整音频由播放器请求发出，钩子才能抓到（无需用户先手动播放） */
+    try {
+      var _v = document.querySelector('video,audio');
+      if (_v && typeof _v.play === 'function' && _v.paused) { try { _v.play().catch(function () {}); } catch (e0) {} }
+      var _pb = document.querySelector('[data-e2e="player-play"],.xgplayer-play,.xgplayer-start,.xgplayer-play-btn');
+      if (_pb) { try { _pb.click(); } catch (e1) {} }
+    } catch (e2) {}
+    setTimeout(function () {
+      var dv = id0 ? dyGetVideo(id0) : dyGetVideo();
+      var desc = (dv && dv.desc) || desc0;
+      var subs = [];
+      var isNote = /\/note\//i.test(ref) || (dv && dv.musicUrl) || (DY.media && DY.media.length);
+      if (isNote) {
+        var segs = [];
+        if (DY.media && DY.media.length) segs = segs.concat(DY.media);
+        if (dv && dv.musicUrl && segs.indexOf(dv.musicUrl) < 0) segs.unshift(dv.musicUrl);
+        if (!segs.length) { toast('仍未提取到音频直链：请点一下播放键（等进度条走动）后再点下载', 6000); return; }
+        for (var si = 0; si < segs.length; si++) {
+          subs.push({ url: segs[si], out: 'douyin_music_' + (segs.length > 1 ? (si + 1) : (id0 || 'note')) + '.%(ext)s' });
+        }
+      } else if (dv && dv.url) {
+        subs.push({ url: dv.url, out: 'douyin_' + (id0 || 'video') + '.%(ext)s' });
+      } else {
+        toast('未提取到直链，请刷新页面后重试', 4000);
+        return;
       }
-    } else if (dyVid && dyVid.url) {
-      subs.push({ url: dyVid.url, out: 'douyin_' + (dyId || 'video') + '.%(ext)s' });
-    } else {
-      toast('未提取到直链，请刷新页面后重试', 4000);
-      return;
-    }
-    var done = 0, total = subs.length;
-    subs.forEach(function (sb) {
-      mvtServerSubmit(sb.url, desc, ref, sb.out).then(function (res) {
-        done++;
-        if (res && res.ok) toast('后台下载已提交：' + sb.out + '（' + done + '/' + total + '）', 4500);
-        else toast('提交失败：' + ((res && res.error) || '新视野服务未启动？') + '：' + sb.out, 5000);
+      var done = 0, total = subs.length;
+      subs.forEach(function (sb) {
+        mvtServerSubmit(sb.url, desc, ref, sb.out).then(function (res) {
+          done++;
+          if (res && res.ok) toast('后台下载已提交：' + sb.out + '（' + done + '/' + total + '）', 4500);
+          else toast('提交失败：' + ((res && res.error) || '新视野服务未启动？') + '：' + sb.out, 5000);
+        });
       });
-    });
+    }, 2500);
   }
 
   function genDownBat() {
@@ -1559,7 +1571,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.34');
+    bar.setAttribute('data-mvt-ver', '2.0.35');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1569,7 +1581,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.34';
+    ver.textContent = 'v2.0.35';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
