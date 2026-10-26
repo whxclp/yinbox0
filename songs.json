@@ -310,25 +310,29 @@
    "title": "梁祝 (钢琴)",
    "artist": "Richard Clayderman",
    "file": "https://whxclp.github.io/yinbox1/梁祝 (钢琴).mp3",
-   "lrc": ""
+   "lrc": "",
+   "noLyric": true
   },
   {
    "title": "梁祝 (小提琴协奏曲)",
    "artist": "俞丽拿",
    "file": "https://whxclp.github.io/yinbox1/梁祝 (小提琴协奏曲).mp3",
-   "lrc": ""
+   "lrc": "",
+   "noLyric": true
   },
   {
    "title": "梁祝",
    "artist": "吕思清",
    "file": "https://whxclp.github.io/yinbox1/梁祝.mp3",
-   "type": "instrument"
+   "type": "instrument",
+   "noLyric": true
   },
   {
    "title": "梁祝 (古筝)",
    "artist": "中央民族乐团",
    "file": "https://whxclp.github.io/yinbox1/梁祝 (古筝).mp3",
-   "lrc": ""
+   "lrc": "",
+   "noLyric": true
   },
   {
    "title": "二泉映月(阿炳二胡独奏)",
@@ -2223,12 +2227,14 @@
   {
    "title": "紫竹调",
    "artist": "",
-   "file": "https://whxclp.github.io/yinbox1/紫竹调.mp3"
+   "file": "https://whxclp.github.io/yinbox1/紫竹调.mp3",
+   "noLyric": true
   },
   {
    "title": "月光下的凤尾竹",
    "artist": "",
-   "file": "https://whxclp.github.io/yinbox1/月光下的凤尾竹.mp3"
+   "file": "https://whxclp.github.io/yinbox1/月光下的凤尾竹.mp3",
+   "noLyric": true
   },
   {
    "title": "蒲剧 古风卷轴",
@@ -2549,13 +2555,15 @@
    "title": "紫竹调",
    "artist": "",
    "file": "https://whxclp.github.io/yinbox1/10首经典民歌-9.mp4",
-   "type": "mv"
+   "type": "mv",
+   "noLyric": true
   },
   {
    "title": "月光下的凤尾竹",
    "artist": "",
    "file": "https://whxclp.github.io/yinbox1/10首经典民歌-10.mp4",
-   "type": "mv"
+   "type": "mv",
+   "noLyric": true
   },
   {
    "title": "我求错了人（深情版）",
