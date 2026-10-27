@@ -159,6 +159,11 @@
   }
   .lyric.plain .lrcline{padding:1px 0;}
   .lyric.plain .lrcline.cur{color:#ffb347;font-weight:bold;font-size:15px;}
+  .lyric.single{padding:7px 14px; font-size:14px;}
+  .lyric.single .lrcwrap{max-width:100%; overflow:hidden; white-space:nowrap;}
+  .lyric.single .lrcline{display:inline-block; white-space:nowrap; color:#ffd93d; font-weight:bold; font-size:14px;}
+  .lyric.single .lrcline.long{padding-left:100%; animation:lrcScroll 18s linear infinite alternate;}
+  @keyframes lrcScroll{from{transform:translateX(0);} to{transform:translateX(-100%);}}
   @media (max-width:480px){
     .toprow{flex-direction:column; align-items:stretch;}
     #navchips{justify-content:center;}
@@ -763,17 +768,26 @@ function collNextIdx(curIdx, dir){
   const pos = same.indexOf(curIdx);
   return same[(pos + dir + same.length) % same.length];
 }
+function isExternal(s){ return !!s && !/\.(mp3|mp4|m4a|aac|wav|flac|ogg)(\?|#|$)/i.test(s.file||''); }
 function nextSong(auto){
   if(!shown.length) return;
-  let next;
-  if(mode===3){ next = Math.floor(Math.random()*shown.length); }
-  else if(mode===2){ next = cur; }
-  else {
-    next = collNextIdx(cur, 1);
-    if(next < 0){
-      next = cur + 1;
-      if(next >= shown.length){ next = mode===1 ? 0 : (auto ? -1 : 0); }
+  let next, from = cur, guard = 0;
+  for(;;){
+    if(mode===3){ next = Math.floor(Math.random()*shown.length); }
+    else if(mode===2){ next = from; }
+    else {
+      next = collNextIdx(from, 1);
+      if(next < 0){
+        next = from + 1;
+        if(next >= shown.length){ next = mode===1 ? 0 : (auto ? -1 : 0); }
+      }
     }
+    if(next < 0) break;
+    // 外链条目（无媒体后缀）不进播放器，自动切换时跳过，避免弹窗打开网址
+    if(mode===2){ if(isExternal(shown[next])){ next = -1; } break; }
+    if(!isExternal(shown[next])) break;
+    if(++guard > shown.length){ next = -1; break; }
+    from = next;
   }
   if(next<0){ curMedia.pause(); curMedia.currentTime = 0; return; }
   playAt(next);
@@ -781,8 +795,14 @@ function nextSong(auto){
 function prevSong(){
   if(cur<0 || !shown.length) return;
   if(curMedia.currentTime > 3){ curMedia.currentTime = 0; return; }
-  const p = collNextIdx(cur, -1);
-  playAt(p < 0 ? (cur-1+shown.length) % shown.length : p);
+  let p = collNextIdx(cur, -1);
+  if(p < 0){ p = (cur-1+shown.length) % shown.length; }
+  let guard = 0;
+  while(isExternal(shown[p])){
+    if(++guard > shown.length){ p = cur; break; }
+    p = (p-1+shown.length) % shown.length;
+  }
+  playAt(p);
 }
 function seekBy(delta){
   if(!curMedia.duration || Number.isNaN(curMedia.duration)) return;
@@ -942,25 +962,37 @@ let lrcDom = null;
 function showLyric(lrc, t){
   const box = document.getElementById('lyricBox');
   if(!lrc || curMedia === mvPlayer){ box.style.display='none'; return; }
-  box.classList.add('plain');
   box.style.textAlign = 'center';
-  const isPlain = !!lrc.plain;
-  const rows = isPlain ? lrc.plain : lrc.map(x=>x.text);
-  if(!lrcDom || lrcDom.lrc !== lrc){
-    box.innerHTML = rows.map(s=>'<div class="lrcline">'+s+'</div>').join('');
-    lrcDom = {lrc, els: Array.from(box.querySelectorAll('.lrcline')), lastIdx:-2};
-    if(isPlain){ box.scrollTop = 0; }
+  if(lrc.plain){
+    // 无时间轴歌词：多行展示，可滚动
+    box.classList.remove('single'); box.classList.add('plain');
+    if(!lrcDom || lrcDom.lrc !== lrc || !lrcDom.plain){
+      box.innerHTML = lrc.plain.map(s=>'<div class="lrcline">'+s+'</div>').join('');
+      lrcDom = {lrc, plain:true, els:Array.from(box.querySelectorAll('.lrcline')), lastIdx:-2};
+      box.scrollTop = 0;
+    }
+    box.style.display='block';
+    return;
   }
-  if(isPlain){ box.style.display='block'; return; }
+  // 时间轴歌词：单行显示当前句，超长横向滚动
+  box.classList.add('single'); box.classList.remove('plain');
   let idx = -1;
   for(let i=lrc.length-1;i>=0;i--){ if(lrc[i].t <= t+0.2){ idx = i; break; } }
-  lrcDom.els.forEach((el,i)=>el.classList.toggle('cur', i===idx));
   if(idx<0){ box.style.display='none'; return; }
   box.style.display='block';
-  if(idx !== lrcDom.lastIdx){
+  if(!lrcDom || lrcDom.lrc !== lrc || lrcDom.plain){
+    box.innerHTML = '<div class="lrcwrap"><span class="lrcline"></span></div>';
+    lrcDom = {lrc, plain:false, lastIdx:-2};
+  }
+  if(lrcDom.lastIdx !== idx){
     lrcDom.lastIdx = idx;
-    const el = lrcDom.els[idx];
-    box.scrollTop = Math.max(0, el.offsetTop - box.clientHeight/2 + el.clientHeight/2);
+    const el = box.querySelector('.lrcline');
+    el.textContent = lrc[idx].text;
+    const wrap = box.querySelector('.lrcwrap');
+    requestAnimationFrame(()=>{
+      const over = el.scrollWidth > wrap.clientWidth;
+      el.classList.toggle('long', over);
+    });
   }
 }
 // 无歌词时显示当前歌名
