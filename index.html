@@ -148,21 +148,14 @@
   .ctrls .small.on{color:var(--acc);}
   .ctrls button:disabled{opacity:.3; cursor:default;}
   .ctrls svg{display:block;}
-  .lyric{
-    position:fixed; left:50%; top:158px; transform:translateX(-50%);
-    max-width:86%; text-align:center; font-size:13px; color:var(--sub);
-    background:rgba(13,17,23,.92); border:1px solid var(--line); border-radius:10px;
-    padding:6px 12px; z-index:15; pointer-events:none; display:none;
+  .lrcLine{
+    margin:6px auto 0; max-width:94%; text-align:center; font-size:14px; color:#ffd93d;
+    font-weight:bold; display:none; min-height:24px; line-height:24px; overflow:hidden;
+    white-space:nowrap; pointer-events:none;
   }
-  .lyric.plain{
-    pointer-events:auto; font-size:14px; line-height:1.8; padding:10px 16px;
-  }
-  .lyric.plain .lrcline{padding:1px 0;}
-  .lyric.plain .lrcline.cur{color:#ffb347;font-weight:bold;font-size:15px;}
-  .lyric.single{padding:7px 14px; font-size:14px;}
-  .lyric.single .lrcwrap{max-width:100%; overflow:hidden; white-space:nowrap;}
-  .lyric.single .lrcline{display:inline-block; white-space:nowrap; color:#ffd93d; font-weight:bold; font-size:14px;}
-  .lyric.single .lrcline.long{padding-left:100%; animation:lrcScroll 18s linear infinite alternate;}
+  .lrcLine .lrcwrap{max-width:100%; overflow:hidden; white-space:nowrap;}
+  .lrcLine .lrcline{display:inline-block; white-space:nowrap; color:#ffd93d; font-weight:bold; font-size:14px;}
+  .lrcLine .lrcline.long{padding-left:100%; animation:lrcScroll 18s linear infinite alternate;}
   @keyframes lrcScroll{from{transform:translateX(0);} to{transform:translateX(-100%);}}
   @media (max-width:480px){
     .toprow{flex-direction:column; align-items:stretch;}
@@ -196,8 +189,7 @@
 </div>
 <div class="player">
 <div class="pmain">
-<div class="ctrls">
-    <button class="small" id="modeBtn" onclick="cycleMode()" title="播放模式">顺序</button>
+<div class="ctrls">    <button class="small" id="modeBtn" onclick="cycleMode()" title="播放模式">顺序</button>
     <button class="small" onclick="prevSong()" title="上一首"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg></button>
     <button class="small" onclick="seekBy(-15)" title="快退15秒">−15</button>
     <button class="big" id="playBtn" onclick="togglePlay()" title="播放"><span id="playTxt">播放</span></button>
@@ -217,6 +209,7 @@
     <span class="t" id="dur">0:00</span>
   </div>
 </div>
+<div class="lrcLine" id="lyricBox"></div>
 </div>
 <div class="searchbar">
     <button onclick="toggleOnline()" id="onlineBtn" title="搜全网歌曲，试听后可标记加入歌单">网上搜歌</button>
@@ -235,7 +228,6 @@
 <main id="list"><div class="empty">正在加载歌单…</div></main>
 <div id="diagBadge" style="display:none;position:fixed;left:8px;bottom:8px;background:#7a1f1f;color:#ffe2e2;font-size:12px;padding:5px 9px;border-radius:6px;z-index:99999;max-width:92vw;word-break:break-all;cursor:pointer;" onclick="this.style.display='none'" title="点击隐藏"></div>
 <div id="mvWrap"><video id="mvPlayer" playsinline></video></div>
-<div class="lyric" id="lyricBox"></div>
 <script>
 // ===== PWA 注册 =====
 if('serviceWorker' in navigator){ window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
@@ -962,24 +954,27 @@ let lrcDom = null;
 function showLyric(lrc, t){
   const box = document.getElementById('lyricBox');
   if(!lrc || curMedia === mvPlayer){ box.style.display='none'; return; }
-  box.style.textAlign = 'center';
+  box.style.display='block';
   if(lrc.plain){
-    // 无时间轴歌词：多行展示，可滚动
-    box.classList.remove('single'); box.classList.add('plain');
+    // 无时间轴歌词：整段合成一行横向滚动
+    const txt = lrc.plain.join(' / ');
     if(!lrcDom || lrcDom.lrc !== lrc || !lrcDom.plain){
-      box.innerHTML = lrc.plain.map(s=>'<div class="lrcline">'+s+'</div>').join('');
-      lrcDom = {lrc, plain:true, els:Array.from(box.querySelectorAll('.lrcline')), lastIdx:-2};
-      box.scrollTop = 0;
+      box.innerHTML = '<div class="lrcwrap"><span class="lrcline"></span></div>';
+      lrcDom = {lrc, plain:true, lastIdx:-2};
     }
-    box.style.display='block';
+    if(lrcDom.lastIdx !== txt){
+      lrcDom.lastIdx = txt;
+      const el = box.querySelector('.lrcline');
+      el.textContent = txt;
+      const wrap = box.querySelector('.lrcwrap');
+      requestAnimationFrame(()=>{ el.classList.toggle('long', el.scrollWidth > wrap.clientWidth); });
+    }
     return;
   }
   // 时间轴歌词：单行显示当前句，超长横向滚动
-  box.classList.add('single'); box.classList.remove('plain');
   let idx = -1;
   for(let i=lrc.length-1;i>=0;i--){ if(lrc[i].t <= t+0.2){ idx = i; break; } }
   if(idx<0){ box.style.display='none'; return; }
-  box.style.display='block';
   if(!lrcDom || lrcDom.lrc !== lrc || lrcDom.plain){
     box.innerHTML = '<div class="lrcwrap"><span class="lrcline"></span></div>';
     lrcDom = {lrc, plain:false, lastIdx:-2};
