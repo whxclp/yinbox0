@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.43
+// @version      2.0.44
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载：① 当前页视频（抖音走本机新视野后台直提，其他站生成 yt-dlp 脚本）、② 任意链接、③ 音频下载（MP3，抖音后台直提/其他站 yt-dlp 转 MP3）。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -14,12 +14,13 @@
 (function () {
   'use strict';
 
-  /* v2.0.43：精细 iframe 注入。抖音 CDN iframe（lf-*.yhgb-tn-static.com、
-     lf-zt.douyin.com 等）会被 @match 命中，播放器的媒体请求（note 完整
-     音频直链等）发生在这些 iframe 里，iframe 里也要装网络钩子才能抓到；
-     但 iframe 里不建工具栏、不跑轮询（无 PNA 噪音），钩子抓到的直链
-     postMessage 回传顶层合并。本插件 @match 是全站（任意 http/https 站点），
-     B站/腾讯等其它站的 iframe 播放器场景同样适用。 */
+  /* v2.0.44：精细 iframe 注入 + 下载完成打开文件夹。
+     - iframe 里装网络钩子（播放器媒体请求在 CDN iframe 内，如 note 完整音频），
+       不建工具栏、不跑轮询（无 PNA 噪音），钩子抓到的直链 postMessage 回传顶层；
+       本插件 @match 是全站，B站/腾讯等其它站的 iframe 播放器同样适用。
+     - 修复 v2.0.43 回归：iframe 钩子生效后视频页 DY.media 也攒了杂音频，
+       点「①视频下载」被误判成音频 —— 现按页面 URL 类型判定（/video/ 一定是视频）。
+     - 下载完成（新视野后台任务 done / 双击 bat）后自动打开所在文件夹。 */
   var IS_TOP = (window.top === window);
 
   /* ============================================================
@@ -155,7 +156,7 @@
       desc: String(aweme.desc || '').slice(0, 80),
       duration: v.duration || 0,
       width: best.w, height: best.h, size: best.size,
-      musicUrl: musicUrl || (DY.media && DY.media.length ? DY.media[0] : ''),
+      musicUrl: musicUrl,   /* v2.0.44: no DY.media fallback (keeps video pages clean) */
       coverUrl: coverUrl
     };
   }
@@ -709,6 +710,9 @@
       L.push('  echo  [mvt] regenerate this bat to get the full video.');
       L.push(')');
     }
+    L.push('echo.');
+    L.push('echo  [mvt] Opening output folder ...');
+    L.push('start "" explorer "%OUTDIR%"');
     L.push('pause');
     L.push('rem Self-delete this bat after the window is closed.');
     L.push('(goto) 2>nul & del "%~f0"');
@@ -747,7 +751,10 @@
       var dv = id0 ? dyGetVideo(id0) : dyGetVideo();
       var desc = (dv && dv.desc) || desc0;
       var subs = [];
-      var isNote = /\/note\//i.test(ref) || (dv && dv.musicUrl) || (DY.media && DY.media.length);
+      /* v2.0.44: decide by page URL - /video/ is always video; only note pages (or feed
+         with no video link) are audio. Fixes v2.0.43 regression where video pages
+         downloaded audio because DY.media picked up background/preview audio. */
+      var isNote = /\/note\//i.test(ref) || (!/\/video\//i.test(ref) && !(dv && dv.url) && (DY.media && DY.media.length));
       if (isNote) {
         var segs = [];
         if (DY.media && DY.media.length) segs = segs.concat(DY.media);
@@ -950,6 +957,9 @@
     L.push('');
     L.push('echo.');
     L.push('if errorlevel 1 ( echo  [mvt] Download failed, see info above. ) else ( echo  [mvt] Done, MP3 in: %OUTDIR% )');
+    L.push('echo.');
+    L.push('echo  [mvt] Opening output folder ...');
+    L.push('start "" explorer "%OUTDIR%"');
     L.push('pause');
     L.push('rem Self-delete this bat after the window is closed.');
     L.push('(goto) 2>nul & del "%~f0"');
@@ -997,6 +1007,18 @@
   var rateBtn;
 
   /* 下载进度：轮询新视野本地服务（127.0.0.1:18322），最新任务状态显示在工具栏 */
+  /* v2.0.44: download done -> toast + open output folder (via local XinVision /api/open) */
+  var mvtDoneNotified = null;
+  function mvtOpenFolder(file) {
+    try {
+      fetch('http://127.0.0.1:18322/api/open', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-XinVision-Token': 'xinvision-2026' },
+        body: JSON.stringify({ file: String(file) })
+      }).catch(function () {});
+    } catch (e) {}
+  }
+
   function mvtPollProgress() {
     if (!window.mvtProg) return;
     fetch('http://127.0.0.1:18322/api/tasks', { headers: { 'X-XinVision-Token': 'xinvision-2026' } })
@@ -1010,7 +1032,15 @@
         var txt = st;
         if (st === 'queued') txt = '排队';
         else if (st === 'running') txt = (pct >= 0 ? pct + '%' : '下载中');
-        else if (st === 'done') txt = '完成 ' + (c0.file ? String(c0.file).split(/[\\/]/).pop() : nm);
+        else if (st === 'done') {
+          txt = '完成 ' + (c0.file ? String(c0.file).split(/[\\/]/).pop() : nm);
+          /* v2.0.44: notify once per task + auto open output folder */
+          if (c0.id && c0.id !== mvtDoneNotified) {
+            mvtDoneNotified = c0.id;
+            toast('下载完成：' + (c0.file ? String(c0.file).split(/[\\/]/).pop() : nm), 4500);
+            if (c0.file) mvtOpenFolder(String(c0.file));
+          }
+        }
         else if (st === 'failed') txt = '失败 ' + String(c0.error || '').slice(0, 24);
         if (window.mvtProg) {
           window.mvtProg.textContent = txt;
@@ -1029,7 +1059,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.43');
+    bar.setAttribute('data-mvt-ver', '2.0.44');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1039,7 +1069,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.43';
+    ver.textContent = 'v2.0.44';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
