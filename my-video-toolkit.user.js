@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.47
+// @version      2.0.48
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载：① 当前页视频（抖音走本机新视野后台直提，其他站生成 yt-dlp 脚本）、② 任意链接、③ 音频下载（MP3，抖音后台直提/其他站 yt-dlp 转 MP3）。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -22,7 +22,9 @@
        点「①视频下载」被误判成音频 —— 现按页面 URL 类型判定（/video/ 一定是视频）。
      v2.0.46：工具栏「完成 文件名」行可点击 —— 点击即打开所在文件夹并选中文件。
      v2.0.47：去掉下载完成自动弹的完成提示与自动打开文件夹（刷新页面不再打扰）；
-     需要时手动点击「完成 文件名」打开，打开失败会给出明确提示。 */
+     需要时手动点击「完成 文件名」打开，打开失败会给出明确提示。
+     v2.0.48：轮询只允许顶层窗口运行 —— 修复 iframe（lf-zt.douyin.com 等）里
+     每 3 秒 fetch 127.0.0.1 被 Chrome 的 loopback 限制拦截刷屏（ERR_FAILED/CORS）。 */
   var IS_TOP = (window.top === window);
 
   /* ============================================================
@@ -1090,7 +1092,7 @@
         if (window.mvtProg) { window.mvtProg.textContent = '服务未启动'; window.mvtProg.style.color = '#fa0'; }
       });
   }
-  if (!window.__mvtPollStarted) {
+  if (IS_TOP && !window.__mvtPollStarted) {
     window.__mvtPollStarted = true;
     setInterval(mvtPollProgress, 2000);
   }
@@ -1098,7 +1100,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.47');
+    bar.setAttribute('data-mvt-ver', '2.0.48');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1108,7 +1110,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.47';
+    ver.textContent = 'v2.0.48';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
