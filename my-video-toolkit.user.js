@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.51
+// @version      2.0.52
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载：一个「⬇ 下载」按钮智能判断—— 当前页有视频下视频、只有音乐自动下 MP3（抖音走本机新视野后台直提，其他站生成 yt-dlp 脚本）；工具菜单另有「通用下载脚本（粘链接）」和「音频下载（MP3）」。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -752,12 +752,15 @@
     var ref = String(location.href || url);
     var desc0 = (dyVid && dyVid.desc) || document.title || 'douyin';
     var id0 = dyId || '';
-    /* 自动触发播放：note 完整音频由播放器请求发出，钩子才能抓到（无需用户先手动播放） */
+    /* 自动触发播放：note 完整音频由播放器请求发出，钩子才能抓到（无需用户先手动播放）。
+       仅当视频/音频处于暂停状态时才点播放按钮；正在播放时绝不点击，避免误触暂停键导致播放停止。 */
     try {
       var _v = document.querySelector('video,audio');
       if (_v && typeof _v.play === 'function' && _v.paused) { try { _v.play().catch(function () {}); } catch (e0) {} }
-      var _pb = document.querySelector('[data-e2e="player-play"],.xgplayer-play,.xgplayer-start,.xgplayer-play-btn');
-      if (_pb) { try { _pb.click(); } catch (e1) {} }
+      if (_v && _v.paused) {
+        var _pb = document.querySelector('[data-e2e="player-play"],.xgplayer-play,.xgplayer-start,.xgplayer-play-btn');
+        if (_pb) { try { _pb.click(); } catch (e1) {} }
+      }
     } catch (e2) {}
     setTimeout(function () {
       var dv = id0 ? dyGetVideo(id0) : dyGetVideo();
@@ -1142,7 +1145,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.51';
+    ver.textContent = 'v2.0.52';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
