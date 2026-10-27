@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.46
+// @version      2.0.47
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载：① 当前页视频（抖音走本机新视野后台直提，其他站生成 yt-dlp 脚本）、② 任意链接、③ 音频下载（MP3，抖音后台直提/其他站 yt-dlp 转 MP3）。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -14,14 +14,15 @@
 (function () {
   'use strict';
 
-  /* v2.0.44：精细 iframe 注入 + 下载完成打开文件夹。
+  /* v2.0.44：精细 iframe 注入。
      - iframe 里装网络钩子（播放器媒体请求在 CDN iframe 内，如 note 完整音频），
        不建工具栏、不跑轮询（无 PNA 噪音），钩子抓到的直链 postMessage 回传顶层；
        本插件 @match 是全站，B站/腾讯等其它站的 iframe 播放器同样适用。
      - 修复 v2.0.43 回归：iframe 钩子生效后视频页 DY.media 也攒了杂音频，
        点「①视频下载」被误判成音频 —— 现按页面 URL 类型判定（/video/ 一定是视频）。
-     - 下载完成（新视野后台任务 done / 双击 bat）后自动打开所在文件夹。
-     v2.0.46：工具栏「完成 文件名」行可点击 —— 点击即打开所在文件夹并选中文件。 */
+     v2.0.46：工具栏「完成 文件名」行可点击 —— 点击即打开所在文件夹并选中文件。
+     v2.0.47：去掉下载完成自动弹的完成提示与自动打开文件夹（刷新页面不再打扰）；
+     需要时手动点击「完成 文件名」打开，打开失败会给出明确提示。 */
   var IS_TOP = (window.top === window);
 
   /* ============================================================
@@ -1040,7 +1041,11 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'X-XinVision-Token': 'xinvision-2026' },
         body: JSON.stringify({ file: String(file) })
-      }).catch(function () {});
+      }).then(function (r) { return r.json(); }).then(function (j) {
+        if (!(j && j.ok)) toast('打开文件夹失败：' + ((j && j.error) || '服务返回异常'), 4500);
+      }).catch(function () {
+        toast('打开文件夹失败：无法连接本地服务（新视野未启动？）', 4500);
+      });
     } catch (e) {}
   }
 
@@ -1066,12 +1071,7 @@
             window.mvtProg.title = '点击打开所在文件夹：' + String(c0.file).replace(/[\\/][^\\/]*$/, '');
             window.mvtProg.onclick = function () { mvtOpenFolder(String(c0.file)); };
           }
-          /* v2.0.44: notify once per task + auto open output folder */
-          if (c0.id && c0.id !== mvtDoneNotified) {
-            mvtDoneNotified = c0.id;
-            toast('下载完成：' + (c0.file ? String(c0.file).split(/[\\/]/).pop() : nm), 4500);
-            if (c0.file) mvtOpenFolder(String(c0.file));
-          }
+          /* v2.0.47: no auto completion toast / no auto explorer - manual click only */
         }
         else if (st === 'failed') txt = '失败 ' + String(c0.error || '').slice(0, 24);
         if (window.mvtProg) {
@@ -1098,7 +1098,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.46');
+    bar.setAttribute('data-mvt-ver', '2.0.47');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1108,7 +1108,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.46';
+    ver.textContent = 'v2.0.47';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
