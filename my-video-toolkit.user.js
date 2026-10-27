@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.42
+// @version      2.0.43
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载：① 当前页视频（抖音走本机新视野后台直提，其他站生成 yt-dlp 脚本）、② 任意链接、③ 音频下载（MP3，抖音后台直提/其他站 yt-dlp 转 MP3）。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -14,10 +14,13 @@
 (function () {
   'use strict';
 
-  /* v2.0.42：只在顶层页面运行。抖音的 CDN iframe（lf-*.yhgb-tn-static.com、
-     lf-zt.douyin.com 等）也会被 @match 命中，以前会在里面跑轮询、
-     报无害的 PNA(loopback) 权限噪音；iframe 里既没有工具栏也无需下载。 */
-  if (window.top !== window) return;
+  /* v2.0.43：精细 iframe 注入。抖音 CDN iframe（lf-*.yhgb-tn-static.com、
+     lf-zt.douyin.com 等）会被 @match 命中，播放器的媒体请求（note 完整
+     音频直链等）发生在这些 iframe 里，iframe 里也要装网络钩子才能抓到；
+     但 iframe 里不建工具栏、不跑轮询（无 PNA 噪音），钩子抓到的直链
+     postMessage 回传顶层合并。本插件 @match 是全站（任意 http/https 站点），
+     B站/腾讯等其它站的 iframe 播放器场景同样适用。 */
+  var IS_TOP = (window.top === window);
 
   /* ============================================================
    * 抖音数据钩子（保留）：页面内提取视频/音频直链（零 cookie）
@@ -38,6 +41,25 @@
    *   4) React fiber 上挂的 awemeInfo（当前播放视频）
    * ============================================================ */
   var DY = { map: {}, last: null, media: [] };   // aweme_id -> aweme 详情对象；media: 播放器音频直链
+
+  /* 媒体直链判定/记录（通用：mp3/m4a/aac/flac/wav/ogg，不限于抖音）。
+     v2.0.28 引入 audio hook 时这两个函数从未定义、钩子一直静默失败，
+     v2.0.43 补齐定义。 */
+  function dyIsMediaUrl(u) {
+    var s = String(u || '');
+    if (!/^https?:/i.test(s)) return false;
+    return /\.(mp3|m4a|aac|flac|wav|ogg|opus)(\?|$)/i.test(s);
+  }
+
+  function dyRecordMedia(u) {
+    try {
+      var s = String(u || '').split('#')[0];
+      if (!s || DY.media.indexOf(s) >= 0) return;
+      DY.media.push(s);
+      /* iframe 内钩子抓到：同步上报顶层合并（顶层按域名白名单校验来源） */
+      if (!IS_TOP) { try { window.top.postMessage({ __mvt: 'media', url: s }, '*'); } catch (e) {} }
+    } catch (e) {}
+  }
 
   function dyIsAwemeApi(u) {
     var s = String(u || '');
@@ -379,6 +401,23 @@
     }
   }
   hookNetwork();
+
+  /* 顶层：接收 iframe 钩子上报的媒体直链（只信媒体 CDN 域） */
+  if (IS_TOP) {
+    window.addEventListener('message', function (ev) {
+      try {
+        var d = ev.data;
+        if (!d || d.__mvt !== 'media') return;
+        var h = '';
+        try { h = new URL(ev.origin).hostname; } catch (e) {}
+        if (!/\.douyin\.com$|^douyin\.com$|\.yhgb-tn-static\.com$|\.pstatp\.com$|\.byteimg\.com$|\.ibytedtos\.com$/i.test(h)) return;
+        dyRecordMedia(d.url);
+      } catch (e) {}
+    });
+  }
+
+  /* iframe：网络钩子已装好，其余（UI/轮询/下载/播放控制）顶层专属 */
+  if (!IS_TOP) return;
 
   /* ================= 样式 ================= */
   var css = [
@@ -990,7 +1029,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.42');
+    bar.setAttribute('data-mvt-ver', '2.0.43');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1000,7 +1039,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.42';
+    ver.textContent = 'v2.0.43';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
