@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.49
-// @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载：① 当前页视频（抖音走本机新视野后台直提，其他站生成 yt-dlp 脚本）、② 任意链接、③ 音频下载（MP3，抖音后台直提/其他站 yt-dlp 转 MP3）。菜单固定向左展开，绝不超出屏幕右侧。
+// @version      2.0.50
+// @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载：一个「⬇ 下载」按钮智能判断—— 当前页有视频下视频、只有音乐自动下 MP3（抖音走本机新视野后台直提，其他站生成 yt-dlp 脚本）；工具菜单另有「通用下载脚本（粘链接）」和「音频下载（MP3）」。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
 // @run-at       document-start
@@ -26,7 +26,10 @@
      v2.0.48：轮询只允许顶层窗口运行 —— 修复 iframe（lf-zt.douyin.com 等）里
      每 3 秒 fetch 127.0.0.1 被 Chrome 的 loopback 限制拦截刷屏（ERR_FAILED/CORS）。
      v2.0.49：下载视频命名带标题（综合抖音优化插件优点）—— douyin_<id>_<标题>.mp4，
-     不再只有一串数字 ID；配合服务端 H.264 优先 + --fixup force，下载即能播且音画同步。 */
+     不再只有一串数字 ID；配合服务端 H.264 优先 + --fixup force，下载即能播且音画同步。
+     v2.0.50：下载按钮合一（借鉴抖音优化下载箭头）—— 一个「⬇ 下载」按钮点击即智能下载：
+     当前页有视频下视频、只有音乐（mp3）自动改下音频并提示；「通用下载脚本（粘链接）」
+     和「音频下载（MP3）」移入工具菜单备用。 */
   var IS_TOP = (window.top === window);
 
   /* ============================================================
@@ -1112,7 +1115,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.49';
+    ver.textContent = 'v2.0.50';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
@@ -1185,16 +1188,9 @@
     fltBtn.appendChild(mFlt);
     bar.appendChild(fltBtn);
 
-    /* --- 下载（三种模式） --- */
-    var dlBtn = mBtn('下载', true, 'dl-btn');
-    var mDl = document.createElement('div');
-    mDl.className = 'mvt-menu';
-    /* v2.0.42：只留真正能用的 yt-dlp 路径。抖音①③走本机新视野后台直提（不生成 bat），
-       其他站生成自举 yt-dlp 脚本；② 是粘任意链接的通用脚本；③ 是音频 MP3。 */
-    mDl.appendChild(mItem('① 视频下载（当前页·推荐）', function () { genDownBat(); }));
-    mDl.appendChild(mItem('② 通用下载脚本（粘链接）', function () { genDownBatGeneric(); }));
-    mDl.appendChild(mItem('③ 音频下载（MP3）', function () { genAudioBat(); }));
-    dlBtn.appendChild(mDl);
+    /* --- 下载（智能：一个「下载」按钮，视频/音乐自动判断，借鉴抖音优化的下载箭头） --- */
+    var dlBtn = mBtn('⬇ 下载', false, 'dl-btn');
+    dlBtn.addEventListener('click', function (e) { e.stopPropagation(); closeMenus(); genDownBat(); });
     bar.appendChild(dlBtn);
 
     /* --- 工具 --- */
@@ -1241,6 +1237,8 @@
       toast(cur.loop ? '循环播放：开' : '循环播放：关');
     }));
     mTool.appendChild(mSep());
+    mTool.appendChild(mItem('通用下载脚本（粘链接）', function () { genDownBatGeneric(); }));
+    mTool.appendChild(mItem('音频下载（MP3）', function () { genAudioBat(); }));
     mTool.appendChild(mItem('全部重置', function () {
       cur.__mvt = newState();
       cur.playbackRate = 1;
