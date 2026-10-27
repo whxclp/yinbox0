@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.41
-// @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关；⑤边播边录时也会把广告直接跳过、录出来不含广告）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载推荐用本机 yt-dlp 脚本（① 当前页 / ② 任意链接 / ⑥ 整段下完再剪 / ⑦ 去片头广告），兜底为分片合并与边播边录。菜单固定向左展开，绝不超出屏幕右侧。
+// @version      2.0.42
+// @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载：① 当前页视频（抖音走本机新视野后台直提，其他站生成 yt-dlp 脚本）、② 任意链接、③ 音频下载（MP3，抖音后台直提/其他站 yt-dlp 转 MP3）。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
 // @run-at       document-start
@@ -14,72 +14,13 @@
 (function () {
   'use strict';
 
-  /* ============================================================
-   * 分片捕获：必须在页面脚本执行前挂钩，所以 @run-at 是 document-start
-   * 思路：拦下 fetch / XHR，把视频音频分片的二进制先攒起来，
-   *      用户点「分片合并下载」时按序号排序拼接 —— 即「先下载完，再合并」。
-   * ============================================================ */
-  var CAP = {
-    on: true,
-    seq: 0,
-    items: [],            // {seq, url, ct, kind, idx, buf}
-    bytes: 0,
-    maxBytes: 1200 * 1024 * 1024,   // 缓存上限 1.2GB，超了只记 URL 不再占内存
-    overflow: false
-  };
-
-  /* B站 dash：文件名里的 5 位 30xxx 是轨 ID（<30200 视频、>=30200 音频）；
-     其余站点看 content-type；实在判不出来归 'unk'，绝不乱猜成 video */
-  function mediaKind(u, ct) {
-    var s = String(u || '');
-    var m = s.match(/(\d{5})\.m4s(\?|$)/i);
-    if (m) { return parseInt(m[1], 10) >= 30200 ? 'audio' : 'video'; }
-    var c = String(ct || '').toLowerCase();
-    if (/^audio\//.test(c)) return 'audio';
-    if (/^video\//.test(c)) return 'video';
-    if (/\.(m4s|ts)(\?|$)/i.test(s)) return 'unk';
-    return null;
-  }
-
-  /* 分片序号：range 参数 > 文件名数字；5 位 30xxx 是轨 ID 不是序号，要排除 */
-  function segIndex(u) {
-    var s = String(u || '');
-    if (/(\d{5})\.m4s(\?|$)/i.test(s)) return -1;
-    var m = s.match(/(\d+)\.(?:m4s|ts)(\?|$)/i);
-    if (m) return parseInt(m[1], 10);
-    m = s.match(/[?&](?:range|start|byte)[=_](\d+)/i);
-    if (m) return parseInt(m[1], 10);
-    return -1;
-  }
-
-  /* 从 Content-Range 取起始字节；B站 dash 是按 range 分段加载同一个大 m4s，
-     所以去重键必须是 url + 起始偏移，只按 url 去重会把后到的片段全丢掉 */
-  function rangeStart(r) {
-    try {
-      var cr = (r && r.headers && r.headers.get) ? r.headers.get('content-range') : '';
-      var m = String(cr || '').match(/bytes\s+(\d+)-/i);
-      if (m) return parseInt(m[1], 10);
-    } catch (e) {}
-    return -1;
-  }
-
-  function addSeg(u, ct, buf, start) {
-    var k = mediaKind(u, ct);
-    if (!k) return;
-    var st = (typeof start === 'number') ? start : -1;
-    for (var i = 0; i < CAP.items.length; i++) {
-      var it = CAP.items[i];
-      if (it.url === u && it.start === st) return;      // 去重：同 URL 同偏移
-    }
-    CAP.items.push({
-      seq: CAP.seq++, url: u, ct: ct || '', kind: k,
-      idx: segIndex(u), buf: buf || null, start: st
-    });
-    if (buf) CAP.bytes += buf.byteLength || 0;
-  }
+  /* v2.0.42：只在顶层页面运行。抖音的 CDN iframe（lf-*.yhgb-tn-static.com、
+     lf-zt.douyin.com 等）也会被 @match 命中，以前会在里面跑轮询、
+     报无害的 PNA(loopback) 权限噪音；iframe 里既没有工具栏也无需下载。 */
+  if (window.top !== window) return;
 
   /* ============================================================
-   * 抖音：页面上下文内提取视频直链（零 cookie）
+   * 抖音数据钩子（保留）：页面内提取视频/音频直链（零 cookie）
    * 背景：Edge 156 的 ABE（App-Bound Encryption）把 cookie 值加密成
    * v20 格式，SQLite 里 value 列全空，DPAPI 解不开；而带
    * --remote-debugging-port 启动 Edge 会让 ABE 校验失败、Edge 直接把
@@ -372,7 +313,6 @@
     if (!p || typeof p.then !== 'function') return p;
     return p.then(function (r) {
       try {
-        var ct = (r.headers && r.headers.get) ? (r.headers.get('content-type') || '') : '';
         /* 音频钩子：播放器请求的完整 MP3 直链（note 作品的声音在这里） */
         if (dyIsMediaUrl(url)) {
           var cc = r.clone();
@@ -380,21 +320,13 @@
             if (b && b.type && /audio/i.test(b.type)) dyRecordMedia(url);
           }).catch(function () {});
         }
-        if (!mediaKind(url, ct)) {
-          /* 抖音接口响应：clone 出来读 JSON，不影响页面自己拿到的 response */
-          if (CAP.on && dyIsAwemeApi(url)) {
-            var dj = r.clone();
-            if (dj.json) {
-              dj.json().then(dyIngestJson).catch(function () {});
-            }
+        /* 抖音接口响应：clone 出来读 JSON，不影响页面自己拿到的 response */
+        if (dyIsAwemeApi(url)) {
+          var dj = r.clone();
+          if (dj.json) {
+            dj.json().then(dyIngestJson).catch(function () {});
           }
-          return r;
         }
-        var st = rangeStart(r);
-        if (CAP.bytes >= CAP.maxBytes) { CAP.overflow = true; addSeg(url, ct, null, st); return r; }
-        var c = r.clone();
-        c.arrayBuffer().then(function (b) { addSeg(url, ct, b, st); })
-                        .catch(function () { addSeg(url, ct, null, st); });
       } catch (e) {}
       return r;
     }, function (e) { throw e; });
@@ -409,7 +341,7 @@
                : (input && input.url) ? input.url : '';
         var p;
         try { p = of.apply(this, arguments); } catch (e) { throw e; }
-        return CAP.on ? capFetch(url, p) : p;
+        return capFetch(url, p);
       };
     }
     /* --- XHR：response 多为 arraybuffer，直接取；否则只记 URL --- */
@@ -420,52 +352,33 @@
       P.open = function (m, u) { this.__mvtU = u; return oo.apply(this, arguments); };
       P.send = function () {
         var self = this;
-        if (CAP.on) {
-          this.addEventListener('load', function () {
-            try {
-              var ct = (self.getResponseHeader && self.getResponseHeader('content-type')) || '';
-              var u = self.__mvtU || '';
-              /* 抖音 /aweme/ 接口：解析 JSON 存直链（零 cookie 方案的数据源） */
-              if (CAP.on && dyIsAwemeApi(u)) {
-                try {
-                  var dr = self.response;
-                  if (typeof dr === 'string') dyIngestJson(JSON.parse(dr));
-                  else if (dr && typeof dr === 'object') dyIngestJson(dr);
-                  else if (self.responseText) dyIngestJson(JSON.parse(self.responseText));
-                } catch (e) {}
-                return;
-              }
-              if (dyIsMediaUrl(u)) {
-                try {
-                  var _xct = (self.getResponseHeader && self.getResponseHeader('content-type')) || '';
-                  if (/audio/i.test(_xct)) dyRecordMedia(u);
-                } catch (e) {}
-              }
-              if (dyIsMediaUrl(u)) {
-                try {
-                  var _xct = (self.getResponseHeader && self.getResponseHeader('content-type')) || '';
-                  if (/audio/i.test(_xct)) dyRecordMedia(u);
-                } catch (e) {}
-              }
-              if (!mediaKind(u, ct)) return;
-              var buf = null;
+        this.addEventListener('load', function () {
+          try {
+            var u = self.__mvtU || '';
+            /* 抖音 /aweme/ 接口：解析 JSON 存直链（零 cookie 方案的数据源） */
+            if (dyIsAwemeApi(u)) {
               try {
-                if (self.responseType === 'arraybuffer' && self.response &&
-                    self.response.byteLength) buf = self.response;
+                var dr = self.response;
+                if (typeof dr === 'string') dyIngestJson(JSON.parse(dr));
+                else if (dr && typeof dr === 'object') dyIngestJson(dr);
+                else if (self.responseText) dyIngestJson(JSON.parse(self.responseText));
               } catch (e) {}
-              var cr = '';
-              try { cr = self.getResponseHeader('content-range') || ''; } catch (e) {}
-              var mm = String(cr).match(/bytes\s+(\d+)-/i);
-              addSeg(u, ct, buf, mm ? parseInt(mm[1], 10) : -1);
-            } catch (e) {}
-          });
-        }
+              return;
+            }
+            /* 音频钩子：播放器请求的完整 MP3 直链（note 作品的声音在这里） */
+            if (dyIsMediaUrl(u)) {
+              try {
+                var _xct = (self.getResponseHeader && self.getResponseHeader('content-type')) || '';
+                if (/audio/i.test(_xct)) dyRecordMedia(u);
+              } catch (e) {}
+            }
+          } catch (e) {}
+        });
         return os.apply(this, arguments);
       };
     }
   }
   hookNetwork();
-  window.__mvtCap = CAP;   /* 控制台可查看分片情况 */
 
   /* ================= 样式 ================= */
   var css = [
@@ -496,9 +409,7 @@
     '  background:rgba(20,20,24,.95);color:#fff;padding:9px 18px;border-radius:8px;font-size:14px;',
     '  display:none;box-shadow:0 4px 16px rgba(0,0,0,.5);max-width:86vw;line-height:1.5;}',
     '.mvt-logo{color:#fff;font-size:11px;padding:0 4px;cursor:default;letter-spacing:.5px;}',
-    '.mvt-ver{color:#ffd166;font-size:10px;padding:0 4px 0 0;cursor:default;letter-spacing:.3px;opacity:.95;}',
-    '.mvt-stop{color:#fff;background:#d9483b;border-radius:6px;padding:5px 9px;font-size:12px;line-height:1;}',
-    '.mvt-stop:hover{background:#c33a2e;}'
+    '.mvt-ver{color:#ffd166;font-size:10px;padding:0 4px 0 0;cursor:default;letter-spacing:.3px;opacity:.95;}'
   ].join('');
 
   /* ================= 状态 ================= */
@@ -519,11 +430,6 @@
     toastTimer = setTimeout(function () { toastEl.style.display = 'none'; }, ms || 2600);
   }
 
-  function safeName() {
-    var t = (document.title || '').replace(/[\\/:*?"<>|]/g, '_').trim().slice(0, 50);
-    return t || ('视频_' + Date.now());
-  }
-
   function stamp() {
     var d = new Date(), p = function (n) { return n < 10 ? '0' + n : '' + n; };
     return d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '_' +
@@ -540,147 +446,8 @@
   }
 
   /* ================= 下载：入口 ================= */
-  function downloadVideo() {
-    var v = cur;
-    if (!v) return;
-    var src = v.currentSrc || v.src;
-    if (src && src.indexOf('http') === 0) {
-      toast('开始下载原文件…');
-      fetch(src, { credentials: 'include' }).then(function (r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        var type = r.headers.get('content-type') || '';
-        return r.blob().then(function (b) { saveBlob(b, guessName(src, type)); });
-      }).catch(function (e) {
-        if (CAP.items.length) {
-          toast('直链下载失败（多为跨域拦截），已捕获 ' + CAP.items.length + ' 个分片，可用「分片合并下载」', 4000);
-        } else {
-          toast('直链下载失败：' + e.message + '，可试「边播边录合成」', 4000);
-        }
-      });
-    } else if (src && (src.indexOf('blob:') === 0 || src.indexOf('data:') === 0)) {
-      if (CAP.items.length >= 2) {
-        toast('检测到 MSE 流，已捕获 ' + CAP.items.length + ' 个分片，建议用「分片合并下载」', 4000);
-      } else {
-        mergeRecord(v);
-      }
-    } else {
-      toast('找不到视频地址');
-    }
-  }
 
-  /* ================= 下载模式二：分片合并（先下完再拼） ================= */
-  function fetchOne(it) {
-    if (it.buf) return Promise.resolve(it.buf);
-    return fetch(it.url, { credentials: 'include' }).then(function (r) {
-      if (!r.ok) throw new Error(r.status);
-      return r.arrayBuffer();
-    });
-  }
-
-  /* 同一个 URL 被 range 切成多段时：
-     片段齐全且字节连续 -> 直接用缓存；否则整段重新 fetch 一次（不带 range），
-     免得拼出一个带空洞、播放到一半就断的文件 */
-  function normalize(list) {
-    var gmap = {}, order = [];
-    list.forEach(function (it) {
-      if (!gmap[it.url]) { gmap[it.url] = []; order.push(it.url); }
-      gmap[it.url].push(it);
-    });
-    var out = [];
-    order.forEach(function (u) {
-      var g = gmap[u].slice().sort(function (a, b) {
-        return (a.start < 0 ? 0 : a.start) - (b.start < 0 ? 0 : b.start);
-      });
-      if (g.length === 1) { out.push(g[0]); return; }
-      var ok = true, expect = 0;
-      for (var i = 0; i < g.length; i++) {
-        if (!g[i].buf || g[i].start < 0 || g[i].start !== expect) { ok = false; break; }
-        expect += g[i].buf.byteLength;
-      }
-      if (ok) {
-        g.forEach(function (x) { out.push(x); });
-      } else {
-        out.push({ seq: g[0].seq, url: u, ct: g[0].ct, kind: g[0].kind,
-                   idx: g[0].idx, buf: null, start: -1, whole: true });
-      }
-    });
-    out.sort(function (a, b) {
-      if (a.idx >= 0 && b.idx >= 0 && a.idx !== b.idx) return a.idx - b.idx;
-      return a.seq - b.seq;
-    });
-    return out;
-  }
-
-  function buildTrack(kind, raw, done) {
-    var list = normalize(raw);
-    var out = [], i = 0, miss = 0;
-    function step() {
-      if (segAbort) {   /* 用户点了「停止」：把已下到的部分先存下来 */
-        done(new Blob(out, { type: kind === 'audio' ? 'audio/mp4' : 'video/mp4' }), miss);
-        return;
-      }
-      if (i >= list.length) {
-        done(new Blob(out, { type: kind === 'audio' ? 'audio/mp4' : 'video/mp4' }), miss);
-        return;
-      }
-      var it = list[i++];
-      if (i % 10 === 0 || i === list.length) toast('正在取分片 ' + i + '/' + list.length);
-      fetchOne(it).then(function (b) {
-        if (segAbort) { step(); return; }
-        out.push(b); step();
-      }).catch(function () { if (segAbort) { step(); return; } miss++; step(); });
-    }
-    step();
-  }
-
-  function segDownload() {
-    if (!CAP.items.length) {
-      toast('还没捕获到分片。请刷新页面、让视频正常播放一段时间后再试', 4000);
-      return;
-    }
-    var kinds = {};
-    CAP.items.forEach(function (it) { (kinds[it.kind] = kinds[it.kind] || []).push(it); });
-    var keys = Object.keys(kinds);
-    var base = safeName() + '_' + stamp();
-    var doneCount = 0;
-    segRunning = true; segAbort = false; showStop(true);
-
-    keys.forEach(function (k) {
-      var list = kinds[k];
-      buildTrack(k, list, function (blob, miss) {
-        doneCount++;
-        var ext = (k === 'audio') ? 'm4a' : (k === 'unk') ? 'bin' : 'mp4';
-        saveBlob(blob, base + '_' + k + '.' + ext);
-        if (miss) toast('警告：' + k + ' 轨有 ' + miss + ' 个分片没取到，文件可能不完整', 5000);
-
-        if (doneCount === keys.length) {
-          segRunning = false; segAbort = false; showStop(false);
-          if (keys.length === 2) {
-            setTimeout(function () {
-              toast('已分别存下视频轨和音频轨。用 ffmpeg 合成完整文件：\n' +
-                    'ffmpeg -i ' + base + '_video.mp4 -i ' + base + '_audio.m4a -c copy out.mp4', 9000);
-            }, 1200);
-          }
-        }
-      });
-    });
-
-    if (CAP.overflow) {
-      toast('注意：分片体积超过缓存上限，部分需重新联网拉取', 4000);
-    }
-  }
-
-  function reportSeg() {
-    var n = CAP.items.length, v = 0, a = 0, cached = 0;
-    CAP.items.forEach(function (it) {
-      if (it.kind === 'video') v++; else a++;
-      if (it.buf) cached++;
-    });
-    toast('已捕获分片 ' + n + ' 个（视频 ' + v + ' / 音频 ' + a + '），已缓存 ' + cached +
-          ' 个，占用 ' + Math.round(CAP.bytes / 1048576) + ' MB' + (CAP.overflow ? '（已超限）' : ''), 5000);
-  }
-
-  /* 生成「自举」下载脚本：首次运行自动把 yt-dlp.exe 与 ffmpeg 下载到
+  /* ================= 生成「自举」下载脚本：首次运行自动把 yt-dlp.exe 与 ffmpeg 下载到
    * %LOCALAPPDATA%\mvt\bin，不依赖本机 Python / WinGet，重装系统后双击即用。
    * bakedUrl 非空 => 把链接烤进脚本；为空 => 运行时粘贴/拖放链接。
    * dyVid 非空（抖音页面内提取到的直链）=> 走零 cookie 直链分支。 */
@@ -909,401 +676,24 @@
     return L.join('\r\n') + '\r\n';
   }
 
-  function fmtTime(sec) {
-    sec = Math.max(0, Math.floor(sec || 0));
-    var h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
-    var p = function (n) { return n < 10 ? '0' + n : '' + n; };
-    return p(h) + ':' + p(m) + ':' + p(s);
-  }
-
-  /* ================= 片段下载：暂停→记录当前播放点→前后各留 N 秒 =================
-   * 先下完整视频到临时目录，再用 ffmpeg 按时间精确裁剪出片段（全站通用、边界精确）。
-   * 自举补齐 yt-dlp/ffmpeg，重装系统后也能用。 */
-  function buildYtDlpSegBat(startSec, endSec, bakedUrl, pageUrl) {
-    var S = fmtTime(startSec), E = fmtTime(endSec);
-    /* 防盗链：直接拿到的 bilivideo CDN 直链必须同时带浏览器 UA + B站 Referer，
-     * 只带 Referer 也是 403（已实测）。所以烤两个 Referer，第一个失败自动换第二个重试。 */
-    var isCdn = /bilivideo\.com|bilivod\.com|bilicdn/i.test(bakedUrl);
-    var pg = (pageUrl && /^https?:/i.test(pageUrl)) ? String(pageUrl).split('#')[0] : 'https://www.bilibili.com/';
-    var REF1 = isCdn ? 'https://www.bilibili.com/' : pg;
-    var REF2 = isCdn ? pg : 'https://www.bilibili.com/';
-    var UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36';
-    function pad(n) { return n < 10 ? '0' + n : '' + n; }
-    function fn(sec) {
-      sec = Math.max(0, Math.floor(sec || 0));
-      return pad(Math.floor(sec / 3600)) + pad(Math.floor((sec % 3600) / 60)) + pad(sec % 60);
-    }
-    var outName = 'clip_' + fn(startSec) + '-' + fn(endSec) + '.mp4';
-    var L = [
-      '@echo off',
-      'rem This .bat is intentionally ASCII-only (English prompts). cmd.exe has a 4KB read-buffer',
-      'rem bug with chcp 65001 + UTF-8: a multi-byte char straddling the boundary splits a Chinese',
-      'rem echo line and runs the tail as a command. ASCII avoids the bug entirely.',
-      '',
-      'set "TOOLS=%LOCALAPPDATA%\\mvt\\bin"',
-      'if not exist "%TOOLS%" mkdir "%TOOLS%" >nul 2>nul',
-      'set "YTDLP=%TOOLS%\\yt-dlp.exe"',
-      'if not exist "%YTDLP%" (',
-      '  echo [mvt] First run: downloading yt-dlp ...',
-      '  curl.exe -L --ssl-no-revoke -o "%YTDLP%" "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"',
-      '  for %%F in ("%YTDLP%") do if %%~zF LSS 1000000 del /f /q "%YTDLP%" >nul 2>nul',
-      "  if not exist \"%YTDLP%\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe' -OutFile '%YTDLP%' -UseBasicParsing\"",
-      '  del /f /q "%YTDLP%:Zone.Identifier" 2>nul',
-      ')',
-      'if not exist "%YTDLP%" (',
-      '  echo [mvt] yt-dlp download failed, check your network and retry.',
-      '  pause & exit /b 1',
-      ')',
-      '',
-      'set "FFDIR=%TOOLS%\\ffmpeg\\bin"',
-      'set "FFZIP=%TOOLS%\\ffmpeg.zip"',
-      'if not exist "%FFDIR%\\ffmpeg.exe" (',
-      '  echo [mvt] First run: downloading ffmpeg ^(~190MB, please wait^) ...',
-      '  curl.exe -L --ssl-no-revoke -o "%FFZIP%" "https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip"',
-      '  for %%F in ("%FFZIP%") do if %%~zF LSS 1000000 del /f /q "%FFZIP%" >nul 2>nul',
-      "  if not exist \"%FFZIP%\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip' -OutFile '%FFZIP%' -UseBasicParsing\"",
-      '  if exist "%FFZIP%" (',
-      '    echo [mvt] Extracting ffmpeg ...',
-      '    if not exist "%TOOLS%\\ffmpeg_extract" mkdir "%TOOLS%\\ffmpeg_extract"',
-      '    tar -xf "%FFZIP%" -C "%TOOLS%\\ffmpeg_extract"',
-      '    for /d %%D in ("%TOOLS%\\ffmpeg_extract\\ffmpeg-*") do (',
-      '      if exist "%%D\\bin\\ffmpeg.exe" xcopy /E /Y "%%D\\*" "%TOOLS%\\ffmpeg\\" >nul',
-      '    )',
-      '    rd /s /q "%TOOLS%\\ffmpeg_extract" >nul 2>nul',
-      '    del /f /q "%FFZIP%" >nul 2>nul',
-      '  )',
-      ')',
-      'if not exist "%FFDIR%\\ffmpeg.exe" (',
-      '  echo [mvt] ffmpeg download/extract failed, check your network and retry.',
-      '  del /f /q "%FFZIP%" >nul 2>nul',
-      '  pause & exit /b 1',
-      ')',
-      '',
-      'set "OUTDIR=%USERPROFILE%\\Desktop\\VideoDownloads"',
-      'if not exist "%OUTDIR%" mkdir "%OUTDIR%" >nul 2>nul',
-      'set "URL=' + bakedUrl + '"',
-      'if "%URL%"=="" (',
-      '  echo  [mvt] URL is empty.',
-      '  pause & exit /b 1',
-      ')',
-      '',
-      'set "TMPD=%OUTDIR%\\__seg_tmp"',
-      'if not exist "%TMPD%" mkdir "%TMPD%"',
-      'set "UA=' + UA + '"',
-      'set "REF1=' + REF1 + '"',
-      'set "REF2=' + REF2 + '"',
-      'echo.',
-      'echo  [mvt] Step 1/2: downloading full video to temp dir...',
-      '"%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --user-agent "%UA%" --referer "%REF1%" -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"',
-      'set "FULL="',
-      'for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "FULL=%%~fF"',
-      'if not defined FULL (',
-      '  echo  [mvt] First attempt failed ^(maybe hotlink-protected^); retrying with Referer=' + REF2 + ' ...',
-      '  "%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --user-agent "%UA%" --referer "%REF2%" -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"',
-      '  for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "FULL=%%~fF"',
-      ')',
-      /* 第三招：奇艺/腾讯/优酷这类必须登录才给视频，用浏览器已登录的 cookie 再试一次 */
-      'if not defined FULL (',
-      '  echo  [mvt] Still failing; retrying with browser login state ^(Edge cookies^) ...',
-      '  echo  [mvt] Force-closing Edge to unlock its cookie DB ^(your open tabs will close; Edge offers to restore them on next launch^) ...',
-      '  taskkill /F /IM msedge.exe >nul 2>nul',
-      '  ping -n 2 127.0.0.1 >nul',
-      '  taskkill /F /IM msedge.exe >nul 2>nul',
-      '  "%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --cookies-from-browser edge -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"',
-      '  for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "FULL=%%~fF"',
-      ')',
-      'if not defined FULL (',
-      '  echo  [mvt] Full video download failed, see info above.',
-      '  echo  [mvt] If link has signed params ^(deadline/e=^), it may have expired: replay it on the page then regenerate the script.',
-      '  pause & exit /b 1',
-      ')',
-      'echo.',
-      'echo  [mvt] Step 2/2: ffmpeg precise cut ' + S + ' to ' + E + ', saving as ' + outName,
-      '"%FFDIR%\\ffmpeg.exe" -ss ' + S + ' -to ' + E + ' -i "%FULL%" -c:v libx264 -c:a aac -preset veryfast "%OUTDIR%\\' + outName + '"',
-      'echo.',
-      'if errorlevel 1 ( echo  [mvt] Cut failed, full video kept in %TMPD% ) else ( echo  [mvt] Done: %OUTDIR%\\' + outName + ' )',
-      'del /f /q "%TMPD%\\full.*" 2>nul',
-      'rd /s /q "%TMPD%" 2>nul',
-      'pause'
-    ];
-    return L.join('\r\n') + '\r\n';
-  }
-
-  function genSegBat() {
-    var v = cur;
-    if (!v || !v.currentTime) { toast('没有正在播放的视频，无法定位播放点', 3000); return; }
-    var ct = v.currentTime;
-    var page = String(location.href || '').split('#')[0];
-    var url = page;
-    if (!/bilibili\.com/i.test(url) && !/douyin\.com/i.test(url) && cur) {
-      var s = cur.currentSrc || cur.src || '';
-      if (s && s.indexOf('http') === 0) url = s;
-    }
-    if (!url) { toast('拿不到视频地址', 3000); return; }
-    showSegPanel(ct, url, page);
-  }
-
-  function showSegPanel(ct, url, page) {
-    var mask = document.createElement('div');
-    mask.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:2147483646;';
-    var card = document.createElement('div');
-    card.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;color:#222;'
-      + 'border:1px solid #ccc;border-radius:10px;padding:18px 20px;z-index:2147483647;'
-      + 'font:14px/1.6 system-ui,sans-serif;box-shadow:0 8px 30px rgba(0,0,0,.25);min-width:300px;';
-    card.innerHTML =
-      '<div style="font-weight:700;margin-bottom:10px;">片段下载 · 当前播放点 <span style="color:#c33a2e;">'
-      + fmtTime(ct) + '</span></div>'
-      + '<div style="margin:6px 0;">前留 <input id="mvtSegB" type="number" value="30" min="0" style="width:64px;"> 秒</div>'
-      + '<div style="margin:6px 0;">后留 <input id="mvtSegA" type="number" value="30" min="0" style="width:64px;"> 秒</div>'
-      + '<div style="margin-top:10px;color:#888;font-size:12px;">将下载：<span id="mvtSegPrev"></span>（整段下完再用 ffmpeg 精确裁剪）</div>'
-      + '<div style="margin-top:14px;text-align:right;">'
-      + '<button id="mvtSegCancel" style="background:#eee;color:#333;border:0;border-radius:6px;padding:6px 14px;cursor:pointer;">取消</button>'
-      + '<button id="mvtSegOk" style="background:#4ec98a;color:#fff;border:0;border-radius:6px;padding:6px 14px;cursor:pointer;margin-left:8px;">生成下载脚本</button>'
-      + '</div>';
-    function close() { if (mask.parentNode) mask.parentNode.removeChild(mask); }
-    mask.appendChild(card);
-    document.body.appendChild(mask);
-    function upd() {
-      var b = parseFloat(document.getElementById('mvtSegB').value) || 0;
-      var a = parseFloat(document.getElementById('mvtSegA').value) || 0;
-      document.getElementById('mvtSegPrev').textContent =
-        fmtTime(Math.max(0, ct - b)) + ' ~ ' + fmtTime(ct + a);
-    }
-    document.getElementById('mvtSegB').addEventListener('input', upd);
-    document.getElementById('mvtSegA').addEventListener('input', upd);
-    document.getElementById('mvtSegCancel').addEventListener('click', close);
-    document.getElementById('mvtSegOk').addEventListener('click', function () {
-      var b = parseFloat(document.getElementById('mvtSegB').value) || 0;
-      var a = parseFloat(document.getElementById('mvtSegA').value) || 0;
-      var start = Math.max(0, Math.floor(ct - b));
-      var end = Math.floor(ct + a);
-      var bat = buildYtDlpSegBat(start, end, url, page);
-      saveBlob(new Blob([bat], { type: 'application/octet-stream' }), '片段下载.bat');
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(bat).then(
-          function () { close(); toast('已生成「片段下载.bat」并复制，双击即下 ' + fmtTime(start) + '~' + fmtTime(end) + '（首次自动拉依赖）', 6000); },
-          function () { close(); toast('已生成「片段下载.bat」，双击即下 ' + fmtTime(start) + '~' + fmtTime(end), 4000); }
-        );
-      } else {
-        close(); toast('已生成「片段下载.bat」，双击即下 ' + fmtTime(start) + '~' + fmtTime(end), 4000);
-      }
-    });
-    mask.addEventListener('click', function (e) { if (e.target === mask) close(); });
-    upd();
-  }
-
-  /* ================= 去片头广告：跳过前 N 秒 =================
-   * 两种用法：① 双击后粘贴链接（先下载再裁）；② 把本地视频文件拖到生成的 bat 上直接裁。
-   *
-   * 【裁剪写法实测结论】（源 60s / GOP 10s / -ss 7，本机 ffmpeg N-128013 实测）
-   *   A: -ss 前置 + -c copy + avoid_negative_ts → 输出 60s，根本没裁（退到上一个关键帧后全部保留）✗
-   *   B: -ss 前置 + -c copy（不带 avoid_negative_ts）→ 时长对但首帧非关键帧，开头花屏 ✗
-   *   C: -ss 前置 + 全重编码 + avoid_negative_ts → 53.03s，首帧关键帧，音视频同步 ✓（默认采用）
-   *   D: -ss 前置 + 视频重编 + 音频 copy → 音频 pts 从 0 起、视频从 7 起，音画错位 7 秒 ✗
-   *   E: -ss 后置 + -c copy + avoid_negative_ts → 52.98s，首帧是关键帧，但开头静止 0~GOP 秒 ⭕（极速档）
-   * 结论：想要精确+干净必须重编码；音频绝不能用 -c copy（会不跟着裁）。 */
-  function buildYtDlpAdBat(skipSec, bakedUrl, pageUrl, mode) {
-    var fast = (mode === 'fast');
-    var skip = fmtTime(skipSec);
-    function pad(n) { return n < 10 ? '0' + n : '' + n; }
-    function fn(sec) {
-      sec = Math.max(0, Math.floor(sec || 0));
-      return pad(Math.floor(sec / 3600)) + pad(Math.floor((sec % 3600) / 60)) + pad(sec % 60);
-    }
-    var outName = 'no_ad_' + fn(skipSec) + (fast ? '_fast' : '') + '.mp4';
-    var isCdn = /bilivideo\.com|bilivod\.com|bilicdn/i.test(bakedUrl || '');
-    var pg = (pageUrl && /^https?:/i.test(pageUrl)) ? String(pageUrl).split('#')[0] : 'https://www.bilibili.com/';
-    var REF1 = isCdn ? 'https://www.bilibili.com/' : pg;
-    var REF2 = isCdn ? pg : 'https://www.bilibili.com/';
-    var UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36';
-    var L = [
-      '@echo off',
-      'rem This .bat is intentionally ASCII-only (English prompts). cmd.exe has a 4KB read-buffer',
-      'rem bug with chcp 65001 + UTF-8: a multi-byte char straddling the boundary splits a Chinese',
-      'rem echo line and runs the tail as a command. ASCII avoids the bug entirely.',
-      '',
-      'set "TOOLS=%LOCALAPPDATA%\\mvt\\bin"',
-      'if not exist "%TOOLS%" mkdir "%TOOLS%" >nul 2>nul',
-      'set "YTDLP=%TOOLS%\\yt-dlp.exe"',
-      'if not exist "%YTDLP%" (',
-      '  echo [mvt] First run: downloading yt-dlp ...',
-      '  curl.exe -L --ssl-no-revoke -o "%YTDLP%" "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"',
-      '  for %%F in ("%YTDLP%") do if %%~zF LSS 1000000 del /f /q "%YTDLP%" >nul 2>nul',
-      "  if not exist \"%YTDLP%\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe' -OutFile '%YTDLP%' -UseBasicParsing\"",
-      '  del /f /q "%YTDLP%:Zone.Identifier" 2>nul',
-      ')',
-      'if not exist "%YTDLP%" (',
-      '  echo [mvt] yt-dlp download failed, check your network and retry.',
-      '  pause & exit /b 1',
-      ')',
-      '',
-      'set "FFDIR=%TOOLS%\\ffmpeg\\bin"',
-      'set "FFZIP=%TOOLS%\\ffmpeg.zip"',
-      'if not exist "%FFDIR%\\ffmpeg.exe" (',
-      '  echo [mvt] First run: downloading ffmpeg ^(~190MB, please wait^) ...',
-      '  curl.exe -L --ssl-no-revoke -o "%FFZIP%" "https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip"',
-      '  for %%F in ("%FFZIP%") do if %%~zF LSS 1000000 del /f /q "%FFZIP%" >nul 2>nul',
-      "  if not exist \"%FFZIP%\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip' -OutFile '%FFZIP%' -UseBasicParsing\"",
-      '  if exist "%FFZIP%" (',
-      '    echo [mvt] Extracting ffmpeg ...',
-      '    if not exist "%TOOLS%\\ffmpeg_extract" mkdir "%TOOLS%\\ffmpeg_extract"',
-      '    tar -xf "%FFZIP%" -C "%TOOLS%\\ffmpeg_extract"',
-      '    for /d %%D in ("%TOOLS%\\ffmpeg_extract\\ffmpeg-*") do (',
-      '      if exist "%%D\\bin\\ffmpeg.exe" xcopy /E /Y "%%D\\*" "%TOOLS%\\ffmpeg\\" >nul',
-      '    )',
-      '    rd /s /q "%TOOLS%\\ffmpeg_extract" >nul 2>nul',
-      '    del /f /q "%FFZIP%" >nul 2>nul',
-      '  )',
-      ')',
-      'if not exist "%FFDIR%\\ffmpeg.exe" (',
-      '  echo [mvt] ffmpeg download/extract failed, check your network and retry.',
-      '  del /f /q "%FFZIP%" >nul 2>nul',
-      '  pause & exit /b 1',
-      ')',
-      '',
-      'set "OUTDIR=%USERPROFILE%\\Desktop\\VideoDownloads"',
-      'if not exist "%OUTDIR%" mkdir "%OUTDIR%" >nul 2>nul',
-      'set "SKIP=' + skip + '"',
-      'set "UA=' + UA + '"',
-      'set "REF1=' + REF1 + '"',
-      'set "REF2=' + REF2 + '"',
-      'set "INPUT=%~1"',
-      'set "TMPD=%OUTDIR%\\__ad_tmp"',
-      ''
-    ];
-    if (bakedUrl) {
-      L.push('set "URL=' + bakedUrl + '"');
-    } else {
-      L.push('set "URL="');
-    }
-    L.push('set "SRC="');
-    L.push('if exist "%INPUT%" set "SRC=%INPUT%"');
-    L.push('if defined SRC (');
-    L.push('  echo.');
-    L.push('  echo  [mvt] Processing local file directly: %SRC%');
-    L.push(') else (');
-    L.push('  if "%URL%"=="" (');
-    L.push('    echo.');
-    L.push('    echo  [mvt] Paste video URL ^(or drag a local video file onto this .bat^) then Enter:');
-    L.push('    set /p "URL=> "');
-    L.push('  )');
-    L.push('  if "%URL%"=="" (');
-    L.push('    echo  [mvt] Neither local file nor URL given, exiting.');
-    L.push('    pause & exit /b 1');
-    L.push('  )');
-    L.push('  if not exist "%TMPD%" mkdir "%TMPD%"');
-    L.push('  echo.');
-    L.push('  echo  [mvt] Step 1/2: downloading full video to temp dir...');
-    L.push('  "%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --user-agent "%UA%" --referer "%REF1%" -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"');
-    L.push('  for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "SRC=%%~fF"');
-    L.push('  if not defined SRC (');
-    L.push('    echo  [mvt] First attempt failed ^(maybe hotlink-protected^); retrying with Referer=' + REF2 + ' ...');
-    L.push('    "%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --user-agent "%UA%" --referer "%REF2%" -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"');
-    L.push('    for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "SRC=%%~fF"');
-    L.push('  )');
-    /* 第三招：奇艺/腾讯/优酷这类必须登录才给视频，用浏览器已登录的 cookie 再试一次 */
-    L.push('  if not defined SRC (');
-    L.push('    echo  [mvt] Still failing; retrying with browser login state ^(Edge cookies^) ...');
-    L.push('    echo  [mvt] Force-closing Edge to unlock its cookie DB ^(your open tabs will close; Edge offers to restore them on next launch^) ...');
-    L.push('    taskkill /F /IM msedge.exe >nul 2>nul');
-    L.push('    ping -n 2 127.0.0.1 >nul');
-    L.push('    taskkill /F /IM msedge.exe >nul 2>nul');
-    L.push('    "%YTDLP%" --no-playlist -f "bv*+ba/b" --merge-output-format mp4 --ffmpeg-location "%FFDIR%" --retries 10 --fragment-retries 10 --cookies-from-browser edge -o "%TMPD%\\full.%%(ext)s" --no-mtime "%URL%"');
-    L.push('    for %%F in ("%TMPD%\\full.*") do if /i not "%%~xF"==".part" set "SRC=%%~fF"');
-    L.push('  )');
-    L.push(')');
-    L.push('if not defined SRC (');
-    L.push('  echo  [mvt] Could not get video source, see info above.');
-    L.push('  echo  [mvt] iQiyi/Tencent/Youku need Edge login; the script retries with login state.');
-    L.push('  echo  [mvt] If still failing, use 5^) live-record ^(it auto-skips ads while recording^).');
-    L.push('  pause & exit /b 1');
-    L.push(')');
-    L.push('echo.');
-    if (fast) {
-      L.push('echo  [mvt] Step 2/2: skip intro ' + skip + '^(no re-encode, instant^)...');
-      L.push('"%FFDIR%\\ffmpeg.exe" -i "%SRC%" -ss ' + skip + ' -c copy -avoid_negative_ts make_zero -movflags +faststart "%OUTDIR%\\' + outName + '"');
-    } else {
-      L.push('echo  [mvt] Step 2/2: skip intro ' + skip + '^(re-encode, frame-accurate, please wait for long videos^)...');
-      L.push('"%FFDIR%\\ffmpeg.exe" -ss ' + skip + ' -i "%SRC%" -c:v libx264 -preset veryfast -crf 20 -c:a aac -b:a 192k -avoid_negative_ts make_zero -movflags +faststart "%OUTDIR%\\' + outName + '"');
-    }
-    L.push('echo.');
-    L.push('if errorlevel 1 ( echo  [mvt] Failed, see info above. ) else ( echo  [mvt] Done: %OUTDIR%\\' + outName + ' )');
-    L.push('if defined TMPD rd /s /q "%TMPD%" 2>nul');
-    L.push('pause');
-    return L.join('\r\n') + '\r\n';
-  }
-
-  function genAdBat() {
-    var url = '';
-    var page = String(location.href || '').split('#')[0];
-    var v = cur;
-    if (v) {
-      var s = v.currentSrc || v.src || '';
-      if (/bilibili\.com/i.test(page)) url = page;
-      else if (s && s.indexOf('http') === 0) url = s;
-    }
-    showAdPanel(url, page);
-  }
-
-  function showAdPanel(url, page) {
-    var mask = document.createElement('div');
-    mask.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:2147483646;';
-    var card = document.createElement('div');
-    card.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;color:#222;'
-      + 'border:1px solid #ccc;border-radius:10px;padding:18px 20px;z-index:2147483647;'
-      + 'font:14px/1.6 system-ui,sans-serif;box-shadow:0 8px 30px rgba(0,0,0,.25);min-width:320px;';
-    card.innerHTML =
-      '<div style="font-weight:700;margin-bottom:10px;">去片头广告</div>'
-      + '<div style="margin:6px 0;">跳过前 <input id="mvtAdS" type="number" value="90" min="0" step="1" style="width:70px;"> 秒</div>'
-      + '<div style="margin:10px 0 4px;font-size:13px;">裁剪方式</div>'
-      + '<label style="display:block;font-size:12px;margin:3px 0;cursor:pointer;">'
-      + '<input type="radio" name="mvtAdMode" value="accurate" checked> 精确（重编码，分秒不差；1 小时片约几分钟）</label>'
-      + '<label style="display:block;font-size:12px;margin:3px 0;cursor:pointer;">'
-      + '<input type="radio" name="mvtAdMode" value="fast"> 极速（不重编码，秒级完成；开头可能静止几秒）</label>'
-      + '<div style="margin-top:10px;color:#888;font-size:12px;">生成后：双击 bat 粘贴链接下载，或把本地视频文件拖到 bat 上直接裁。</div>'
-      + '<div style="margin-top:6px;color:#888;font-size:12px;">不重编码无法精确落点（要对齐关键帧），所以默认走重编码。</div>'
-      + '<div style="margin-top:14px;text-align:right;">'
-      + '<button id="mvtAdCancel" style="background:#eee;color:#333;border:0;border-radius:6px;padding:6px 14px;cursor:pointer;">取消</button>'
-      + '<button id="mvtAdOk" style="background:#4ec98a;color:#fff;border:0;border-radius:6px;padding:6px 14px;cursor:pointer;margin-left:8px;">生成脚本</button>'
-      + '</div>';
-    function close() { if (mask.parentNode) mask.parentNode.removeChild(mask); }
-    mask.appendChild(card);
-    document.body.appendChild(mask);
-    document.getElementById('mvtAdCancel').addEventListener('click', close);
-    document.getElementById('mvtAdOk').addEventListener('click', function () {
-      var sk = Math.max(0, Math.floor(parseFloat(document.getElementById('mvtAdS').value) || 0));
-      var md = 'accurate';
-      var rs = document.getElementsByName('mvtAdMode');
-      for (var i = 0; i < rs.length; i++) if (rs[i].checked) md = rs[i].value;
-      var bat = buildYtDlpAdBat(sk, url, page, md);
-      saveBlob(new Blob([bat], { type: 'application/octet-stream' }), '去片头广告.bat');
-      var tip = '已生成「去片头广告.bat」：跳过前 ' + sk + ' 秒（' + (md === 'fast' ? '极速' : '精确') + '）';
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(bat).then(
-          function () { close(); toast(tip + '，已复制；可拖本地文件进去', 6000); },
-          function () { close(); toast(tip, 4000); }
-        );
-      } else {
-        close(); toast(tip, 4000);
-      }
-    });
-    mask.addEventListener('click', function (e) { if (e.target === mask) close(); });
-  }
 
   /* ================= 下载模式四：生成本地下载脚本（yt-dlp，最稳） =================
    * 把「当前视频 URL」烤进一个自举 .bat：双击即用，首次运行自动补齐 yt-dlp/ffmpeg，
    * 不依赖本机 Python / WinGet，重装系统后也能用。等价桌面那个 视频下载合并.bat。 */
-  /* v2.0.34 抖音后台下载：直链提交给新视野本地服务（127.0.0.1:18322），不生成 bat */
-  function mvtServerSubmit(url, title, referer, out) {
+  /* v2.0.34 抖音后台下载：直链提交给新视野本地服务（127.0.0.1:18322），不生成 bat。
+     v2.0.42 新增 audio 参数：true = 仅音频（服务端 yt-dlp 转 MP3） */
+  function mvtServerSubmit(url, title, referer, out, audio) {
     return fetch('http://127.0.0.1:18322/api/download', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-XinVision-Token': 'xinvision-2026' },
-      body: JSON.stringify({ url: url, title: title, referer: referer, out_template: out })
+      body: JSON.stringify({ url: url, title: title, referer: referer, out_template: out, audio: !!audio })
     }).then(function (r) { return r.json(); })
       .catch(function () { return { ok: false, error: 'service-unreachable' }; });
   }
 
-  function mvtDouyinBackground(url, dyId, dyVid) {
+  /* audioOnly=true（③ 音频下载）：video 页从视频直链提取音轨转 MP3；
+     note 页本来就是音频直链（保持原格式，行为不变） */
+  function mvtDouyinBackground(url, dyId, dyVid, audioOnly) {
     var ref = String(location.href || url);
     var desc0 = (dyVid && dyVid.desc) || document.title || 'douyin';
     var id0 = dyId || '';
@@ -1328,14 +718,19 @@
           subs.push({ url: segs[si], out: 'douyin_music_' + (segs.length > 1 ? (si + 1) : (id0 || 'note')) + '.%(ext)s' });
         }
       } else if (dv && dv.url) {
-        subs.push({ url: dv.url, out: 'douyin_' + (id0 || 'video') + '.%(ext)s' });
+        var key = id0 || 'video';
+        subs.push({
+          url: dv.url,
+          out: audioOnly ? ('douyin_music_' + key + '.%(ext)s') : ('douyin_' + key + '.%(ext)s'),
+          audio: !!audioOnly
+        });
       } else {
         toast('未提取到直链，请刷新页面后重试', 4000);
         return;
       }
       var done = 0, total = subs.length;
       subs.forEach(function (sb) {
-        mvtServerSubmit(sb.url, desc, ref, sb.out).then(function (res) {
+        mvtServerSubmit(sb.url, desc, ref, sb.out, sb.audio).then(function (res) {
           done++;
           if (res && res.ok) toast('后台下载已提交：' + sb.out + '（' + done + '/' + total + '）', 4500);
           else toast('提交失败：' + ((res && res.error) || '新视野服务未启动？') + '：' + sb.out, 5000);
@@ -1408,142 +803,118 @@
     }
   }
 
-  /* ================= 下载模式三：边播边录（兜底，已修多个坑） ================= */
-  var mvtRecording = false;
-  var segRunning = false, segAbort = false;   /* 分片下载进行中 / 用户取消 */
-  var mvtStopFn = null;                       /* 录制进行时的停止回调 */
-  var stopBtn = null;                         /* 工具栏上的「停止」按钮 */
-
-  function showStop(show) {
-    if (stopBtn) stopBtn.style.display = show ? '' : 'none';
+  /* ================= 下载模式六：音频下载（MP3） =================
+   * 抖音：提取直链提交新视野后台（audio 模式，服务端 yt-dlp 转 MP3）；
+   * 其他站：生成「音频下载.bat」（yt-dlp -f ba/b -x --audio-format mp3）。 */
+  function genAudioBat() {
+    var url = String(location.href || '').split('#')[0];
+    var isDouyin = /douyin\.com/i.test(location.href) || /douyin\.com/i.test(url);
+    var dyId = '', dyVid = null;
+    if (isDouyin) {
+      var m = url.match(/[?&]modal_id=(\d+)/i);
+      if (m) { url = 'https://www.douyin.com/video/' + m[1]; }
+      var idm = url.match(/\/(?:video|note)\/(\d+)/);
+      if (idm) dyId = idm[1];
+      dyVid = dyGetVideo(dyId);
+      if (!dyVid && !dyId) { toast('抖音链接不是视频页，请打开具体视频后再试', 4000); return; }
+      /* 音频模式：video 页从视频直链提取音轨转 MP3；note 页本就是音频直链 */
+      mvtDouyinBackground(url, dyId, dyVid, true);
+      return;
+    }
+    /* 通用站：生成音频 bat（yt-dlp 转 MP3） */
+    var bat = buildAudioBat(url || '');
+    saveBlob(new Blob([bat], { type: 'application/octet-stream' }), '音频下载.bat');
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(bat).then(
+        function () { toast('已生成「音频下载.bat」并复制：yt-dlp 转 MP3，首次自动拉依赖', 6000); },
+        function () { toast('已生成「音频下载.bat」，双击即下载转 MP3', 4000); }
+      );
+    } else {
+      toast('已生成「音频下载.bat」，双击即下载转 MP3', 4000);
+    }
   }
-  function mergeRecord(v) {
-    if (!v) return;
-    if (mvtRecording) { toast('正在合成中，请稍候'); return; }
-    if (!window.MediaRecorder) { toast('浏览器不支持录制合成'); return; }
 
-    var stream;
-    try {
-      stream = v.captureStream ? v.captureStream()
-             : (v.mozCaptureStream ? v.mozCaptureStream() : null);
-    } catch (e) { toast('该视频受保护，无法捕获合成'); return; }
-    if (!stream || !stream.getVideoTracks().length) { toast('无法捕获视频流，无法合成'); return; }
-
-    var mime = '';
-    ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'].forEach(function (t) {
-      if (!mime && window.MediaRecorder.isTypeSupported(t)) mime = t;
-    });
-    var rec;
-    try { rec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined); }
-    catch (e) { toast('录制器启动失败'); return; }
-
-    mvtRecording = true;
-    var chunks = [];
-    var wasRate = v.playbackRate, wasMuted = v.muted, wasVol = v.volume, wasLoop = v.loop;
-    var stopped = false, iv = null, hardStop = null, visFn = null;
-
-    function cleanup() {
-      mvtRecording = false;
-      mvtStopFn = null;
-      showStop(false);
-      clearInterval(iv); clearTimeout(hardStop);
-      v.playbackRate = wasRate; v.muted = wasMuted; v.volume = wasVol; v.loop = wasLoop;
-      if (visFn) document.removeEventListener('visibilitychange', visFn);
-      /* 释放捕获流，否则元素声音可能被劫持变哑 */
-      try { stream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {}
+  /* 生成「音频下载」自举脚本：yt-dlp 转 MP3（首次自动拉 yt-dlp/ffmpeg）。
+   * bakedUrl 非空 => 烤进链接；为空 => 运行时粘贴/拖放。 */
+  function buildAudioBat(bakedUrl) {
+    var UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36';
+    var ref = (bakedUrl && /^https?:/i.test(bakedUrl)) ? String(bakedUrl).split('#')[0] : 'https://www.bilibili.com/';
+    var L = [
+      '@echo off',
+      'rem This .bat is intentionally ASCII-only (English prompts). cmd.exe has a 4KB read-buffer',
+      'rem bug with chcp 65001 + UTF-8: a multi-byte char straddling the boundary splits a Chinese',
+      'rem echo line and runs the tail as a command. ASCII avoids the bug entirely.',
+      '',
+      'set "TOOLS=%LOCALAPPDATA%\\mvt\\bin"',
+      'if not exist "%TOOLS%" mkdir "%TOOLS%" >nul 2>nul',
+      'set "YTDLP=%TOOLS%\\yt-dlp.exe"',
+      'if not exist "%YTDLP%" (',
+      '  echo [mvt] First run: downloading yt-dlp ...',
+      '  curl.exe -L --ssl-no-revoke -o "%YTDLP%" "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"',
+      '  for %%F in ("%YTDLP%") do if %%~zF LSS 1000000 del /f /q "%YTDLP%" >nul 2>nul',
+      "  if not exist \"%YTDLP%\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe' -OutFile '%YTDLP%' -UseBasicParsing\"",
+      '  del /f /q "%YTDLP%:Zone.Identifier" 2>nul',
+      ')',
+      'if not exist "%YTDLP%" (',
+      '  echo [mvt] yt-dlp download failed, check your network and retry.',
+      '  pause & exit /b 1',
+      ')',
+      '',
+      'set "FFDIR=%TOOLS%\\ffmpeg\\bin"',
+      'set "FFZIP=%TOOLS%\\ffmpeg.zip"',
+      'if not exist "%FFDIR%\\ffmpeg.exe" (',
+      '  echo [mvt] First run: downloading ffmpeg ^(~190MB, please wait^) ...',
+      '  curl.exe -L --ssl-no-revoke -o "%FFZIP%" "https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip"',
+      '  for %%F in ("%FFZIP%") do if %%~zF LSS 1000000 del /f /q "%FFZIP%" >nul 2>nul',
+      "  if not exist \"%FFZIP%\" powershell -NoProfile -Command \"Invoke-WebRequest -Uri 'https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip' -OutFile '%FFZIP%' -UseBasicParsing\"",
+      '  if exist "%FFZIP%" (',
+      '    echo [mvt] Extracting ffmpeg ...',
+      '    if not exist "%TOOLS%\\ffmpeg_extract" mkdir "%TOOLS%\\ffmpeg_extract"',
+      '    tar -xf "%FFZIP%" -C "%TOOLS%\\ffmpeg_extract"',
+      '    for /d %%D in ("%TOOLS%\\ffmpeg_extract\\ffmpeg-*") do (',
+      '      if exist "%%D\\bin\\ffmpeg.exe" xcopy /E /Y "%%D\\*" "%TOOLS%\\ffmpeg\\" >nul',
+      '    )',
+      '    rd /s /q "%TOOLS%\\ffmpeg_extract" >nul 2>nul',
+      '    del /f /q "%FFZIP%" >nul 2>nul',
+      '  )',
+      ')',
+      'if not exist "%FFDIR%\\ffmpeg.exe" (',
+      '  echo [mvt] ffmpeg download/extract failed, check your network and retry.',
+      '  del /f /q "%FFZIP%" >nul 2>nul',
+      '  pause & exit /b 1',
+      ')',
+      '',
+      'set "OUTDIR=%USERPROFILE%\\Desktop\\VideoDownloads"',
+      'if not exist "%OUTDIR%" mkdir "%OUTDIR%" >nul 2>nul',
+      ''
+    ];
+    if (bakedUrl) {
+      L.push('set "URL=' + bakedUrl + '"');
+    } else {
+      L.push('set "URL=%~1"');
+      L.push('if "%URL%"=="" (');
+      L.push('  echo.');
+      L.push('  echo  [mvt] Paste video URL to extract audio ^(Bilibili/YouTube/etc via yt-dlp^) then Enter:');
+      L.push('  set /p "URL=> "');
+      L.push(')');
     }
-
-    rec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
-    rec.onerror = function (e) {
-      toast('录制出错：' + ((e.error && e.error.name) || '未知'), 4000);
-      finish();
-    };
-
-    function finish() {
-      if (stopped) return;
-      stopped = true;
-      try { if (rec.state !== 'inactive') rec.stop(); } catch (e) {}
-      try { v.pause(); } catch (e) {}   /* 停止即停播，不再让视频空转 */
-    }
-
-    rec.onstop = function () {
-      cleanup();
-      var b = new Blob(chunks, { type: 'video/webm' });
-      if (b.size < 1000) { toast('合成失败：没录到内容'); return; }
-      saveBlob(b, safeName() + '_合成_' + stamp() + '.webm');
-      toast('合成完成（' + Math.round(b.size / 1048576) + ' MB）', 4000);
-    };
-
-    var dur = (isFinite(v.duration) && v.duration > 0) ? v.duration : 0;
-
-    v.addEventListener('ended', function () { finish(); }, { once: true });
-
-    /* 切后台会被浏览器降频，直接导致丢帧 —— 明确警告 */
-    visFn = function () {
-      if (document.hidden) toast('⚠ 页面切到后台会导致录制丢帧！请保持本页面在前台', 5000);
-    };
-    document.addEventListener('visibilitychange', visFn);
-
-    function begin() {
-      try { if (v.currentTime > 0.5) v.currentTime = 0; } catch (e) {}
-      /* 关键修复：必须强制原速。倍速播放会让流"快进"，录出来就缺内容 */
-      v.playbackRate = 1;
-      v.loop = false;
-      v.muted = false;
-      if (v.volume < 0.05) v.volume = 1;
-      var pr = v.play();
-      if (pr && pr.catch) pr.catch(function () { toast('自动播放被拦截，请手动点播放'); });
-      try { rec.start(1000); } catch (e) { toast('录制启动失败'); cleanup(); return; }
-      mvtStopFn = finish; showStop(true);
-
-      var lastT = -1, stall = 0, pausedFor = 0;
-      iv = setInterval(function () {
-        if (!mvtRecording) { clearInterval(iv); return; }
-        var t = v.currentTime;
-        /* 录制时同步跳广告：检测到广告就 seek 过去，被录的流里就不会有广告画面/声音 */
-        try { adSkipForRecord(v); } catch (e) {}
-        if (dur > 0) {
-          toast('合成中 ' + Math.min(100, Math.round(t / dur * 100)) + '%（原速录制，请勿切后台/关页面）');
-        } else {
-          toast('合成中 ' + Math.floor(t / 60) + '分' + Math.floor(t % 60) + '秒（请勿切后台）');
-        }
-        if (v.paused && !v.ended) {
-          pausedFor++;
-          if (pausedFor === 5) toast('视频处于暂停，录制仍在继续 —— 请恢复播放', 5000);
-          if (pausedFor >= 120) { toast('暂停过久，已停止录制'); finish(); return; }
-        } else { pausedFor = 0; }
-
-        if (Math.abs(t - lastT) < 0.05) {
-          stall++;
-          if (stall === 30) toast('画面已 30 秒无进展，检查是否卡在缓冲', 5000);
-          if (stall >= 90) { toast('长时间无进展，已停止'); finish(); }
-        } else { stall = 0; }
-        lastT = t;
-      }, 1000);
-
-      /* 安全上限：按片长留 40% 余量，绝对不超过 3 小时 */
-      var limitMs = dur > 0 ? Math.ceil(dur * 1000 * 1.4) + 120000 : 40 * 60 * 1000;
-      limitMs = Math.min(limitMs, 3 * 60 * 60 * 1000);
-      hardStop = setTimeout(function () {
-        if (mvtRecording) { toast('已到安全上限，停止录制', 4000); finish(); }
-      }, limitMs);
-
-      toast(dur > 0 ? '开始合成，需约 ' + Math.ceil(dur / 60) + ' 分钟（原速录制，请勿切后台/关页面）'
-                    : '开始合成…（请勿切后台/关页面）', 4000);
-    }
-
-    if (v.readyState >= 2) begin();
-    else v.addEventListener('canplay', begin, { once: true });
-  }
-  window.__mvtMerge = mergeRecord;
-
-  function guessName(src, type) {
-    try {
-      var u = new URL(src, location.href);
-      var p = decodeURIComponent(u.pathname).split('/').pop();
-      if (p && /\.[a-z0-9]{2,5}$/i.test(p)) return p;
-    } catch (e) {}
-    return safeName() + '_' + stamp() + '.mp4';
+    L.push('if "%URL%"=="" (');
+    L.push('  echo  [mvt] No URL entered.');
+    L.push('  pause & exit /b 1');
+    L.push(')');
+    L.push('');
+    L.push('set "UA=' + UA + '"');
+    L.push('set "REFERER=' + ref + '"');
+    L.push('echo.');
+    L.push('echo  [mvt] Extracting audio as MP3 ...');
+    L.push('"%YTDLP%" --no-playlist -f "ba/b" -x --audio-format mp3 --audio-quality 0 --ffmpeg-location "%FFDIR%" --user-agent "%UA%" --referer "%REFERER%" --trim-filenames 120 -P "%OUTDIR%" --no-mtime "%URL%"');
+    L.push('');
+    L.push('echo.');
+    L.push('if errorlevel 1 ( echo  [mvt] Download failed, see info above. ) else ( echo  [mvt] Done, MP3 in: %OUTDIR% )');
+    L.push('pause');
+    L.push('rem Self-delete this bat after the window is closed.');
+    L.push('(goto) 2>nul & del "%~f0"');
+    return L.join('\r\n') + '\r\n';
   }
 
   function saveBlob(blob, name) {
@@ -1619,7 +990,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.41');
+    bar.setAttribute('data-mvt-ver', '2.0.42');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1629,7 +1000,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.41';
+    ver.textContent = 'v2.0.42';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
@@ -1706,20 +1077,11 @@
     var dlBtn = mBtn('下载', true, 'dl-btn');
     var mDl = document.createElement('div');
     mDl.className = 'mvt-menu';
-    /* 优化：把真正能用的 yt-dlp 路径放到最前并标推荐，B站会出垃圾的①降级标注 */
-    mDl.appendChild(mItem('① 本地下载脚本（推荐·yt-dlp）', function () { genDownBat(); }));
+    /* v2.0.42：只留真正能用的 yt-dlp 路径。抖音①③走本机新视野后台直提（不生成 bat），
+       其他站生成自举 yt-dlp 脚本；② 是粘任意链接的通用脚本；③ 是音频 MP3。 */
+    mDl.appendChild(mItem('① 视频下载（当前页·推荐）', function () { genDownBat(); }));
     mDl.appendChild(mItem('② 通用下载脚本（粘链接）', function () { genDownBatGeneric(); }));
-    mDl.appendChild(mItem('③ 智能下载（部分站点）', function () { downloadVideo(); }));
-    mDl.appendChild(mItem('④ 分片合并（仅部分站点）', function () { segDownload(); }));
-    mDl.appendChild(mItem('⑤ 边播边录（兜底·自动去广告）', function () { mergeRecord(cur); }));
-    mDl.appendChild(mItem('⑥ 片段下载（整段下完再剪）', function () { genSegBat(); }));
-    mDl.appendChild(mItem('⑦ 去片头广告（跳过前 N 秒）', function () { genAdBat(); }));
-    mDl.appendChild(mSep());
-    mDl.appendChild(mItem('分片状态', function () { reportSeg(); }));
-    mDl.appendChild(mItem('清空分片缓存', function () {
-      CAP.items = []; CAP.bytes = 0; CAP.seq = 0; CAP.overflow = false;
-      toast('分片缓存已清空');
-    }));
+    mDl.appendChild(mItem('③ 音频下载（MP3）', function () { genAudioBat(); }));
     dlBtn.appendChild(mDl);
     bar.appendChild(dlBtn);
 
@@ -1776,19 +1138,6 @@
     }));
     toolBtn.appendChild(mTool);
     bar.appendChild(toolBtn);
-
-    /* --- 停止（仅在下载/录制进行中显示） --- */
-    stopBtn = document.createElement('button');
-    stopBtn.className = 'mvt-btn mvt-stop';
-    stopBtn.textContent = '■ 停止';
-    stopBtn.style.display = 'none';
-    stopBtn.title = '立即停止当前下载/录制';
-    stopBtn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      if (mvtRecording && mvtStopFn) { mvtStopFn(); }
-      if (segRunning) { segAbort = true; toast('已取消分片下载', 3000); }
-    });
-    bar.appendChild(stopBtn);
 
     /* 下拉开合 */
     bar.addEventListener('click', function (e) {
@@ -2129,33 +1478,11 @@
     /* 兜一层：定时器里抛异常会每 800ms 刷一次控制台，还拖慢页面 */
     try {
       if (!AD.on) { if (AD.active) adOff(AD.active); return; }
-      if (mvtRecording) return;   /* 录制中绝不动倍速，否则录制会错乱（录制时跳广告见 adSkipForRecord） */
       var v = adPickVideo();
       if (!v) return;
       if (adLook(v)) { adHit(v); adOn(v); }
       else { adOff(v); }
     } catch (e) { /* 静默：广告模块绝不能影响主功能 */ }
-  }
-
-  /* 录制中跳过广告：被录的是 captureStream 实时画面，所以不能用 16 倍速（只会录成快进残影），
-     也不能改倍速。唯一干净的做法是 seek 到广告末尾 —— 被录的流里直接不含广告帧和声音。
-     点不到也跳不动时退而求其次：静音，至少别让广告声音进录制（广告结束后恢复）。 */
-  function adSkipForRecord(v) {
-    if (!AD.on) return false;
-    if (!adLook(v)) {
-      if (AD.recMuted) { AD.recMuted = false; try { v.muted = false; } catch (e) {} }
-      return false;
-    }
-    var clicked = adHit(v);
-    var src = v.currentSrc || v.src || '';
-    if (v.duration && v.duration <= 180 && v.currentTime < 5 && AD.lastJump !== src) {
-      AD.lastJump = src;
-      try { v.currentTime = Math.max(0, v.duration - 0.2); } catch (e) {}
-      toast('录制中：已跳过广告', 2600);
-      return true;
-    }
-    if (!v.muted) { AD.recMuted = true; try { v.muted = true; } catch (e) {} }
-    return clicked;
   }
 
   /* ================= 启动 ================= */
