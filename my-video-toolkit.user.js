@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.50
+// @version      2.0.51
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载：一个「⬇ 下载」按钮智能判断—— 当前页有视频下视频、只有音乐自动下 MP3（抖音走本机新视野后台直提，其他站生成 yt-dlp 脚本）；工具菜单另有「通用下载脚本（粘链接）」和「音频下载（MP3）」。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -29,7 +29,10 @@
      不再只有一串数字 ID；配合服务端 H.264 优先 + --fixup force，下载即能播且音画同步。
      v2.0.50：下载按钮合一（借鉴抖音优化下载箭头）—— 一个「⬇ 下载」按钮点击即智能下载：
      当前页有视频下视频、只有音乐（mp3）自动改下音频并提示；「通用下载脚本（粘链接）」
-     和「音频下载（MP3）」移入工具菜单备用。 */
+     和「音频下载（MP3）」移入工具菜单备用。
+     v2.0.51：修复「完成行点击打不开文件夹/文件」—— 根因是抖音每次刷新/导航自动弹
+     「登录后免费畅享高清视频」诱导弹窗，全屏遮罩拦截了完成行的点击。工具箱现在每 3 秒
+     自动关闭该弹窗，点击完成行时也会先关弹窗再打开文件夹（服务端 /api/open 已实测正常）。 */
   var IS_TOP = (window.top === window);
 
   /* ============================================================
@@ -1056,6 +1059,29 @@
     } catch (e) {}
   }
 
+  /* v2.0.51: 自动关闭抖音「登录后免费畅享高清视频」诱导弹窗 —— 其全屏遮罩会拦截完成行点击，
+     导致「打不开文件夹和文件」。找到弹窗后点关闭按钮，找不到就移除弹窗容器。 */
+  function mvtCloseLoginPop() {
+    try {
+      var nodes = document.querySelectorAll('div');
+      for (var i = 0; i < nodes.length; i++) {
+        var el = nodes[i];
+        if (!el || el.children.length > 8) continue;
+        var t = (el.textContent || '').trim();
+        if (t.indexOf('登录后免费畅享') >= 0 && t.indexOf('验证码登录') >= 0 && t.length < 200) {
+          var root = el, guard = 0;
+          while (root && root.parentElement && guard < 8 && root.parentElement.children.length <= 6) {
+            root = root.parentElement; guard++;
+          }
+          var closeBtn = root.querySelector('[class*="close"], [class*="Close"], svg, [aria-label*="关闭"]');
+          if (closeBtn) { closeBtn.click(); return true; }
+          root.remove(); return true;
+        }
+      }
+    } catch (e) {}
+    return false;
+  }
+
   function mvtPollProgress() {
     if (!window.mvtProg) return;
     fetch('http://127.0.0.1:18322/api/tasks', { headers: { 'X-XinVision-Token': 'xinvision-2026' } })
@@ -1076,7 +1102,7 @@
             window.mvtProg.dataset.file = String(c0.file);
             window.mvtProg.style.cursor = 'pointer';
             window.mvtProg.title = '点击打开所在文件夹：' + String(c0.file).replace(/[\\/][^\\/]*$/, '');
-            window.mvtProg.onclick = function () { mvtOpenFolder(String(c0.file)); };
+            window.mvtProg.onclick = function () { mvtCloseLoginPop(); mvtOpenFolder(String(c0.file)); };
           }
           /* v2.0.47: no auto completion toast / no auto explorer - manual click only */
         }
@@ -1100,12 +1126,13 @@
   if (IS_TOP && !window.__mvtPollStarted) {
     window.__mvtPollStarted = true;
     setInterval(mvtPollProgress, 2000);
+    setInterval(mvtCloseLoginPop, 3000);  /* v2.0.51: 自动关登录诱导弹窗 */
   }
 
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.48');
+    bar.setAttribute('data-mvt-ver', '2.0.51');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1115,7 +1142,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.50';
+    ver.textContent = 'v2.0.51';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
