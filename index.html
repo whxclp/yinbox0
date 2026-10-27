@@ -149,7 +149,7 @@
   .ctrls button:disabled{opacity:.3; cursor:default;}
   .ctrls svg{display:block;}
   .lrcLine{
-    flex-basis:100%; margin:6px auto 0; max-width:94%; text-align:center; font-size:14px; color:#ffd93d;
+    margin:8px auto 0; max-width:94%; text-align:center; font-size:14px; color:#ffd93d;
     font-weight:bold; display:none; min-height:24px; line-height:24px; overflow:hidden;
     white-space:nowrap; pointer-events:none;
   }
@@ -161,8 +161,12 @@
     .toprow{flex-direction:column; align-items:stretch;}
     #navchips{justify-content:center;}
     .pfav{justify-content:center;}
-    .ctrls{gap:16px;}
-    .ctrls .big{min-width:56px; height:46px; font-size:16px;}
+    .ctrls{gap:8px 10px;}
+    .ctrls .big{min-width:52px; height:44px; font-size:15px; padding:0 8px;}
+    .ctrls .small{min-width:38px; min-height:38px;}
+    #stopBtn{padding:5px 9px; font-size:13px;}
+    #volSlider{width:64px; min-width:64px;}
+    .lrcLine{max-width:96%; font-size:13px;}
   }
   /* h5player 扩展：下拉面板宽度兜底，防止超出屏幕 */
   .h5player-popup-wrap sl-dropdown::part(panel){
@@ -210,7 +214,6 @@
   </div>
 </div>
 <div class="lrcLine" id="lyricBox"></div>
-</div>
 <div class="searchbar">
     <button onclick="toggleOnline()" id="onlineBtn" title="搜全网歌曲，试听后可标记加入歌单">网上搜歌</button>
   </div>
