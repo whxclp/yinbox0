@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.48
+// @version      2.0.49
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载：① 当前页视频（抖音走本机新视野后台直提，其他站生成 yt-dlp 脚本）、② 任意链接、③ 音频下载（MP3，抖音后台直提/其他站 yt-dlp 转 MP3）。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -24,7 +24,9 @@
      v2.0.47：去掉下载完成自动弹的完成提示与自动打开文件夹（刷新页面不再打扰）；
      需要时手动点击「完成 文件名」打开，打开失败会给出明确提示。
      v2.0.48：轮询只允许顶层窗口运行 —— 修复 iframe（lf-zt.douyin.com 等）里
-     每 3 秒 fetch 127.0.0.1 被 Chrome 的 loopback 限制拦截刷屏（ERR_FAILED/CORS）。 */
+     每 3 秒 fetch 127.0.0.1 被 Chrome 的 loopback 限制拦截刷屏（ERR_FAILED/CORS）。
+     v2.0.49：下载视频命名带标题（综合抖音优化插件优点）—— douyin_<id>_<标题>.mp4，
+     不再只有一串数字 ID；配合服务端 H.264 优先 + --fixup force，下载即能播且音画同步。 */
   var IS_TOP = (window.top === window);
 
   /* ============================================================
@@ -523,7 +525,7 @@
     var dyOut = (isNote && _mSrc)
       ? ('douyin_music_' + (dyKey || 'note') + '.%%(ext)s')
       : (dyKey
-        ? ('douyin_' + dyKey + '.%%(ext)s')
+        ? ('douyin_' + dyKey + '_' + (dyDesc.replace(/[\\/:*?"<>|%&^!]/g, '_').replace(/\s+/g, '').trim().slice(0, 40) || 'video') + '.%%(ext)s')
         : ('douyin_' + (dyDesc.replace(/[\\/:*?"<>|%&^!]/g, '_').trim().slice(0, 60) || 'video') + '.%%(ext)s'));
     var L = [
       '@echo off',
@@ -1110,7 +1112,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.48';
+    ver.textContent = 'v2.0.49';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
