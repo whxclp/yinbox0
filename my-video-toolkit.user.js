@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         我的视频工具箱 v2
 // @namespace    whxclp
-// @version      2.0.44
+// @version      2.0.45
 // @description  自研轻量视频增强：自动跳广告（播放时识别片头/插播广告，静音+16倍速+跳尾，工具菜单可关）、倍速调速、画面旋转/镜像/缩放/位移、亮度对比度饱和度滤镜、截图、画中画、循环播放。下载：① 当前页视频（抖音走本机新视野后台直提，其他站生成 yt-dlp 脚本）、② 任意链接、③ 音频下载（MP3，抖音后台直提/其他站 yt-dlp 转 MP3）。菜单固定向左展开，绝不超出屏幕右侧。
 // @author       whxclp
 // @match        *://*/*
@@ -150,7 +150,7 @@
     cands.sort(function (a, b2) { return (b2.br - a.br) || (b2.h - a.h); });
     var best = cands[0] || {};
     return {
-      url: best.url || musicUrl || '',
+      url: best.url || '',   /* v2.0.45: video link only - never silently fall back to audio */
       backUrls: best.back || [],
       id: dyAwemeId(aweme),
       desc: String(aweme.desc || '').slice(0, 80),
@@ -755,6 +755,8 @@
          with no video link) are audio. Fixes v2.0.43 regression where video pages
          downloaded audio because DY.media picked up background/preview audio. */
       var isNote = /\/note\//i.test(ref) || (!/\/video\//i.test(ref) && !(dv && dv.url) && (DY.media && DY.media.length));
+      /* v2.0.45: real video direct link only - an audio URL must never satisfy the video branch */
+      var vUrl = (dv && dv.url && !/\.(mp3|m4a|aac|flac|wav|ogg|opus)(\?|$)/i.test(String(dv.url))) ? String(dv.url) : '';
       if (isNote) {
         var segs = [];
         if (DY.media && DY.media.length) segs = segs.concat(DY.media);
@@ -763,16 +765,38 @@
         for (var si = 0; si < segs.length; si++) {
           subs.push({ url: segs[si], out: 'douyin_music_' + (segs.length > 1 ? (si + 1) : (id0 || 'note')) + '.%(ext)s' });
         }
-      } else if (dv && dv.url) {
+      } else if (vUrl) {
         var key = id0 || 'video';
         subs.push({
-          url: dv.url,
+          url: vUrl,
           out: audioOnly ? ('douyin_music_' + key + '.%(ext)s') : ('douyin_' + key + '.%(ext)s'),
           audio: !!audioOnly
         });
+      } else if (audioOnly) {
+        /* ③ audio download but no video link: use the audio direct link instead */
+        var segsA = [];
+        if (DY.media && DY.media.length) segsA = segsA.concat(DY.media);
+        if (dv && dv.musicUrl && segsA.indexOf(dv.musicUrl) < 0) segsA.unshift(dv.musicUrl);
+        if (!segsA.length) { toast('拿不到音频直链：请点一下播放键（等进度条走动）后再点下载', 6000); return; }
+        var keyA = id0 || 'video';
+        segsA.forEach(function (su, si) {
+          subs.push({ url: su, out: 'douyin_music_' + (segsA.length > 1 ? (si + 1) : keyA) + '.%(ext)s', audio: true });
+        });
       } else {
-        toast('未提取到直链，请刷新页面后重试', 4000);
-        return;
+        /* ① video download but no video direct link: tell the user clearly - audio only */
+        var segs0 = [];
+        if (DY.media && DY.media.length) segs0 = segs0.concat(DY.media);
+        if (dv && dv.musicUrl && segs0.indexOf(dv.musicUrl) < 0) segs0.unshift(dv.musicUrl);
+        if (segs0.length) {
+          toast('⚠ 拿不到视频直链，此页面只能下载音频，已改为音频下载（登录抖音后刷新可下载完整视频）', 6000);
+          var key0 = id0 || 'video';
+          segs0.forEach(function (su, si) {
+            subs.push({ url: su, out: 'douyin_music_' + (segs0.length > 1 ? (si + 1) : key0) + '.%(ext)s', audio: true });
+          });
+        } else {
+          toast('拿不到任何直链（视频/音频都没有）：请刷新页面或重新打开视频后再试', 5000);
+          return;
+        }
       }
       var done = 0, total = subs.length;
       subs.forEach(function (sb) {
@@ -1059,7 +1083,7 @@
   function buildBar() {
     bar = document.createElement('div');
     bar.className = 'mvt-bar';
-    bar.setAttribute('data-mvt-ver', '2.0.44');
+    bar.setAttribute('data-mvt-ver', '2.0.45');
 
     var logo = document.createElement('span');
     logo.className = 'mvt-logo';
@@ -1069,7 +1093,7 @@
     /* 版本角标：页面上看到 v1.5.1 才说明新版真的生效了 */
     var ver = document.createElement('span');
     ver.className = 'mvt-ver';
-    ver.textContent = 'v2.0.44';
+    ver.textContent = 'v2.0.45';
     ver.title = '脚本版本号';
     bar.appendChild(ver);
 
