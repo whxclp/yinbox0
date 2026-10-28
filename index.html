@@ -49,6 +49,7 @@
   #navchips{display:flex; flex-wrap:wrap; gap:6px; flex:1; min-width:0;}
   .chip{font-size:12px; padding:4px 10px; border-radius:999px; background:var(--btn); color:var(--txt); cursor:pointer; border:1px solid var(--bd); white-space:nowrap;}
   .chip:hover{background:var(--btn-hi); border-color:var(--acc);}
+  .chip.on{background:var(--acc); color:#000; border-color:var(--acc); font-weight:bold;}
   .sub-title{font-size:11px;color:var(--acc);margin:8px 4px 2px;font-weight:600;}
   .stat{color:#ff8c00; font-size:13px; line-height:1.7;}
   .stat b{color:#ffd93d; font-weight:600;}
@@ -518,6 +519,7 @@ html += sec(cats.mv,'MV','MV','m','mv');
   if(nav){
     const chips = [];
     const chip = (name, target)=>{ chips.push('<span class="chip" data-t="'+target+'">'+esc(name)+'</span>'); };
+    chip('全部','__all__');
     chip('收藏','sec-fav');
     chip('歌曲','sec-song');
     chip('器乐曲','sec-instrument');
@@ -529,9 +531,27 @@ html += sec(cats.mv,'MV','MV','m','mv');
     nav.innerHTML = chips.join('');
     nav.onclick = e=>{
       const c = e.target.closest('.chip');
-      if(c){ const el = document.getElementById(c.dataset.t); if(el) el.scrollIntoView({behavior:'smooth'}); }
+      if(!c) return;
+      window._yinboxView = c.dataset.t;
+      applyView();
     };
+    applyView();
   }
+function applyView(){
+  const v = window._yinboxView || '__all__';
+  const list = document.getElementById('list');
+  if(!list) return;
+  let curSec = null;
+  Array.prototype.forEach.call(list.children, el=>{
+    const isSec = el.id && el.id.indexOf('sec-')===0;
+    if(isSec){ curSec = el.id; }
+    const show = (v==='__all__' || curSec===v);
+    el.style.display = (isSec || curSec) ? (show?'':'none') : '';
+  });
+  const nav = document.getElementById('navchips');
+  if(nav) nav.querySelectorAll('.chip').forEach(ch=>ch.classList.toggle('on', ch.dataset.t===v));
+  window.scrollTo({top:0});
+}
   // 点页面空白处 = 暂停/继续播放（歌曲行/按钮/导航/输入框除外），只注册一次
   if(!document._toggleHooked){
     document._toggleHooked = true;
