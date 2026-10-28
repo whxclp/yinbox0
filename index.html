@@ -149,10 +149,9 @@
   .ctrls button:disabled{opacity:.3; cursor:default;}
   .ctrls svg{display:block;}
   .lyric{
-    position:fixed; left:50%; top:158px; transform:translateX(-50%);
-    max-width:86%; text-align:center; font-size:13px; color:var(--sub);
+    margin:8px auto 0; max-width:86%; text-align:center; font-size:13px; color:var(--sub);
     background:rgba(13,17,23,.92); border:1px solid var(--line); border-radius:10px;
-    padding:6px 12px; z-index:15; pointer-events:none; display:none;
+    padding:6px 12px; display:none;
   }
   .lyric.plain{
     pointer-events:auto; font-size:14px; line-height:1.8; padding:10px 16px;
@@ -218,6 +217,7 @@
   </div>
 </div>
 </div>
+<div class="lyric" id="lyricBox"></div>
 <div class="searchbar">
     <button onclick="toggleOnline()" id="onlineBtn" title="搜全网歌曲，试听后可标记加入歌单">网上搜歌</button>
   </div>
@@ -235,7 +235,6 @@
 <main id="list"><div class="empty">正在加载歌单…</div></main>
 <div id="diagBadge" style="display:none;position:fixed;left:8px;bottom:8px;background:#7a1f1f;color:#ffe2e2;font-size:12px;padding:5px 9px;border-radius:6px;z-index:99999;max-width:92vw;word-break:break-all;cursor:pointer;" onclick="this.style.display='none'" title="点击隐藏"></div>
 <div id="mvWrap"><video id="mvPlayer" playsinline></video></div>
-<div class="lyric" id="lyricBox"></div>
 <script>
 // ===== PWA 注册 =====
 if('serviceWorker' in navigator){ window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
