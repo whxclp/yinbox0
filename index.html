@@ -163,6 +163,14 @@
   .lyric.single .lrcwrap{max-width:100%; overflow:hidden; white-space:nowrap;}
   .lyric.single .lrcline{display:inline-block; white-space:nowrap; color:#ffd93d; font-weight:bold; font-size:14px;}
   .lyric.single .lrcline.long{padding-left:100%; animation:lrcScroll 18s linear infinite alternate;}
+  #trackBox{max-height:240px; overflow-y:auto; margin:4px 14px 10px; padding:6px 8px; background:var(--panel); border:1px solid var(--bd); border-radius:8px; font-size:12px; display:none;}
+  #trackBox .ttl{font-weight:bold; color:var(--acc); margin-bottom:4px; font-size:12px;}
+  #trackBox .tk{display:flex; gap:6px; padding:2px 4px; border-radius:4px; cursor:pointer; align-items:baseline;}
+  #trackBox .tk:hover{background:var(--btn-hi);}
+  #trackBox .tk.cur{color:#ffd93d; font-weight:bold;}
+  #trackBox .tk .no{color:var(--acc); min-width:26px;}
+  #trackBox .tk .tm{color:#ff8c00; min-width:48px; font-variant-numeric:tabular-nums;}
+  #trackBox .tk .nm{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
   @keyframes lrcScroll{from{transform:translateX(0);} to{transform:translateX(-100%);}}
   @media (max-width:480px){
     .toprow{flex-direction:column; align-items:stretch;}
@@ -219,6 +227,7 @@
 </div>
 </div>
 <div class="lyric" id="lyricBox"></div>
+<div id="trackBox"></div>
 <div class="searchbar">
     <button onclick="toggleOnline()" id="onlineBtn" title="搜全网歌曲，试听后可标记加入歌单">网上搜歌</button>
   </div>
@@ -696,7 +705,8 @@ function playAt(i){
   document.getElementById('nowArtist').textContent = s.artist || '';
   setMediaSession(s.title || s.file.split('/').pop(), s.artist || '');
   showLyric(lrc, 0);
-  curMedia.ontimeupdate = ()=> updateProg(lrc);
+  renderTracks(s, lrc);
+  curMedia.ontimeupdate = ()=>{ updateProg(lrc); markCurTrack(); };
   let endRetried = false;
   curMedia.onended = ()=>{
     // 诊断：ended触发时的真实内部状态（时长/进度/速率），异常时可截图定位
@@ -1015,6 +1025,36 @@ function showLyric(lrc, t){
       el.classList.toggle('long', over);
     });
   }
+}
+// 曲目清单（白兰完整版等含 tracks 字段的条目）：点击跳转到对应时间点
+function renderTracks(s, lrc){
+  const box = document.getElementById('trackBox');
+  if(!s || !s.tracks || !s.tracks.length || curMedia === mvPlayer){ box.style.display='none'; return; }
+  window._curTracks = s.tracks;
+  box.innerHTML = '<div class="ttl">曲目清单 · 点击任意一首跳转选听</div>' + s.tracks.map(t=>
+    '<div class="tk" data-t="'+t.t+'" data-i="'+t.n+'"><span class="no">'+t.n+'</span><span class="tm">'+fmt(t.t)+'</span><span class="nm">'+esc(t.name)+'</span></div>'
+  ).join('');
+  box.style.display='block';
+  box.onclick = e=>{
+    const row = e.target.closest('.tk');
+    if(!row) return;
+    const t = parseFloat(row.dataset.t);
+    if(Number.isNaN(t)) return;
+    curMedia.currentTime = t;
+    if(lrc) showLyric(lrc, t);
+    box.querySelectorAll('.tk').forEach(r=>r.classList.toggle('cur', r===row));
+    const wrap = box.querySelector('.ttl'); if(wrap) wrap.textContent='曲目清单 · 正在播 第'+row.dataset.i+'首';
+  };
+}
+function markCurTrack(){
+  const box = document.getElementById('trackBox');
+  if(!box || box.style.display==='none' || !window._curTracks) return;
+  const t = curMedia.currentTime || 0;
+  let idx = 0;
+  for(let i=0;i<window._curTracks.length;i++){ if(window._curTracks[i].t <= t) idx = i; }
+  const rows = box.querySelectorAll('.tk');
+  rows.forEach((r,i)=>r.classList.toggle('cur', i===idx));
+  const cur = rows[idx]; if(cur && cur.scrollIntoView) cur.scrollIntoView({block:'nearest'});
 }
 // 无歌词时显示当前歌名
 audio.addEventListener('play', ()=>{
