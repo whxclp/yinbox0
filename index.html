@@ -297,10 +297,12 @@ function isExtFile(s){
 }
 function applyFilter(){
   const kw = (document.getElementById('kw').value||'').trim().toLowerCase();
+  const normTxt = t=>String(t||'').toLowerCase().replace(/[（()）\s，,。.·・-]/g,'');
+  const needle = normTxt(kw);
   shown = songs.filter(s=>{
     // 收藏状态不参与筛选：已收藏进原分组，未收藏（取消过的）进「备选」分类
-    if(!kw) return true;
-    return (String(s.title||'')+' '+String(s.artist||'')).toLowerCase().includes(kw);
+    if(!needle) return true;
+    return (normTxt(s.title)+' '+normTxt(s.artist)).includes(needle);
   });
   // 显示顺序 = 播放顺序：按标题自然排序（数字序），合集内相邻
   // 显示顺序 = 播放顺序：歌曲组最优先，其次合集分类，再其他；组内标题自然排序，合集内相邻
