@@ -166,6 +166,11 @@
   .lyric.single .lrcwrap{max-width:100%; overflow:hidden; white-space:nowrap;}
   .lyric.single .lrcline{display:inline-block; white-space:nowrap; color:#ffd93d; font-weight:bold; font-size:14px;}
   .lyric.single .lrcline.pre{color:#7d8896; font-weight:normal;}
+  .lyric.mv{
+    position:fixed; left:50%; transform:translateX(-50%); bottom:130px; z-index:20;
+    width:min(88vw,560px); max-height:min(34vh,260px);
+    background:rgba(13,17,23,.92);
+  }
   .lyric.single .lrcline.long{padding-left:100%; animation:lrcScroll 18s linear infinite alternate;}
   #trackBox{max-height:240px; overflow-y:auto; margin:4px 14px 10px; padding:6px 8px; background:var(--panel); border:1px solid var(--bd); border-radius:8px; font-size:12px; display:none;}
   #trackBox .ttl{font-weight:bold; color:var(--acc); margin-bottom:4px; font-size:12px;}
@@ -997,7 +1002,8 @@ function parseLrc(text){
 let lrcDom = null;
 function showLyric(lrc, t){
   const box = document.getElementById('lyricBox');
-  if(!lrc || curMedia === mvPlayer){ box.style.display='none'; return; }
+  if(!lrc){ box.style.display='none'; return; }
+  box.classList.toggle('mv', curMedia === mvPlayer);
   box.style.textAlign = 'center';
   if(lrc.plain){
     // 无时间轴歌词：多行展示，可滚动
