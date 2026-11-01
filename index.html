@@ -332,6 +332,7 @@ let mode = 0;          // 0顺序 1循环 2单曲 3随机
 const MODES = ['顺序','循环','单曲','随机'];
 let favFilter = false;
 let curOnline = null;
+let lastOnlineResults = [];
 let favs = {};
 try{ favs = JSON.parse(localStorage.getItem('cloudFavs')||'{}'); }catch(e){ favs = {}; }
 
@@ -401,7 +402,7 @@ function applyFilter(){
   render();
 }
 // ===== 网上搜歌 =====
-const SEARCH_API = localStorage.getItem('searchApi') || 'https://5b9f5db1.r27.cpolar.top';
+const SEARCH_API = localStorage.getItem('searchApi') || 'https://19e03f2e.r27.cpolar.top';
 (function(){
   try{
     const saved = JSON.parse(localStorage.getItem('cloudSearchResult')||'null');
@@ -433,6 +434,7 @@ function searchOnline(){
         box.innerHTML = '<div class="empty">没有可播放的版本（VIP/失效已过滤）。<br>把歌名告诉我，我人工搜抖音/视频号找好版本。</div>';
         return;
       }
+        lastOnlineResults = j.playable;
         const wants = JSON.parse(localStorage.getItem('cloudWants')||'[]');
       box.innerHTML = j.playable.map(r=>{
         const srcTxt = r.source==='netease' ? '网易' : r.source==='kugou' ? '酷狗' : r.source==='qq' ? 'QQ' : 'B站';
@@ -459,21 +461,32 @@ function tryOnline(btn, src, id){
   curOnline = {src:src, id:id};
   document.querySelectorAll('#oresults .oitem.playing').forEach(el=>el.classList.remove('playing'));
   if(btn){ const row = btn.closest('.oitem'); if(row) row.classList.add('playing'); }
+  const hit = (lastOnlineResults||[]).find(r=>r.source===src && String(r.id)===String(id));
+  if(hit && hit.url){ startOnlineAudio(hit.url, btn, src, id, true); return; }
   fetch(SEARCH_API + '/play?src='+src+'&id='+encodeURIComponent(id))
     .then(r=>r.json())
     .then(j=>{
-      if(j.url){
-        audio.src = j.url;
-        audio.play().catch(()=>{});
-        document.getElementById('nowTitle').textContent = '网上试听：'+(btn.closest('.oitem').querySelector('.t').textContent||'');
-        document.getElementById('nowArtist').textContent = btn.closest('.oitem').querySelector('.a').textContent;
-        setMediaSession(document.getElementById('nowTitle').textContent, document.getElementById('nowArtist').textContent);
-        document.getElementById('lyricBox').style.display='none';
-        loadOnlineLyric(src, id);
-        syncControls();
-      } else { alert('该版本暂不可播'); }
+      if(j.url){ startOnlineAudio(j.url, btn, src, id, false); }
+      else { alert('该版本暂不可播'); }
     })
     .catch(e=>alert('获取播放链接失败：'+e.message));
+}
+function startOnlineAudio(url, btn, src, id, canRefresh){
+  audio.src = url;
+  audio.onerror = canRefresh ? function(){
+    audio.onerror = null;
+    fetch(SEARCH_API + '/play?src='+src+'&id='+encodeURIComponent(id))
+      .then(r=>r.json())
+      .then(j=>{ if(j.url && curOnline && curOnline.src===src && curOnline.id===id){ startOnlineAudio(j.url, btn, src, id, false); } })
+      .catch(()=>{});
+  } : null;
+  audio.play().catch(()=>{});
+  document.getElementById('nowTitle').textContent = '网上试听：'+(btn.closest('.oitem').querySelector('.t').textContent||'');
+  document.getElementById('nowArtist').textContent = btn.closest('.oitem').querySelector('.a').textContent;
+  setMediaSession(document.getElementById('nowTitle').textContent, document.getElementById('nowArtist').textContent);
+  document.getElementById('lyricBox').style.display='none';
+  loadOnlineLyric(src, id);
+  syncControls();
 }
 function loadOnlineLyric(src, id){
   const box = document.getElementById('lyricBox');
