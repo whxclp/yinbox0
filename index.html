@@ -758,7 +758,8 @@ function enterMvMode(){
   if(!lyricHome) lyricHome = {p: lyricBoxEl.parentNode, n: lyricBoxEl.nextSibling};
   if(lyricBoxEl.parentNode !== playerBarEl) playerBarEl.insertBefore(lyricBoxEl, playerBarEl.firstChild);
   // 收起可能开着的浮层，避免盖住全屏视频
-  onlineBox.style.display = 'none'; diag.style.display = 'none';
+  document.getElementById('onlineSearch').style.display = 'none';
+  document.getElementById('diagBadge').style.display = 'none';
   if(!document.body.classList.contains('mv-mode')){
     document.body.classList.add('mv-mode');
     requestAnimationFrame(syncMvLayout);
