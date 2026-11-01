@@ -402,7 +402,14 @@ function applyFilter(){
   render();
 }
 // ===== 网上搜歌 =====
-const SEARCH_API = localStorage.getItem('searchApi') || 'https://19e03f2e.r27.cpolar.top';
+let SEARCH_API = localStorage.getItem('searchApi') || localStorage.getItem('searchApiAuto') || 'https://7e60913a.r27.cpolar.top';
+// 地址自动发现：每次打开读本站 search-api.json（看门狗在隧道地址变化时自动更新它）
+fetch('search-api.json?t='+Date.now()).then(r=>r.json()).then(j=>{
+  if(j && j.api && !localStorage.getItem('searchApi')){
+    SEARCH_API = j.api;
+    localStorage.setItem('searchApiAuto', j.api);
+  }
+}).catch(()=>{});
 (function(){
   try{
     const saved = JSON.parse(localStorage.getItem('cloudSearchResult')||'null');
