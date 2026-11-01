@@ -134,9 +134,17 @@
     transform:none; width:auto; border:none; border-radius:0; box-shadow:none;
   }
   body.mv-mode #mvWrap video{width:100%; height:100%; max-height:none; object-fit:contain;}
-  body.mv-mode .lyric.mv{
-    bottom:calc(var(--playerH,130px) + 10px); left:calc((100vw - var(--mvstrip,44px))/2);
-    width:min(92vw,760px); z-index:26;
+  /* 全屏模式：歌词收进底部播放条（画面→歌词→控制，自上而下） */
+  body.mv-mode .player{flex-direction:column; align-items:stretch;}
+  body.mv-mode .player .pmain{width:100%;}
+  body.mv-mode .lyric{
+    position:static; transform:none; width:100%; max-width:none;
+    margin:0 0 6px; max-height:20vh; border-radius:8px;
+  }
+  body.mv-mode .lyric.single{text-align:center;}
+  body.mv-mode .lyric.single .lrcline{font-size:24px;}
+  @media (max-width:480px){
+    body.mv-mode .lyric.single .lrcline{font-size:20px;}
   }
   /* 右侧节目单竖条 */
   #mvSide{
@@ -203,25 +211,20 @@
   .ctrls button:disabled{opacity:.3; cursor:default;}
   .ctrls svg{display:block;}
   .lyric{
-    margin:8px auto 0; max-width:86%; text-align:center; font-size:13px; color:var(--sub);
+    margin:8px auto 0; max-width:86%; text-align:center; font-size:15px; color:var(--sub);
     background:rgba(13,17,23,.92); border:1px solid var(--line); border-radius:10px;
-    padding:6px 12px; display:none;
+    padding:8px 14px; display:none; position:relative; z-index:19;
     max-height:min(58vh,420px); overflow-y:auto; scrollbar-width:thin;
   }
   .lyric.plain{
-    pointer-events:auto; font-size:14px; line-height:1.8; padding:10px 16px; text-align:left;
+    pointer-events:auto; font-size:17px; line-height:1.8; padding:10px 16px; text-align:left;
   }
   .lyric.plain .lrcline{padding:1px 0;}
-  .lyric.plain .lrcline.cur{color:#ffb347;font-weight:bold;font-size:15px;}
-  .lyric.single{padding:7px 14px; font-size:14px;}
+  .lyric.plain .lrcline.cur{color:#ffb347;font-weight:bold;font-size:20px;}
+  .lyric.single{padding:9px 16px; font-size:17px;}
   .lyric.single .lrcwrap{max-width:100%; overflow:hidden; white-space:nowrap;}
-  .lyric.single .lrcline{display:inline-block; white-space:nowrap; color:#ffd93d; font-weight:bold; font-size:14px;}
+  .lyric.single .lrcline{display:inline-block; white-space:nowrap; color:#ffd93d; font-weight:bold; font-size:20px;}
   .lyric.single .lrcline.pre{color:#7d8896; font-weight:normal;}
-  .lyric.mv{
-    position:fixed; left:50%; transform:translateX(-50%); bottom:130px; z-index:20;
-    width:min(88vw,560px); max-height:min(34vh,260px);
-    background:rgba(13,17,23,.92);
-  }
   .lyric.single .lrcline.long{padding-left:100%; animation:lrcScroll 18s linear infinite alternate;}
   #trackBox{max-height:240px; overflow-y:auto; margin:4px 14px 10px; padding:6px 8px; background:var(--panel); border:1px solid var(--bd); border-radius:8px; font-size:12px; display:none;}
   #trackBox .ttl{font-weight:bold; color:var(--acc); margin-bottom:4px; font-size:12px;}
@@ -741,7 +744,9 @@ function stopMedia(){
 const mvSide = document.getElementById('mvSide');
 const mvSideBody = document.getElementById('mvSideBody');
 const playerBarEl = document.querySelector('.player');
+const lyricBoxEl = document.getElementById('lyricBox');
 let listHome = null;   // 歌单原本在页面里的位置（退出全屏模式时还原）
+let lyricHome = null;  // 歌词条原本位置（全屏时移进底部播放条，退出还原）
 function syncMvLayout(){
   if(!document.body.classList.contains('mv-mode')) return;
   document.body.style.setProperty('--playerH', (playerBarEl.offsetHeight || 130) + 'px');
@@ -750,6 +755,8 @@ function enterMvMode(){
   const list = document.getElementById('list');
   if(!listHome) listHome = {p: list.parentNode, n: list.nextSibling};
   if(list.parentNode !== mvSideBody) mvSideBody.appendChild(list);
+  if(!lyricHome) lyricHome = {p: lyricBoxEl.parentNode, n: lyricBoxEl.nextSibling};
+  if(lyricBoxEl.parentNode !== playerBarEl) playerBarEl.insertBefore(lyricBoxEl, playerBarEl.firstChild);
   if(!document.body.classList.contains('mv-mode')){
     document.body.classList.add('mv-mode');
     requestAnimationFrame(syncMvLayout);
@@ -761,6 +768,7 @@ function exitMvMode(){
   mvSide.classList.remove('open');
   const list = document.getElementById('list');
   if(listHome && list.parentNode !== listHome.p) listHome.p.insertBefore(list, listHome.n);
+  if(lyricHome && lyricBoxEl.parentNode !== lyricHome.p) lyricHome.p.insertBefore(lyricBoxEl, lyricHome.n);
 }
 function toggleMvSide(){ mvSide.classList.toggle('open'); }
 document.getElementById('mvStrip').addEventListener('click', toggleMvSide);
@@ -974,6 +982,7 @@ function updateProg(lrc){
   curEl.textContent = fmt(t);
   if(d){ const p = t/d*100; fillEl.style.width = p+'%'; knobEl.style.left = p+'%'; }
   showLyric(lrc, t);
+  syncMvLayout();
 }
 function fmt(sec){
   sec = Math.max(0, Math.floor(sec||0));
