@@ -121,6 +121,57 @@
     border:1px solid var(--line); box-shadow:0 6px 24px rgba(0,0,0,.5); background:#000;
   }
   #mvWrap video{display:block; width:100%; max-height:46vh; background:#000;}
+  /* ===== MV 全屏模式：画面铺满 + 右侧节目单竖条 ===== */
+  body.mv-mode{overflow:hidden;}
+  body.mv-mode header, body.mv-mode .toprow, body.mv-mode .searchbar, body.mv-mode #trackBox{display:none;}
+  body.mv-mode .player{
+    position:fixed; left:0; right:var(--mvstrip,44px); bottom:0; z-index:30;
+    background:rgba(22,27,34,.97); border-top:1px solid var(--line);
+    max-height:46vh; overflow-y:auto;
+  }
+  body.mv-mode #mvWrap{
+    left:0; top:0; right:var(--mvstrip,44px); bottom:var(--playerH,130px);
+    transform:none; width:auto; border:none; border-radius:0; box-shadow:none;
+  }
+  body.mv-mode #mvWrap video{width:100%; height:100%; max-height:none; object-fit:contain;}
+  body.mv-mode .lyric.mv{
+    bottom:calc(var(--playerH,130px) + 10px); left:calc((100vw - var(--mvstrip,44px))/2);
+    width:min(92vw,760px); z-index:26;
+  }
+  /* 右侧节目单竖条 */
+  #mvSide{
+    position:fixed; top:0; right:0; bottom:0; z-index:40; width:var(--mvstrip,44px);
+    display:none; flex-direction:row; transition:width .22s ease;
+  }
+  body.mv-mode #mvSide{display:flex;}
+  #mvSide.open{width:min(320px,82vw);}
+  #mvStrip{
+    width:var(--mvstrip,44px); flex:none; cursor:pointer; user-select:none;
+    background:var(--panel); border-left:1px solid var(--line);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;
+    color:var(--acc);
+  }
+  #mvStrip:hover{background:var(--btn-hi);}
+  #mvStrip .vt{writing-mode:vertical-rl; letter-spacing:6px; font-size:14px; font-weight:700;}
+  #mvSideBody{flex:1; min-width:0; display:none; flex-direction:column; background:var(--bg); border-left:1px solid var(--line);}
+  #mvSide.open #mvSideBody{display:flex;}
+  #mvSideHead{
+    flex:none; display:flex; align-items:center; justify-content:space-between;
+    padding:10px 12px; background:var(--panel); border-bottom:1px solid var(--line);
+    color:var(--acc); font-size:14px; font-weight:700;
+  }
+  #mvSideClose{color:var(--sub); font-size:13px; cursor:pointer; padding:4px 8px; border:1px solid var(--line); border-radius:6px;}
+  #mvSideBody main#list{flex:1; overflow-y:auto; display:block; padding:8px;}
+  #mvSideBody main#list .song{margin-bottom:6px;}
+  /* 全屏模式浮动按钮 */
+  #mvExit,#mvFs{
+    position:fixed; top:10px; z-index:45; display:none;
+    background:rgba(22,27,34,.88); color:var(--text); border:1px solid var(--line);
+    border-radius:8px; padding:8px 14px; font-size:14px; cursor:pointer;
+  }
+  #mvExit{left:10px;}
+  #mvFs{left:88px;}
+  body.mv-mode #mvExit, body.mv-mode #mvFs{display:block;}
   /* ===== 播放器条 ===== */
   .player{
     position:relative; z-index:20;
@@ -255,6 +306,17 @@
 <main id="list"><div class="empty">正在加载歌单…</div></main>
 <div id="diagBadge" style="display:none;position:fixed;left:8px;bottom:8px;background:#7a1f1f;color:#ffe2e2;font-size:12px;padding:5px 9px;border-radius:6px;z-index:99999;max-width:92vw;word-break:break-all;cursor:pointer;" onclick="this.style.display='none'" title="点击隐藏"></div>
 <div id="mvWrap"><video id="mvPlayer" playsinline></video></div>
+<div id="mvSide">
+  <div id="mvSideBody">
+    <div id="mvSideHead"><span>节目单 · 点歌后自动收起</span><span id="mvSideClose">收起 ›</span></div>
+  </div>
+  <div id="mvStrip" title="节目单">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
+    <span class="vt">节目单</span>
+  </div>
+</div>
+<button id="mvExit">‹ 返回</button>
+<button id="mvFs">⛶ 全屏</button>
 <script>
 // ===== PWA 注册 =====
 if('serviceWorker' in navigator){ window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
@@ -390,6 +452,7 @@ function searchOnline(){
 }
 function tryOnline(btn, src, id){
   stopMedia();
+  exitMvMode();
   curOnline = {src:src, id:id};
   document.querySelectorAll('#oresults .oitem.playing').forEach(el=>el.classList.remove('playing'));
   if(btn){ const row = btn.closest('.oitem'); if(row) row.classList.add('playing'); }
@@ -576,7 +639,7 @@ function applyView(){
     document._toggleHooked = true;
     document.addEventListener('click', e=>{
       const t = e.target;
-      if(t.closest('.song,.chip,button,input,.player,#navchips,#lyricBox')) return;
+      if(t.closest('.song,.chip,button,input,.player,#navchips,#lyricBox,#mvSide')) return;
       if(cur>=0){
         if(curMedia.paused){ curMedia.play().catch(()=>{}); }
         else { curMedia.pause(); }
@@ -674,6 +737,52 @@ function stopMedia(){
   mvPlayer.load();
   mvWrap.style.display = 'none';
 }
+// ===== MV 全屏模式：画面铺满，节目单收进右侧竖条 =====
+const mvSide = document.getElementById('mvSide');
+const mvSideBody = document.getElementById('mvSideBody');
+const playerBarEl = document.querySelector('.player');
+let listHome = null;   // 歌单原本在页面里的位置（退出全屏模式时还原）
+function syncMvLayout(){
+  if(!document.body.classList.contains('mv-mode')) return;
+  document.body.style.setProperty('--playerH', (playerBarEl.offsetHeight || 130) + 'px');
+}
+function enterMvMode(){
+  const list = document.getElementById('list');
+  if(!listHome) listHome = {p: list.parentNode, n: list.nextSibling};
+  if(list.parentNode !== mvSideBody) mvSideBody.appendChild(list);
+  if(!document.body.classList.contains('mv-mode')){
+    document.body.classList.add('mv-mode');
+    requestAnimationFrame(syncMvLayout);
+  }
+}
+function exitMvMode(){
+  if(!document.body.classList.contains('mv-mode')) return;
+  document.body.classList.remove('mv-mode');
+  mvSide.classList.remove('open');
+  const list = document.getElementById('list');
+  if(listHome && list.parentNode !== listHome.p) listHome.p.insertBefore(list, listHome.n);
+}
+function toggleMvSide(){ mvSide.classList.toggle('open'); }
+document.getElementById('mvStrip').addEventListener('click', toggleMvSide);
+document.getElementById('mvSideClose').addEventListener('click', toggleMvSide);
+document.getElementById('mvExit').addEventListener('click', exitMvMode);
+document.getElementById('mvFs').addEventListener('click', ()=>{
+  if(document.fullscreenElement){ document.exitFullscreen(); }
+  else if(mvPlayer.requestFullscreen){ mvPlayer.requestFullscreen(); }
+  else if(mvPlayer.webkitEnterFullscreen){ mvPlayer.webkitEnterFullscreen(); }
+});
+// 竖条抽屉里点歌后自动收起
+mvSideBody.addEventListener('click', e=>{
+  if(e.target.closest('.song')) mvSide.classList.remove('open');
+});
+// 抽屉展开时点外部区域：只收起抽屉，不触发暂停/播放
+document.addEventListener('click', e=>{
+  if(!document.body.classList.contains('mv-mode') || !mvSide.classList.contains('open')) return;
+  if(e.target.closest('#mvSide')) return;
+  mvSide.classList.remove('open');
+  e.stopPropagation();
+}, true);
+window.addEventListener('resize', syncMvLayout);
 function playAt(i){
   if(i<0 || i>=shown.length) return;
   cur = i;
@@ -689,14 +798,17 @@ function playAt(i){
   if(s.parts && s.parts.length){
     // 分段大文件：Blob 拼接播放
     curMedia = (s.type === 'mv') ? mvPlayer : audio;
-    if(s.type === 'mv') mvWrap.style.display = 'block';
+    if(s.type === 'mv'){ mvWrap.style.display = 'block'; enterMvMode(); }
+    else { exitMvMode(); }
     loadSegmented(curMedia, s.parts);
   } else if(s.type === 'mv'){
     curMedia = mvPlayer;
     loadMedia(mvPlayer, s.file);
     mvWrap.style.display = 'block';
+    enterMvMode();
   } else {
     curMedia = audio;
+    exitMvMode();
     loadMedia(audio, s.file);
   }
   const lrc = parseLrc(s.lrc||'');
@@ -788,6 +900,7 @@ function syncControls(){
 function stopSong(){
   cur = -1;
   stopMedia();
+  exitMvMode();
   document.getElementById('nowTitle').textContent = '-- 未播放 --';
   document.getElementById('nowArtist').textContent = '';
   setMediaSession('', '');
