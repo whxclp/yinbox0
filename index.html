@@ -1336,22 +1336,15 @@ function renderRank(){
   let tabs = '<div class="rk-tabs">' + RANK_CHARTS.map((x,i)=>
     '<span class="rk-tab'+(i===rankCur?' on':'')+'" onclick="rankSwitch('+i+')">'+esc(x.name)+'</span>').join('') + '</div>';
   let meta = '<div class="rk-meta">'+rkFmtWan(c.listenNum)+'人在听 · 数据快照 2026-11-01 · 点「试听」直接播，点「归队」标记进歌单</div>';
-  let top3 = '<div class="rk-top3">' + c.songs.slice(0,3).map((s,i)=>
-    '<div class="rk-card'+(i===0?' rk-first':'')+'">'
-    + '<div class="rk-cover"><img src="'+esc(s.c)+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'"><span class="rk-medal">'+medal(i)+'</span><span class="rk-rank">'+(i+1)+'</span></div>'
-    + '<div class="rk-t">'+esc(s.n)+'</div><div class="rk-a">'+esc(s.a)+'</div><div class="rk-al">'+esc(s.al)+'</div>'
-    + '<div class="rk-btns"><button class="rk-play" onclick="rankTry(this,\''+escJs(s.n)+'\',\''+escJs(s.a)+'\')">试听</button>'
-    + '<button class="rk-want" onclick="rankWant(this,\''+escJs(s.n)+'\',\''+escJs(s.a)+'\')">归队</button></div>'
-    + '</div>').join('') + '</div>';
-  let rows = '<div class="rk-list">' + c.songs.slice(3).map((s,i)=>
+  let rows = '<div class="rk-list">' + c.songs.map((s,i)=>
     '<div class="rk-row">'
-    + '<span class="rk-no">'+(i+4)+'</span>'
+    + '<span class="rk-no">'+(i<3 ? medal(i) : (i+1))+'</span>'
     + '<img class="rk-cov" src="'+esc(s.c)+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">'
     + '<div class="rk-meta3"><div class="rk-t">'+esc(s.n)+'</div><div class="rk-a">'+esc(s.a)+' · '+esc(s.al)+'</div></div>'
     + '<button class="rk-play sm" onclick="rankTry(this,\''+escJs(s.n)+'\',\''+escJs(s.a)+'\')">试听</button>'
     + '<button class="rk-want sm" onclick="rankWant(this,\''+escJs(s.n)+'\',\''+escJs(s.a)+'\')">归队</button>'
     + '</div>').join('') + '</div>';
-  body.innerHTML = tabs + meta + top3 + rows;
+  body.innerHTML = tabs + meta + rows;
 }
 function rankSwitch(i){ rankCur = i; renderRank(); }
 function rankSearchFirst(name, artist, cb){
