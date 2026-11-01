@@ -35,8 +35,8 @@
   header p{color:#ff8c00; font-size:14px; margin-top:2px;}
   .searchbar{display:flex; padding:10px 16px; background:var(--panel); border-bottom:1px solid var(--line);}
   .searchbar button{background:var(--btn); border:1px solid var(--line); color:var(--text); border-radius:8px; padding:9px 18px; font-size:15px; cursor:pointer; min-height:40px;}
-  #onlineBtn{background:#ff8c00; color:#fff; border:2px solid #ff8c00; border-radius:10px; padding:9px 16px; font-size:15px; font-weight:bold; cursor:pointer; min-height:40px; box-shadow:0 0 10px rgba(255,140,0,.5);}
-  #onlineBtn:hover{background:#ffa040;}
+  #onlineBtn, #rankBtn{background:#ff8c00; color:#fff; border:2px solid #ff8c00; border-radius:10px; padding:9px 16px; font-size:15px; font-weight:bold; cursor:pointer; min-height:40px; box-shadow:0 0 10px rgba(255,140,0,.5);}
+  #onlineBtn:hover, #rankBtn:hover{background:#ffa040;}
   .searchbar button:hover{background:var(--btn-hi);}
   .searchbar button:active{border-color:var(--acc);}
   .pfav{display:flex; flex-direction:row; gap:6px; flex:none; flex-wrap:wrap; justify-content:flex-end;}
@@ -248,6 +248,41 @@
     max-width: calc(100vw - 16px);
     overflow: auto;
   }
+  /* ===== 人气榜（测试版新增：大小/颜色与「网上搜索」完全对齐） ===== */
+  #rankPanel{background:var(--panel); border-bottom:1px solid var(--line); padding:10px 16px 16px;}
+  #rankTop{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;}
+  #rankTop .tt{font-size:20px; font-weight:bold;}
+  #rankTop .rk-close{font-size:16px; cursor:pointer; padding:8px 14px; color:var(--text); background:var(--btn); border:1px solid var(--line); border-radius:8px;}
+  #rankTop .rk-close:hover{background:var(--btn-hi);}
+  #rankBtn{margin-left:auto;}
+  #rankBtn:hover{background:#ffa040;}
+  .rk-tabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;}
+  .rk-tab{font-size:15px; padding:9px 16px; border-radius:10px; background:var(--btn); color:var(--text); cursor:pointer; border:1px solid var(--line); white-space:nowrap; min-height:40px; display:inline-flex; align-items:center;}
+  .rk-tab:hover{background:var(--btn-hi);}
+  .rk-tab.on{background:#ff8c00; color:#fff; border-color:#ff8c00; font-weight:bold;}
+  .rk-meta{font-size:13px; color:var(--sub); margin:8px 2px 0; line-height:1.7;}
+  .rk-top3{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:10px 0 12px;}
+  @media (max-width:720px){ .rk-top3{grid-template-columns:1fr;} }
+  .rk-card{background:var(--btn); border:1px solid var(--line); border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:8px;}
+  .rk-card.rk-first{border-color:#ff8c00; box-shadow:0 0 12px rgba(255,140,0,.18);}
+  .rk-cover{position:relative; width:100%; aspect-ratio:1; border-radius:8px; overflow:hidden; background:#0a0d12;}
+  .rk-cover img{width:100%; height:100%; object-fit:cover; display:block;}
+  .rk-medal{position:absolute; left:6px; top:6px; font-size:18px; line-height:1;}
+  .rk-rank{position:absolute; right:6px; top:6px; background:rgba(0,0,0,.65); color:var(--acc); font-weight:800; font-size:13px; padding:1px 8px; border-radius:999px;}
+  .rk-t{font-size:15px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .rk-a{font-size:12px; color:var(--sub); margin-top:2px;}
+  .rk-al{font-size:12px; color:var(--sub); opacity:.75; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .rk-btns{display:flex; gap:6px;}
+  .rk-play{background:var(--acc); color:#111; border:1px solid var(--acc); border-radius:8px; padding:7px 14px; font-size:14px; font-weight:bold; cursor:pointer; min-height:36px; flex:1;}
+  .rk-play:active{opacity:.85;}
+  .rk-want{background:#ff8c00; color:#fff; border:1px solid #ff8c00; border-radius:8px; padding:7px 14px; font-size:14px; font-weight:bold; cursor:pointer; min-height:36px;}
+  .rk-list{display:flex; flex-direction:column; gap:0;}
+  .rk-row{display:flex; align-items:center; gap:8px; padding:8px 12px; margin-bottom:6px; background:var(--btn); border:1px solid var(--line); border-radius:10px;}
+  .rk-row:hover{background:var(--btn-hi);}
+  .rk-no{width:26px; text-align:center; font-size:13px; font-weight:700; color:var(--sub); flex:none;}
+  .rk-cov{width:40px; height:40px; border-radius:6px; object-fit:cover; background:#0a0d12; flex:none;}
+  .rk-meta3{flex:1; min-width:0;}
+  .rk-row .rk-play.sm,.rk-row .rk-want.sm{flex:none; min-height:36px; padding:0 12px; border-radius:8px; cursor:pointer; font-size:14px; font-weight:bold;}
 </style>
 </head>
 <body>
@@ -294,6 +329,14 @@
 <div id="trackBox"></div>
 <div class="searchbar">
     <button onclick="toggleOnline()" id="onlineBtn" title="搜全网歌曲，试听后可标记加入歌单">网上搜歌</button>
+    <button id="rankBtn" onclick="toggleRank()" title="流行音乐人气榜：试听后可归队加入歌单">人气榜</button>
+  </div>
+  <div id="rankPanel" style="display:none;">
+    <div id="rankTop">
+      <span class="tt">🎵 人气榜</span>
+      <span class="rk-close" onclick="toggleRank()">收起 ▲</span>
+    </div>
+    <div id="rankBody"></div>
   </div>
   <div id="onlineSearch">
     <div id="searchTop"><span class="tt">搜全网</span><span id="searchClose" onclick="toggleOnline()">关闭</span></div>
@@ -467,29 +510,35 @@ function tryOnline(btn, src, id){
   exitMvMode();
   curOnline = {src:src, id:id};
   document.querySelectorAll('#oresults .oitem.playing').forEach(el=>el.classList.remove('playing'));
-  if(btn){ const row = btn.closest('.oitem'); if(row) row.classList.add('playing'); }
+  let row = null;
+  if(btn && btn.closest){ row = btn.closest('.oitem'); if(row) row.classList.add('playing'); }
+  const title = row ? (row.querySelector('.t').textContent||'') : '';
+  const artist = row ? (row.querySelector('.a').textContent||'') : '';
   const hit = (lastOnlineResults||[]).find(r=>r.source===src && String(r.id)===String(id));
-  if(hit && hit.url){ startOnlineAudio(hit.url, btn, src, id, true); return; }
+  playOnline(src, id, title, artist, hit && hit.url);
+}
+function playOnline(src, id, title, artist, url){
+  if(url){ startOnlineAudio(url, src, id, title, artist, true); return; }
   fetch(SEARCH_API + '/play?src='+src+'&id='+encodeURIComponent(id))
     .then(r=>r.json())
     .then(j=>{
-      if(j.url){ startOnlineAudio(j.url, btn, src, id, false); }
+      if(j.url){ startOnlineAudio(j.url, src, id, title, artist, false); }
       else { alert('该版本暂不可播'); }
     })
     .catch(e=>alert('获取播放链接失败：'+e.message));
 }
-function startOnlineAudio(url, btn, src, id, canRefresh){
+function startOnlineAudio(url, src, id, title, artist, canRefresh){
   audio.src = url;
   audio.onerror = canRefresh ? function(){
     audio.onerror = null;
     fetch(SEARCH_API + '/play?src='+src+'&id='+encodeURIComponent(id))
       .then(r=>r.json())
-      .then(j=>{ if(j.url && curOnline && curOnline.src===src && curOnline.id===id){ startOnlineAudio(j.url, btn, src, id, false); } })
+      .then(j=>{ if(j.url && curOnline && curOnline.src===src && curOnline.id===id){ startOnlineAudio(j.url, src, id, title, artist, false); } })
       .catch(()=>{});
   } : null;
   audio.play().catch(()=>{});
-  document.getElementById('nowTitle').textContent = '网上试听：'+(btn.closest('.oitem').querySelector('.t').textContent||'');
-  document.getElementById('nowArtist').textContent = btn.closest('.oitem').querySelector('.a').textContent;
+  document.getElementById('nowTitle').textContent = title || '网上试听';
+  document.getElementById('nowArtist').textContent = artist;
   setMediaSession(document.getElementById('nowTitle').textContent, document.getElementById('nowArtist').textContent);
   document.getElementById('lyricBox').style.display='none';
   loadOnlineLyric(src, id);
@@ -1265,6 +1314,67 @@ loadSongs();
   document.addEventListener('DOMContentLoaded', fixH5pMenus);
   fixH5pMenus();
 })();
+// ===== 人气榜（测试版新增：复用音盒搜索/播放/归队引擎） =====
+const RANK_CHARTS = [{"name":"流行指数榜","listenNum":7953220,"songs":[{"n":"季候风","a":"王菲","al":"执迷不悔","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002Oen8n3cKClG_5.jpg"},{"n":"我好像在哪见过你","a":"薛之谦","al":"初学者","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000dcZ9I1nzO62_1.jpg"},{"n":"难生恨","a":"DAWN","al":"难生恨","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001HbTL21T4QDT_3.jpg"},{"n":"迟来的情话","a":"张家旺","al":"迟来的情话","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M0000007qwpc1XDkXo_3.jpg"},{"n":"隔岸","a":"可楼","al":"隔岸 (女版)","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M0000042uV2d3a2IjF_1.jpg"},{"n":"爱是难解的签","a":"一只白羊","al":"爱是难解的签","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002ZeUy20FicrV_1.jpg"},{"n":"你冷一分我就退一分","a":"苏清墨","al":"你冷一分我就退一分","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003U3pbQ2CuRWf_1.jpg"},{"n":"Bad Boy Club","a":"刘宇","al":"Bad Boy Club","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001gOdd60TDRhu_1.jpg"},{"n":"不懂事","a":"吴炳文","al":"不懂事","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M0000000VbgK0B6o2e_6.jpg"},{"n":"过渡期","a":"小宇-宋念宇","al":"再一次","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001Uw5qE3Wjlo6_4.jpg"},{"n":"我不愿看到你流泪的眼睛","a":"еяхат музыка","al":"Only Look At Me (氛围版)","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004dSEW32P4baF_1.jpg"},{"n":"月下签","a":"蒲熠星","al":"月下签","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003kOLwh4SCHL5_1.jpg"},{"n":"天空之外","a":"弦子","al":"陪你到世界之巅 电视剧原声带","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002zUgJU2juo1u_1.jpg"},{"n":"You Are All I Need","a":"FLY COAST","al":"Flight Number 001","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000B8U3p19UV0b_2.jpg"},{"n":"自由的你","a":"G.E.M.邓紫棋","al":"自由的你","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002Cy8kL400ft2_3.jpg"},{"n":"一身傲骨不认输","a":"兴俊拔","al":"一身傲骨不认输","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000Pcioa2ud37T_1.jpg"},{"n":"深宵秋别","a":"张偲偲","al":"深宵秋别","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001ea5eD1ET0vZ_1.jpg"},{"n":"Moonride","a":"Hearts2Hearts","al":"Moonride","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004BnVzt0HGFcy_1.jpg"},{"n":"You're Under Arrest","a":"ILLIT","al":"BREAK EVEN","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001vZgxP31tZzd_1.jpg"},{"n":"时间会回答","a":"七元","al":"时间会回答","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004Nydxc3ReaDR_1.jpg"},{"n":"暗恋过 结局呢","a":"新街口组合","al":"国王","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M0000013bTvi0ZvSbw_1.jpg"},{"n":"如果爱是命中注定的相遇","a":"铃草","al":"如果爱是命中注定的相遇","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000ztLWE4E1xd3_1.jpg"},{"n":"发如雪","a":"周杰伦","al":"十一月的萧邦","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M0000024bjiL2aocxT_5.jpg"},{"n":"误会对白","a":"鹭卓","al":"ALL IN ALL","c":"https://y.gtimg.cn/music/photo_new/T062R300x300M000003fffvb0mBMVX.jpg"},{"n":"Turn End","a":"Vnriet","al":"Every One You(后来看谁都像你)","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001Y53JD3q3wxq_1.jpg"},{"n":"her","a":"ZVC","al":"her (boy version)","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M0000008g2yO0nEh1t_1.jpg"},{"n":"致亲爱的自己","a":"梓渝","al":"梓渝","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M0000035Y3b01o1BsG_1.jpg"},{"n":"爱情太美又太伤","a":"王欣心","al":"爱情太美又太伤（温柔治愈版）","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003mZlhH3vOGJo_1.jpg"},{"n":"以物易物","a":"DYLAN尹海阳","al":"INDIVIDUAL: 个体差异","c":"https://y.gtimg.cn/music/photo_new/T062R300x300M0000038yM112pbczh.jpg"},{"n":"我听人说思念像风一样","a":"雪山阿木","al":"我听人说思念像风一样(纯享版)","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004elj0l2ZjU7Y_1.jpg"},{"n":"Insomnia","a":"RIIZE","al":"Insomnia","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003LQ1uy0nnYl6_1.jpg"},{"n":"后来的我和你","a":"高冷","al":"后来的我和你","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004ad0ne3kVygo_2.jpg"},{"n":"Call your name (Gv)","a":"澤野弘之","al":"「進撃の巨人」Season3 オリジナル・サウンドトラック","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000GHr773SppMX_1.jpg"},{"n":"风吹过","a":"张玮","al":"风吹过","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004HdMIu3BxTYc_1.jpg"},{"n":"有些人再难遇见","a":"小柚子","al":"有些人再难遇见（治愈童声）","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000VkKQe23m4qG_1.jpg"},{"n":"RUD3","a":"王栎鑫","al":"RUD3","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001KlLNU04Xncb_3.jpg"},{"n":"多幸运","a":"韩安旭","al":"多幸运","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M0000008wVjT0MSG3T_3.jpg"},{"n":"眼神","a":"孙燕姿","al":"The Moment","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002ehzTm0TxXC2_4.jpg"},{"n":"时过境迁","a":"苏艺馨Chency","al":"时过境迁","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001zUnnV4T1qwb_2.jpg"},{"n":"火山遥 (我是火一样的姑娘)","a":"陈日春","al":"火山遥 (我是火一样的姑娘)","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002SikoW1V5Ero_1.jpg"},{"n":"山那头 (风刮着原上柳)","a":"杨小东","al":"山那头 (风刮着原上柳)","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004WGyAy0udVjv_1.jpg"},{"n":"人儿啊请慢下来","a":"石满仓","al":"人儿啊请慢下来（就等风来 静待花开）","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M0000016yQUL3M7OWt_1.jpg"},{"n":"Cherry Candy","a":"Lunak","al":"Cherry Candy","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001KsTdW3f3W9A_1.jpg"},{"n":"茉茉","a":"Nzwin 黄跃成","al":"茉茉","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000vinRR01agny_1.jpg"},{"n":"Wish You Well","a":"张智成","al":"你爱上的...","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002RBVbE1ef8kW_9.jpg"},{"n":"可我只是海","a":"LBI利比（时柏尘）","al":"可我只是海","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003cFq1Z1oIpyN_3.jpg"},{"n":"秋风一吹又老一岁","a":"周深深","al":"秋风一吹又老一岁","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000m01tJ0EPgzA_1.jpg"},{"n":"请爱我朴素的容颜和滚烫的灵魂","a":"薛盯峨","al":"如果可以我想和你回到那天相遇","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004D0yfb4CfOf4_1.jpg"},{"n":"天外来物","a":"薛之谦","al":"天外来物","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000K9Zp13TZp5s_1.jpg"},{"n":"老人与海","a":"海鸣威","al":"老人与海","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002xkMav17d28o_3.jpg"}]},{"name":"热歌榜","listenNum":19300000,"songs":[{"n":"天龙八部之宿敌","a":"许嵩","al":"天龙八部之宿敌","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002JzRQD2zjvxG_3.jpg"},{"n":"我好像在哪见过你","a":"薛之谦","al":"初学者","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000dcZ9I1nzO62_1.jpg"},{"n":"我不难过","a":"孙燕姿","al":"未完成","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004VSvF52mQoQp_5.jpg"},{"n":"季候风","a":"王菲","al":"执迷不悔","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002Oen8n3cKClG_5.jpg"},{"n":"甲乙丙丁 (你我怎么两清)","a":"李佳薇","al":"甲乙丙丁","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M00000446QRA1fTdqA_2.jpg"},{"n":"NEON","a":"A2O LITE","al":"NEON","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001BLmVC0kTjAd_2.jpg"},{"n":"雨爱","a":"杨丞琳","al":"雨爱","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000jcKFG0sQrD0_3.jpg"},{"n":"我怀念的","a":"孙燕姿","al":"逆光","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000P3l050Olt27_5.jpg"},{"n":"演员","a":"薛之谦","al":"绅士","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003y8dsH2wBHlo_4.jpg"},{"n":"恋人","a":"李荣浩","al":"黑马","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004HaG7p4ZkhXA_1.jpg"},{"n":"情歌","a":"梁静茹","al":"静茹 & 情歌 别再为他流泪","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002E4IXe1ESUij_4.jpg"},{"n":"幻听","a":"许嵩","al":"梦游计","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004RbL3b0BDIe2_2.jpg"},{"n":"You Are All I Need","a":"FLY COAST","al":"Flight Number 001","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000B8U3p19UV0b_2.jpg"},{"n":"Always Online","a":"林俊杰","al":"JJ陆","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002g6zv02X7SNi_4.jpg"},{"n":"Moonride","a":"Hearts2Hearts","al":"Moonride","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004BnVzt0HGFcy_1.jpg"},{"n":"特别的人","a":"方大同","al":"危险世界","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000GvdTR0qcKh8_2.jpg"},{"n":"爱错","a":"王力宏","al":"心中的日月","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002ElVxf43rOue_2.jpg"},{"n":"红色高跟鞋","a":"蔡健雅","al":"若你碰到他","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002dOge41xlS8x_2.jpg"},{"n":"开始懂了","a":"孙燕姿","al":"我要的幸福","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004KRIQr1oCp2A_6.jpg"},{"n":"素颜","a":"许嵩","al":"素颜","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M0000035f8nw11cjkf_5.jpg"},{"n":"发如雪","a":"周杰伦","al":"十一月的萧邦","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M0000024bjiL2aocxT_5.jpg"},{"n":"春娇与志明","a":"街道办GDC","al":"春娇与志明","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000lrXyA0MlEEo_5.jpg"},{"n":"我们俩","a":"郭顶","al":"微微","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003sMyYb4HZAAz_4.jpg"},{"n":"江南","a":"林俊杰","al":"第二天堂","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000y5gq7449K9I_3.jpg"},{"n":"唯一","a":"G.E.M.邓紫棋","al":"T.I.M.E.","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002d6m7k0xCbSv_4.jpg"},{"n":"失眠","a":"Suki刘舒妤","al":"Ladies Night","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002xCeeN4EJ1Ke_3.jpg"},{"n":"时过境迁","a":"苏艺馨Chency","al":"时过境迁","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001zUnnV4T1qwb_2.jpg"},{"n":"其实","a":"薛之谦","al":"意外","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000QgFcm0v8WaF_1.jpg"},{"n":"泪海","a":"许茹芸","al":"泪海","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001Ugmj01giuzO_4.jpg"},{"n":"天外来物","a":"薛之谦","al":"天外来物","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000K9Zp13TZp5s_1.jpg"},{"n":"美人鱼","a":"林俊杰","al":"第二天堂","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000y5gq7449K9I_3.jpg"},{"n":"雨过后的风景","a":"Dizzy Dizzo (蔡诗芸)","al":"黑色彩虹","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M0000038xSkp1EcVBf_5.jpg"},{"n":"晴天","a":"周杰伦","al":"叶惠美","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000MkMni19ClKG_5.jpg"},{"n":"富士山下","a":"陈奕迅","al":"What's Going On...?","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004Z85XP1c25b7_5.jpg"},{"n":"心墙","a":"郭静","al":"在树上唱歌","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003EHcB24J8t9Z_2.jpg"},{"n":"多远都要在一起","a":"G.E.M.邓紫棋","al":"新的心跳","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003c616O2Zlswm_4.jpg"},{"n":"玻璃","a":"Gareth.T","al":"玻璃","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002kIED92uw8L5_1.jpg"},{"n":"认真的雪","a":"薛之谦","al":"薛之谦","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003mUYW22JXKVK_2.jpg"},{"n":"刻在我心底的名字","a":"卢广仲","al":"刻在我心底的名字","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004QG0W52P5GUq_1.jpg"},{"n":"遇见","a":"孙燕姿","al":"The Moment","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002ehzTm0TxXC2_4.jpg"},{"n":"最佳损友","a":"陈奕迅","al":"Life Continues","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002FT46H18G1jW_4.jpg"},{"n":"坏女孩","a":"徐良","al":"不良少年","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002apRhZ4Bq99d_2.jpg"},{"n":"我好想你","a":"苏打绿","al":"秋：故事（苏打绿版）","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004QF5kp0jgyba_1.jpg"},{"n":"你不要那样看着我的眼睛","a":"蔡琴","al":"你不要那样看着我的眼睛","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003HVu7R0mCMM8_3.jpg"},{"n":"偏爱","a":"张芸京","al":"破天荒","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003ha6C92GRuVE_2.jpg"},{"n":"阴天","a":"莫文蔚","al":"You Can","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000hTTJN3oScZr_5.jpg"},{"n":"十年","a":"陈奕迅","al":"黑白灰","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000GDz8k03UOaI_2.jpg"},{"n":"隔岸","a":"可楼","al":"隔岸 (女版)","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M0000042uV2d3a2IjF_1.jpg"},{"n":"不将就","a":"李荣浩","al":"有理想","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001fi1zG0EjU2u_2.jpg"},{"n":"瞬","a":"郑润泽","al":"瞬","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001qvyI10urb5z_1.jpg"}]},{"name":"新歌榜","listenNum":200933,"songs":[{"n":"NEON","a":"A2O LITE","al":"NEON","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001BLmVC0kTjAd_2.jpg"},{"n":"当世界年纪小","a":"任素汐","al":"当世界年纪小","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001sDI7i2dOu2V_1.jpg"},{"n":"Bad Boy Club","a":"刘宇","al":"Bad Boy Club","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001gOdd60TDRhu_1.jpg"},{"n":"SUPERSTAR","a":"A2O SOUL","al":"SUPERSTAR","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001dHUST1Nfvsd_2.jpg"},{"n":"隔岸","a":"可楼","al":"隔岸 (女版)","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M0000042uV2d3a2IjF_1.jpg"},{"n":"月下签","a":"蒲熠星","al":"月下签","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003kOLwh4SCHL5_1.jpg"},{"n":"牵挂","a":"曾沛慈","al":"牵挂","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M0000018CRqi0xIzCf_1.jpg"},{"n":"DESERVE","a":"BABYMONSTER","al":"DESERVE","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003QFzz937ZzY3_1.jpg"},{"n":"You're Under Arrest","a":"ILLIT","al":"BREAK EVEN","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001vZgxP31tZzd_1.jpg"},{"n":"今夜让我带你高飞远走","a":"五月天 阿信","al":"今夜让我带你高飞远走","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002bU34N4Erieg_1.jpg"},{"n":"其实雨也没多大","a":"正在进行石女士","al":"其实雨也没多大","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003tJKBC46d2uS_1.jpg"},{"n":"Insomnia","a":"RIIZE","al":"Insomnia","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003LQ1uy0nnYl6_1.jpg"},{"n":"小城","a":"任素汐","al":"小城","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001Zy47F4Kj5fy_1.jpg"},{"n":"Dear my crazy soulmate","a":"IU","al":"이 별로부터","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003lEju02M6CI1_1.jpg"},{"n":"时间会回答","a":"七元","al":"时间会回答","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004Nydxc3ReaDR_1.jpg"},{"n":"误会对白","a":"鹭卓","al":"ALL IN ALL","c":"https://y.gtimg.cn/music/photo_new/T062R300x300M000003fffvb0mBMVX.jpg"},{"n":"后来的我和你","a":"高冷","al":"后来的我和你","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004ad0ne3kVygo_2.jpg"},{"n":"山海不说话 (我路过山 山不说话)","a":"陳鴨梨Charlie","al":"山海不说话 (我路过山 山不说话)","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002wTQGF40dcAF_1.jpg"},{"n":"戒断 (BAD HABITS TONITE)","a":"A2O MAY","al":"戒断 (BAD HABITS TONITE)","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003khFss2ipkup_1.jpg"},{"n":"RUD3","a":"王栎鑫","al":"RUD3","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001KlLNU04Xncb_3.jpg"},{"n":"一身傲骨不认输","a":"兴俊拔","al":"一身傲骨不认输","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000Pcioa2ud37T_1.jpg"},{"n":"空余恨","a":"周深深","al":"空余恨","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M0000013jelJ4JWC39_1.jpg"},{"n":"风吹过","a":"张玮","al":"风吹过","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004HdMIu3BxTYc_1.jpg"},{"n":"秋风一吹又老一岁","a":"周深深","al":"秋风一吹又老一岁","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000m01tJ0EPgzA_1.jpg"},{"n":"轻轻","a":"肖战","al":"轻轻","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001zU1173lcnR3_1.jpg"},{"n":"若你看见花开","a":"杨小壮","al":"若你看见花开","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004aaPnx1izMbf_1.jpg"},{"n":"her","a":"ZVC","al":"her (boy version)","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M0000008g2yO0nEh1t_1.jpg"},{"n":"好想好想","a":"古巨基","al":"新白娘子传奇+琼瑶八点档金曲CD2","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M0000031jc3244pKR9_1.jpg"},{"n":"Pop","a":"ILLIT","al":"BREAK EVEN","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001vZgxP31tZzd_1.jpg"},{"n":"Cherry Candy","a":"Lunak","al":"Cherry Candy","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001KsTdW3f3W9A_1.jpg"},{"n":"也会有人代替你","a":"供销社乐队","al":"也会有人代替你","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000rxOlT0NzfM8_1.jpg"},{"n":"有你爱就明媚","a":"Fozik佛子克","al":"有你爱就明媚","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001qc6Wl2qZDqM_1.jpg"},{"n":"ADDICTED","a":"JISOO","al":"ADDICTED","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003DhpqU4YoEFB_1.jpg"},{"n":"Baby's Horizon","a":"TF家族-张函瑞","al":"Baby's Horizon","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000000QPAxd2ROzd8_1.jpg"},{"n":"大漠长明","a":"指南针","al":"大漠长明","c":"https://y.gtimg.cn/music/photo_new/T062R300x300M000001U7xDV2S1iSq.jpg"},{"n":"路过你的城市","a":"米奇老虎","al":"路过你的城市(车窗外的天）","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001Swahb2GvkGE_1.jpg"},{"n":"荒","a":"平生不晚","al":"荒","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004JGbzZ2V0xZz_1.jpg"},{"n":"I Don't Car!","a":"蒋敦豪","al":"那就充分扎实地逐个拥抱 (Bug and hug)","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003mc32Z3FRTxC_1.jpg"},{"n":"故乡的炊烟","a":"天津李四","al":"故乡的炊烟","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000001y54Da24DQDJ_2.jpg"},{"n":"你想要的都在路上","a":"天雯","al":"你想要的都在路上","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003D2gr941gfpD_1.jpg"},{"n":"无尽冬","a":"周深","al":"无尽冬","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002JkES13koV1w_1.jpg"},{"n":"和你的每一件小事","a":"TF_ING邓佳鑫","al":"和你的每一件小事","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003Xm7St3BNTEP_1.jpg"},{"n":"JUICE","a":"周震南","al":"JUICE","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003JVtM84GHuqi_1.jpg"},{"n":"你也没有错","a":"羊羊","al":"你也没有错","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000002ivy9m4IqkKQ_1.jpg"},{"n":"渡口","a":"张杰","al":"渡口 (长征寻访回顾曲)","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003wxdSq05dOJq_1.jpg"},{"n":"最难得","a":"单依纯","al":"最难得","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003gAhIn30xN4e_1.jpg"},{"n":"ILLUSION - Sped","a":"MIKS","al":"ILLUSION","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003YR4qP23L8dA_2.jpg"},{"n":"面目全非","a":"张远","al":"面目全非","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004Sktpx4ZUPZK_1.jpg"},{"n":"那女孩对我说","a":"赵乃吉","al":"那女孩对我说","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000004FlVr11YthLN_1.jpg"},{"n":"自己的灯自己点","a":"尤映冬","al":"自己的灯自己点","c":"https://y.gtimg.cn/music/photo_new/T002R300x300M000003E1hgX0XIVRB_1.jpg"}]}];
+let rankCur = 0;
+function toggleRank(){
+  const el = document.getElementById('rankPanel');
+  const show = el.style.display !== 'block';
+  el.style.display = show ? 'block' : 'none';
+  if(show){
+    const o = document.getElementById('onlineSearch');
+    if(o) o.style.display = 'none';
+    if(!el.dataset.inited){ renderRank(); el.dataset.inited = '1'; }
+  }
+}
+function rkFmtWan(n){ return n >= 10000 ? (n/10000).toFixed(1).replace(/\.0$/,'') + ' 万' : String(n); }
+function renderRank(){
+  const body = document.getElementById('rankBody');
+  const c = RANK_CHARTS[rankCur];
+  if(!c) return;
+  const medal = i => i===0 ? '🥇' : i===1 ? '🥈' : '🥉';
+  let tabs = '<div class="rk-tabs">' + RANK_CHARTS.map((x,i)=>
+    '<span class="rk-tab'+(i===rankCur?' on':'')+'" onclick="rankSwitch('+i+')">'+esc(x.name)+'</span>').join('') + '</div>';
+  let meta = '<div class="rk-meta">'+rkFmtWan(c.listenNum)+'人在听 · 数据快照 2026-11-01 · 点「试听」直接播，点「归队」标记进歌单</div>';
+  let top3 = '<div class="rk-top3">' + c.songs.slice(0,3).map((s,i)=>
+    '<div class="rk-card'+(i===0?' rk-first':'')+'">'
+    + '<div class="rk-cover"><img src="'+esc(s.c)+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'"><span class="rk-medal">'+medal(i)+'</span><span class="rk-rank">'+(i+1)+'</span></div>'
+    + '<div class="rk-t">'+esc(s.n)+'</div><div class="rk-a">'+esc(s.a)+'</div><div class="rk-al">'+esc(s.al)+'</div>'
+    + '<div class="rk-btns"><button class="rk-play" onclick="rankTry(this,\''+escJs(s.n)+'\',\''+escJs(s.a)+'\')">试听</button>'
+    + '<button class="rk-want" onclick="rankWant(this,\''+escJs(s.n)+'\',\''+escJs(s.a)+'\')">归队</button></div>'
+    + '</div>').join('') + '</div>';
+  let rows = '<div class="rk-list">' + c.songs.slice(3).map((s,i)=>
+    '<div class="rk-row">'
+    + '<span class="rk-no">'+(i+4)+'</span>'
+    + '<img class="rk-cov" src="'+esc(s.c)+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">'
+    + '<div class="rk-meta3"><div class="rk-t">'+esc(s.n)+'</div><div class="rk-a">'+esc(s.a)+' · '+esc(s.al)+'</div></div>'
+    + '<button class="rk-play sm" onclick="rankTry(this,\''+escJs(s.n)+'\',\''+escJs(s.a)+'\')">试听</button>'
+    + '<button class="rk-want sm" onclick="rankWant(this,\''+escJs(s.n)+'\',\''+escJs(s.a)+'\')">归队</button>'
+    + '</div>').join('') + '</div>';
+  body.innerHTML = tabs + meta + top3 + rows;
+}
+function rankSwitch(i){ rankCur = i; renderRank(); }
+function rankSearchFirst(name, artist, cb){
+  fetch(SEARCH_API + '/search?kw=' + encodeURIComponent(name + ' ' + artist))
+    .then(r=>r.json())
+    .then(j=>{
+      const hit = (j.playable || [])[0];
+      if(!hit){ alert('没找到「'+name+'」的可播放版本'); return; }
+      cb(hit);
+    })
+    .catch(e=>alert('搜索失败：'+e.message));
+}
+function rankTry(btn, name, artist){
+  if(btn) btn.textContent = '搜索中…';
+  rankSearchFirst(name, artist, hit=>{
+    if(btn) btn.textContent = '试听';
+    playOnline(hit.source, hit.id, name, artist, hit.url);
+  });
+}
+function rankWant(btn, name, artist){
+  rankSearchFirst(name, artist, hit=>{ wantAdd(btn, hit.source, hit.id); });
+}
+
 </script>
 </body>
 </html>
