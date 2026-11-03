@@ -450,7 +450,7 @@ fetch('search-api.json?t='+Date.now()).then(r=>r.json()).then(j=>{
       document.getElementById('oresults').innerHTML = saved.html;
       document.querySelectorAll('#oresults .oitem.playing').forEach(el=>el.classList.remove('playing'));
       document.getElementById('okw').value = saved.kw || localStorage.getItem('cloudSearchKw')||'';
-      document.getElementById('onlineSearch').style.display = 'block';
+      // 只恢复搜索记录，不自动弹出搜歌页（点「网上搜歌」再看）
     }
   }catch(e){}
   renderHist();
