@@ -435,12 +435,19 @@ function applyFilter(){
   render();
 }
 // ===== 网上搜歌 =====
-let SEARCH_API = localStorage.getItem('searchApi') || localStorage.getItem('searchApiAuto') || 'https://7e60913a.r27.cpolar.top';
+let SEARCH_API = localStorage.getItem('searchApi') || localStorage.getItem('searchApiAuto') || 'https://1405f253.r27.cpolar.top';
 // 地址自动发现：每次打开读本站 search-api.json（看门狗在隧道地址变化时自动更新它）
 fetch('search-api.json?t='+Date.now()).then(r=>r.json()).then(j=>{
-  if(j && j.api && !localStorage.getItem('searchApi')){
-    SEARCH_API = j.api;
-    localStorage.setItem('searchApiAuto', j.api);
+  if(j && j.api){
+    if(!localStorage.getItem('searchApi')){
+      SEARCH_API = j.api;
+      localStorage.setItem('searchApiAuto', j.api);
+    }else if(localStorage.getItem('searchApi')!==j.api){
+      // 手动配置过的地址和最新发布的不一致：探活，不通就自动切到最新地址（解决隧道换地址后一直搜不出来）
+      Promise.race([fetch(SEARCH_API+'/ping').then(r=>r.ok).catch(()=>false), new Promise(res=>setTimeout(()=>res(false),4000))]).then(ok=>{
+        if(!ok){ SEARCH_API = j.api; localStorage.removeItem('searchApi'); localStorage.setItem('searchApiAuto', j.api); }
+      });
+    }
   }
 }).catch(()=>{});
 (function(){
