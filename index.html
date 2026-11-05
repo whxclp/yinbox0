@@ -645,8 +645,12 @@ else { cats[classify(s)].push(s); }
   } else {
 const sec = (items, label, tagText, tagClass, secId)=>{
 if(!items.length && secId !== 'fav') return '';   // 「收藏」分类空也保留显示（收藏（0））
-// 网址条目排到组内末尾，普通条目保持标题自然排序
-items = items.slice().sort((a,b)=>(isExtFile(a)?1:0)-(isExtFile(b)?1:0));
+// 排序：MV 排最前，普通条目居中（保持原标题自然排序），网址条目排到末尾
+items = items.slice().sort((a,b)=>{
+  const ra = isExtFile(a) ? 2 : (a.type === 'mv' ? 0 : 1);
+  const rb = isExtFile(b) ? 2 : (b.type === 'mv' ? 0 : 1);
+  return ra - rb;
+});
 return '<div class="group-title" id="sec-'+(secId||'')+'">'+label+'（'+items.length+'）</div>' + secItems(items, tagText, tagClass);
 };
     const secItems = (items, tagText, tagClass)=>{
