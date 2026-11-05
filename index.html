@@ -631,7 +631,7 @@ function render(){
 const cats = {fav:[], song:[], instrument:[], puju:[], errenzhuan:[], mv:[]};
 const colls = {};
 shown.forEach(s=>{
-if(favs[s.file] || favs[s.title]){ cats.fav.push(s); return; }  // 已收藏→「收藏」分类（平时听歌）
+if(favs[s.file] || favs[s.title]){ cats.fav.push(s); }  // 收藏分类照常收录，但不再从原分类移走：点序号只是红心点亮/熄灭，节目原地不动
 if(s.coll){ (colls[s.coll] || (colls[s.coll]=[])).push(s); }
 else { cats[classify(s)].push(s); }
 });
