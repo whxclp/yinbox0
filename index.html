@@ -244,7 +244,14 @@
       filter:drop-shadow(0 0 6px rgba(255,140,200,.35));
     }
     .lyric.single .lrcline.long{animation:lrcScroll 18s linear infinite alternate, lrcColorFlow 6s linear infinite;}
-    .lyric.single .lrcline.pre{background:none; color:#7d8896; -webkit-text-fill-color:#7d8896; animation:none; filter:none;}
+    /* 前奏预告句也用彩色，只是压暗以示"尚未唱到" */
+    .lyric.single .lrcline.pre{
+      background:linear-gradient(90deg,#ff6b6b,#ffd93d,#6bff8f,#4dc3ff,#b78bff,#ff6b6b);
+      background-size:200% 100%;
+      -webkit-background-clip:text; background-clip:text;
+      color:transparent; -webkit-text-fill-color:transparent;
+      opacity:.6; animation:none; filter:none;
+    }
     .lyric.plain .lrcline.cur{
       background:linear-gradient(90deg,#ff6b6b,#ffd93d,#6bff8f,#4dc3ff,#b78bff,#ff6b6b);
       background-size:200% 100%;
