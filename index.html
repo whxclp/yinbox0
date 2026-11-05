@@ -220,12 +220,40 @@
     pointer-events:auto; font-size:17px; line-height:1.8; padding:10px 16px; text-align:left;
   }
   .lyric.plain .lrcline{padding:1px 0;}
-  .lyric.plain .lrcline.cur{color:#ffb347;font-weight:bold;font-size:20px;}
+  /* 彩色歌词：多行模式每行轮换马卡龙色 */
+  .lyric.plain .lrcline:nth-child(6n+1){color:#ffb3ba;}
+  .lyric.plain .lrcline:nth-child(6n+2){color:#ffdfba;}
+  .lyric.plain .lrcline:nth-child(6n+3){color:#ffffba;}
+  .lyric.plain .lrcline:nth-child(6n+4){color:#baffc9;}
+  .lyric.plain .lrcline:nth-child(6n+5){color:#bae1ff;}
+  .lyric.plain .lrcline:nth-child(6n+6){color:#e0bbff;}
+  .lyric.plain .lrcline.cur{color:#ff7ad9;font-weight:bold;font-size:20px;}
   .lyric.single{padding:9px 16px; font-size:17px;}
   .lyric.single .lrcwrap{max-width:100%; overflow:hidden; white-space:nowrap;}
   .lyric.single .lrcline{display:inline-block; white-space:nowrap; color:#ffd93d; font-weight:bold; font-size:20px;}
   .lyric.single .lrcline.pre{color:#7d8896; font-weight:normal;}
   .lyric.single .lrcline.long{padding-left:100%; animation:lrcScroll 18s linear infinite alternate;}
+  /* 当前句彩虹流动渐变（不支持渐变文字的老浏览器自动退回黄色） */
+  @supports ((-webkit-background-clip:text) or (background-clip:text)){
+    .lyric.single .lrcline{
+      background:linear-gradient(90deg,#ff6b6b,#ffd93d,#6bff8f,#4dc3ff,#b78bff,#ff6b6b);
+      background-size:200% 100%;
+      -webkit-background-clip:text; background-clip:text;
+      color:transparent; -webkit-text-fill-color:transparent;
+      animation:lrcColorFlow 6s linear infinite;
+      filter:drop-shadow(0 0 6px rgba(255,140,200,.35));
+    }
+    .lyric.single .lrcline.long{animation:lrcScroll 18s linear infinite alternate, lrcColorFlow 6s linear infinite;}
+    .lyric.single .lrcline.pre{background:none; color:#7d8896; -webkit-text-fill-color:#7d8896; animation:none; filter:none;}
+    .lyric.plain .lrcline.cur{
+      background:linear-gradient(90deg,#ff6b6b,#ffd93d,#6bff8f,#4dc3ff,#b78bff,#ff6b6b);
+      background-size:200% 100%;
+      -webkit-background-clip:text; background-clip:text;
+      color:transparent; -webkit-text-fill-color:transparent;
+      animation:lrcColorFlow 6s linear infinite;
+    }
+  }
+  @keyframes lrcColorFlow{from{background-position:0% 0;} to{background-position:200% 0;}}
   #trackBox{max-height:240px; overflow-y:auto; margin:4px 14px 10px; padding:6px 8px; background:var(--panel); border:1px solid var(--bd); border-radius:8px; font-size:12px; display:none;}
   #trackBox .ttl{font-weight:bold; color:var(--acc); margin-bottom:4px; font-size:12px;}
   #trackBox .tk{display:flex; gap:6px; padding:2px 4px; border-radius:4px; cursor:pointer; align-items:baseline;}
