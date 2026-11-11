@@ -489,6 +489,8 @@ function applyFilter(){
   const kw = (document.getElementById('kw').value||'').trim().toLowerCase();
   const normTxt = t=>String(t||'').toLowerCase().replace(/[（()）\s，,。.·・-]/g,'');
   const needle = normTxt(kw);
+  // 搜索时自动切回「全部」：否则当前分类（如 MV）会把别的分类里的命中结果藏起来，看着像"搜不到"
+  if(needle) window._yinboxView = '__all__';
   shown = songs.filter(s=>{
     // 收藏状态不参与筛选：已收藏进原分组，未收藏（取消过的）进「备选」分类
     if(!needle) return true;
