@@ -483,7 +483,7 @@ function classify(s){
   return 'song';
 }
 function isExtFile(s){
-  return !/\.(mp3|mp4|m4a|aac|wav|flac|ogg)(\?|#|$)/i.test(String(s && s.file || ''));
+  return !/\.(mp3|mp4|m4a|aac|wav|flac|ogg|webm|ogv)(\?|#|$)/i.test(String(s && s.file || ''));
 }
 function applyFilter(){
   const kw = (document.getElementById('kw').value||'').trim().toLowerCase();
@@ -949,7 +949,8 @@ function playAt(i){
   if(i<0 || i>=shown.length) return;
   cur = i;
   const s = shown[i];
-  if(!/\.(mp3|mp4|m4a|aac|wav|flac|ogg)(\?|#|$)/i.test(s.file||'')){
+  const isVid = (s.type === 'mv') || /\.(webm|ogv)(\?|#|$)/i.test(s.file||'');
+  if(!/\.(mp3|mp4|m4a|aac|wav|flac|ogg|webm|ogv)(\?|#|$)/i.test(s.file||'')){
     // 外链条目（如B站合集）：新标签页打开，不进播放器
     window.open(s.file, '_blank');
     document.getElementById('nowTitle').textContent = '外链：' + (s.title || s.file);
@@ -959,11 +960,11 @@ function playAt(i){
   stopMedia();
   if(s.parts && s.parts.length){
     // 分段大文件：Blob 拼接播放
-    curMedia = (s.type === 'mv') ? mvPlayer : audio;
-    if(s.type === 'mv'){ mvWrap.style.display = 'block'; enterMvMode(); }
+    curMedia = isVid ? mvPlayer : audio;
+    if(isVid){ mvWrap.style.display = 'block'; enterMvMode(); }
     else { exitMvMode(); }
     loadSegmented(curMedia, s.parts);
-  } else if(s.type === 'mv'){
+  } else if(isVid){
     curMedia = mvPlayer;
     loadMedia(mvPlayer, s.file);
     mvWrap.style.display = 'block';
@@ -1084,7 +1085,7 @@ function collNextIdx(curIdx, dir){
   const pos = same.indexOf(curIdx);
   return same[(pos + dir + same.length) % same.length];
 }
-function isExternal(s){ return !!s && !/\.(mp3|mp4|m4a|aac|wav|flac|ogg)(\?|#|$)/i.test(s.file||''); }
+function isExternal(s){ return !!s && !/\.(mp3|mp4|m4a|aac|wav|flac|ogg|webm|ogv)(\?|#|$)/i.test(s.file||''); }
 function nextSong(auto){
   if(!shown.length) return;
   let next, from = cur, guard = 0;
