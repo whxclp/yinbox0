@@ -403,6 +403,22 @@ let curOnline = null;
 let lastOnlineResults = [];
 let favs = {};
 try{ favs = JSON.parse(localStorage.getItem('cloudFavs')||'{}'); }catch(e){ favs = {}; }
+let favsBanned = {};
+try{ favsBanned = JSON.parse(localStorage.getItem('cloudFavsBanned')||'{}'); }catch(e){ favsBanned = {}; }
+// 新入库的歌先自动进「收藏」，NEW_DAYS 天后自动归位到原分类（改 newHoldDays 可调天数）
+let NEW_DAYS = parseInt(localStorage.getItem('newHoldDays')||'7', 10); if(!(NEW_DAYS>0)) NEW_DAYS = 7;
+function isHeldNew(s){
+  if(!s || !s.added) return false;
+  const t = Date.parse(String(s.added));
+  if(isNaN(t)) return false;
+  return (Date.now() - t) < NEW_DAYS*86400000;
+}
+function inFav(s){
+  if(!s) return false;
+  if(favs[s.file] || favs[s.title]) return true;
+  if(favsBanned[s.file]) return false;
+  return isHeldNew(s);
+}
 
 const audio = new Audio();
 audio.preload = 'metadata';
@@ -631,7 +647,7 @@ function render(){
 const cats = {fav:[], song:[], instrument:[], puju:[], errenzhuan:[], mv:[]};
 const colls = {};
 shown.forEach(s=>{
-if(favs[s.file] || favs[s.title]){ cats.fav.push(s); }  // 收藏分类照常收录，但不再从原分类移走：点序号只是红心点亮/熄灭，节目原地不动
+if(inFav(s)){ cats.fav.push(s); }  // 收藏分类照常收录，但不再从原分类移走：点序号只是红心点亮/熄灭，节目原地不动
 if(s.coll){ (colls[s.coll] || (colls[s.coll]=[])).push(s); }
 else { cats[classify(s)].push(s); }
 });
@@ -657,16 +673,17 @@ return '<div class="group-title" id="sec-'+(secId||'')+'">'+label+'（'+items.le
       let s = '';
       items.forEach((it,i)=>{
 const isPlaying = cur>=0 && shown[cur]===it;
-const fav = !!favs[it.file] || !!favs[it.title];
+const fav = inFav(it);
 const ext = isExtFile(it);
 const tag = tagText ? `<span class="tag ${tagClass}">${tagText}</span>` : '';
+const newTag = (isHeldNew(it) && !(favs[it.file]||favs[it.title])) ? '<span class="tag m">新</span>' : '';
 s += `<div class="song${isPlaying?' playing':''}${ext?' ext':''}" onclick="playAt(${shown.indexOf(it)})" title="${ext?'点击打开网址':'点击播放'}">
 <span class="idx${fav?'':' off'}" onclick="event.stopPropagation();toggleFav('${esc(it.file)}','${esc(it.title||'')}')" title="${fav?'取消收藏（点序号）':'未收藏（点序号恢复收藏）'}">${isPlaying?'▶':i+1}</span>
 <span class="meta">
 <div class="t">${ext?'🔗 ':''}${esc(it.title||it.file.split('/').pop())}</div>
 <div class="a">${esc(it.artist||'')}</div>
 </span>
-${tag}
+${tag}${newTag}
 </div>`;
       });
       return s;
@@ -702,7 +719,7 @@ html += sec(cats.mv,'MV','MV','m','mv');
   const statEl = document.getElementById('statTop');
   if(statEl){ statEl.innerHTML = '共 '+songs.length+' 首 · 显示 '+shown.length+' 首'; }
   const rulesEl = document.getElementById('statRules');
-  if(rulesEl){ rulesEl.innerHTML = '显示顺序=播放顺序（标题自然排序，合集内循环）· 点歌曲左侧序号=<b>收藏/取消收藏</b>：收藏的歌进「收藏」分类（平时听歌用），其余在「歌曲」分类'; }
+  if(rulesEl){ rulesEl.innerHTML = '显示顺序=播放顺序（标题自然排序，合集内循环）· 点歌曲左侧序号=<b>收藏/取消收藏</b>（新入库的歌 <b>'+NEW_DAYS+'</b> 天内自动进收藏，到期自动归位）：收藏的歌进「收藏」分类（平时听歌用），其余在「歌曲」分类'; }
   document.getElementById('list').innerHTML = html;
   // 顶部分类直达导航：精简为 5 大内容分类（备选与合集分类靠列表滚动/搜索定位）
   const nav = document.getElementById('navchips');
@@ -1151,12 +1168,18 @@ applyVol();
 
 // ===== 收藏（本设备）=====
 function toggleFav(file, title, btn){
-  const old = favs[file] ? file : (favs[title] ? title : null);
-  let banned = JSON.parse(localStorage.getItem('cloudFavsBanned')||'{}');
-  if(old){ delete favs[old]; banned[file] = 1; } else { favs[file] = 1; delete banned[file]; }
+  const curFav = inFav({file: file, title: title});
+  if(curFav){
+    if(favs[file]) delete favs[file];
+    if(favs[title]) delete favs[title];
+    favsBanned[file] = 1;
+  } else {
+    favs[file] = 1;
+    delete favsBanned[file];
+  }
   localStorage.setItem('cloudFavs', JSON.stringify(favs));
-  localStorage.setItem('cloudFavsBanned', JSON.stringify(banned));
-  if(btn){ btn.classList.toggle('on', !!favs[file] || !!favs[title]); btn.textContent = (favs[file]||favs[title]) ? '♥' : '♡'; }
+  localStorage.setItem('cloudFavsBanned', JSON.stringify(favsBanned));
+  if(btn){ btn.classList.toggle('on', inFav({file: file, title: title})); btn.textContent = inFav({file: file, title: title}) ? '♥' : '♡'; }
   applyFilter();
 }
 function toggleFavFilter(){
