@@ -355,6 +355,7 @@
 <div class="searchbar">
     <button onclick="toggleOnline()" id="onlineBtn" title="搜全网歌曲，试听后可标记加入歌单">网上搜歌</button>
     <button id="rankBtn" onclick="toggleRank()" title="流行音乐人气榜：试听后可归队加入歌单">人气榜</button>
+    <button id="localBtn" onclick="openLocal()" style="background:#16a34a;color:#fff;border:2px solid #16a34a;border-radius:10px;padding:9px 16px;font-size:15px;font-weight:bold;cursor:pointer;min-height:40px;" title="改用本机硬盘播放，不受 GitHub 限速，收藏会一起带过去">⚡ 本机流畅版</button>
   </div>
   <div id="rankPanel" style="display:none;">
     <div id="rankTop">
@@ -394,13 +395,6 @@ if('serviceWorker' in navigator){ window.addEventListener('load', ()=>{ navigato
 // ===== 数据 =====
 const INSTRUMENTS = ['二胡','唢呐','笛子','钢琴','小提琴','吉他','古筝','琵琶','大提琴','长笛','萨克斯','小号','手风琴','葫芦丝','埙','箫','扬琴','阮','口琴','陶笛'];
 let songs = [];        // 全量歌单（来自 songs.json）
-// ===== 本机直出 =====
-// 同一台电脑上若跑着音盒本地服务（8093 端口），媒体优先从硬盘取，绕过 GitHub Pages 限速；
-// 服务没开、或本地没有这个文件时，自动降级回线上地址，不影响在别的设备上使用。
-const LOCAL_BASE = 'http://127.0.0.1:8093/__local/';
-let localMode = true;   // 先乐观开启
-let localMisses = 0;
-function localProxy(u){ return LOCAL_BASE + encodeURIComponent(u); }
 let shown = [];        // 当前筛选后展示的歌单（播放按此顺序）
 let cur = -1;          // 当前播放歌在 shown 中的下标
 let mode = 0;          // 0顺序 1循环 2单曲 3随机
@@ -426,6 +420,26 @@ function inFav(s){
   if(favsBanned[s.file]) return false;
   return isHeldNew(s);
 }
+// ===== 一键把本机流畅版打开，并把收藏一起带过去（#fav=YINFAV1:...）=====
+function openLocal(){
+  const payload = 'YINFAV1:' + JSON.stringify(favs);
+  window.location.href = 'http://127.0.0.1:8093/pc-player.html#fav=' + encodeURIComponent(payload);
+}
+// 落地页接收：把线上页带过来的收藏并入本机收藏（并清掉对应的"取消收藏"标记）
+(function importHashFavs(){
+  try{
+    const m = location.hash.match(/fav=([^&]+)/);
+    if(!m) return;
+    const raw = decodeURIComponent(m[1]);
+    if(raw.indexOf('YINFAV1:') !== 0) return;
+    const obj = JSON.parse(raw.slice(8));
+    favs = Object.assign({}, favs, obj);
+    localStorage.setItem('cloudFavs', JSON.stringify(favs));
+    Object.keys(obj).forEach(k=>{ delete favsBanned[k]; });
+    localStorage.setItem('cloudFavsBanned', JSON.stringify(favsBanned));
+    history.replaceState(null, '', location.pathname + location.search);
+  }catch(e){}
+})();
 
 const audio = new Audio();
 audio.preload = 'metadata';
@@ -819,18 +833,9 @@ async function loadSegmented(media, parts){
     const blobs = [];
     for(const p of parts){
       let got = false;
-      for(const pre of ['', 'songs/', '@remote']){
+      for(const pre of ['', 'songs/']){
         try{
-          const isHttp = /^https?:\/\//i.test(p);
-          let target;
-          if(isHttp){
-            if(!localMode) continue;                 // 已降级：只走线上
-            target = (pre === '@remote') ? p : localProxy(p);
-          } else {
-            if(pre === '@remote') continue;
-            target = pre + encodeURI(p);
-          }
-          const r = await fetch(target, {cache:'no-store', signal: ctrl.signal});
+          const r = await fetch(/^https?:\/\//i.test(p) ? p : pre + encodeURI(p), {cache:'no-store', signal: ctrl.signal});
           if(r.ok){ blobs.push(await r.blob()); got = true; break; }
         }catch(e){ if(e && e.name === 'AbortError') throw e; }
       }
@@ -852,24 +857,10 @@ async function loadSegmented(media, parts){
   }
 }
 function loadMedia(media, f){
-  // 歌曲文件引用线上地址：本机服务可用时先走硬盘，失败再回落线上
-  let tryRoot = true, triedLocal = false;
-  const setSrc = ()=>{
-    if(/^https?:\/\//i.test(f)){
-      if(localMode){ triedLocal = true; media.src = localProxy(f); return; }
-      media.src = f; return;
-    }
-    media.src = (tryRoot ? '' : 'songs/') + encodeURI(f);
-  };
+  // 轻量库：歌曲文件引用线上地址，直接播放
+  let tryRoot = true;
+  const setSrc = ()=>{ if(/^https?:\/\//i.test(f)){ media.src = f; return; } media.src = (tryRoot ? '' : 'songs/') + encodeURI(f); };
   media.onerror = ()=>{
-    if(triedLocal){
-      // 本机服务没开 / 本地没这个文件：本首改用线上地址
-      triedLocal = false;
-      if(++localMisses >= 3) localMode = false;   // 连续三首都取不到，整体降级
-      setSrc();
-      media.play().catch(()=>{});
-      return;
-    }
     if(tryRoot){
       tryRoot = false;
       setSrc();
