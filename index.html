@@ -355,7 +355,6 @@
 <div class="searchbar">
     <button onclick="toggleOnline()" id="onlineBtn" title="搜全网歌曲，试听后可标记加入歌单">网上搜歌</button>
     <button id="rankBtn" onclick="toggleRank()" title="流行音乐人气榜：试听后可归队加入歌单">人气榜</button>
-    <button id="localBtn" onclick="openLocal()" style="background:#16a34a;color:#fff;border:2px solid #16a34a;border-radius:10px;padding:9px 16px;font-size:15px;font-weight:bold;cursor:pointer;min-height:40px;" title="改用本机硬盘播放，不受 GitHub 限速，收藏会一起带过去">⚡ 本机流畅版</button>
   </div>
   <div id="rankPanel" style="display:none;">
     <div id="rankTop">
@@ -420,8 +419,17 @@ function inFav(s){
   if(favsBanned[s.file]) return false;
   return isHeldNew(s);
 }
-// 手机上访问不了本机 8093，窄屏就不显示这个入口
-try{ if(window.matchMedia('(max-width: 820px)').matches) document.getElementById('localBtn').style.display='none'; }catch(e){}
+// ===== 歌单里的一项：本机流畅版（固定在分类最后面）=====
+let localRowDrawn = false;
+function localEntryRow(){
+  if(localRowDrawn) return '';
+  try{ if(window.matchMedia('(max-width: 820px)').matches) return ''; }catch(e){}
+  localRowDrawn = true;
+  return '<div class="song local" onclick="openLocal()" title="用本机硬盘播放：速度按硬盘来，不受 GitHub 限速影响，收藏会一起带过去">'
+    + '<span class="idx" style="color:#16a34a;background:transparent;border-color:#16a34a">⚡</span>'
+    + '<span class="meta"><div class="t" style="color:#16a34a">本机流畅版</div>'
+    + '<div class="a">点这里用本机硬盘听（不受限速影响，收藏一起带过去）</div></span></div>';
+}
 // ===== 一键把本机流畅版打开，并把收藏一起带过去（#fav=YINFAV1:...）=====
 function openLocal(){
   const payload = 'YINFAV1:' + JSON.stringify(favs);
@@ -667,6 +675,7 @@ function histDel(kw){
   renderHist();
 }
 function render(){
+localRowDrawn = false;
 const cats = {fav:[], song:[], instrument:[], puju:[], errenzhuan:[], mv:[]};
 const colls = {};
 shown.forEach(s=>{
@@ -743,6 +752,7 @@ html += sec(cats.mv,'MV','MV','m','mv');
   if(statEl){ statEl.innerHTML = '共 '+songs.length+' 首 · 显示 '+shown.length+' 首'; }
   const rulesEl = document.getElementById('statRules');
   if(rulesEl){ rulesEl.innerHTML = '显示顺序=播放顺序（标题自然排序，合集内循环）· 点歌曲左侧序号=<b>收藏/取消收藏</b>（新入库的歌 <b>'+NEW_DAYS+'</b> 天内自动进收藏，到期自动归位）：收藏的歌进「收藏」分类（平时听歌用），其余在「歌曲」分类'; }
+  if(!localRowDrawn){ html += localEntryRow(); }   // 当前视图里没有杜殿虎歌曲时，放到列表末尾，免得找不到入口
   document.getElementById('list').innerHTML = html;
   // 顶部分类直达导航：精简为 5 大内容分类（备选与合集分类靠列表滚动/搜索定位）
   const nav = document.getElementById('navchips');
