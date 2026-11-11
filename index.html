@@ -420,6 +420,8 @@ function inFav(s){
   if(favsBanned[s.file]) return false;
   return isHeldNew(s);
 }
+// 手机上访问不了本机 8093，窄屏就不显示这个入口
+try{ if(window.matchMedia('(max-width: 820px)').matches) document.getElementById('localBtn').style.display='none'; }catch(e){}
 // ===== 一键把本机流畅版打开，并把收藏一起带过去（#fav=YINFAV1:...）=====
 function openLocal(){
   const payload = 'YINFAV1:' + JSON.stringify(favs);
