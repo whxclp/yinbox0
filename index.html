@@ -396,6 +396,7 @@ const INSTRUMENTS = ['二胡','唢呐','笛子','钢琴','小提琴','吉他','�
 let songs = [];        // 全量歌单（来自 songs.json）
 let shown = [];        // 当前筛选后展示的歌单（播放按此顺序）
 let cur = -1;          // 当前播放歌在 shown 中的下标
+let playQueue = null;  // 当前播放队列（shown 下标数组）：从「收藏」起播时=收藏列表顺序；null=按 shown 全局顺序
 let mode = 0;          // 0顺序 1循环 2单曲 3随机
 const MODES = ['顺序','循环','单曲','随机'];
 let favFilter = false;
@@ -505,6 +506,7 @@ function applyFilter(){
     if(a.coll && b.coll && a.coll!==b.coll) return String(a.coll).localeCompare(String(b.coll),'zh-Hans-CN',{numeric:true});
     return String(a.title||'').localeCompare(String(b.title||''),'zh-Hans-CN',{numeric:true});
   });
+  playQueue = null;   // 筛选/收藏变化后旧队列可能失效，下次从列表点播时会重建
   render();
 }
 // ===== 网上搜歌 =====
@@ -689,9 +691,9 @@ items = items.slice().sort((a,b)=>{
   const rb = isExtFile(b) ? 2 : (b.type === 'mv' ? 0 : 1);
   return ra - rb;
 });
-return '<div class="group-title" id="sec-'+(secId||'')+'">'+label+'（'+items.length+'）</div>' + secItems(items, tagText, tagClass);
+return '<div class="group-title" id="sec-'+(secId||'')+'">'+label+'（'+items.length+'）</div>' + secItems(items, tagText, tagClass, secId === 'fav');
 };
-    const secItems = (items, tagText, tagClass)=>{
+    const secItems = (items, tagText, tagClass, isFavSec)=>{
       let s = '';
       items.forEach((it,i)=>{
 const isPlaying = cur>=0 && shown[cur]===it;
@@ -699,7 +701,7 @@ const fav = inFav(it);
 const ext = isExtFile(it);
 const tag = tagText ? `<span class="tag ${tagClass}">${tagText}</span>` : '';
 const newTag = (isHeldNew(it) && !(favs[it.file]||favs[it.title])) ? '<span class="tag m">新</span>' : '';
-s += `<div class="song${isPlaying?' playing':''}${ext?' ext':''}" onclick="playAt(${shown.indexOf(it)})" title="${ext?'点击打开网址':'点击播放'}">
+s += `<div class="song${isPlaying?' playing':''}${ext?' ext':''}" onclick="playAt(${shown.indexOf(it)},${isFavSec?1:0})" title="${ext?'点击打开网址':'点击播放'}">
 <span class="idx${fav?'':' off'}" onclick="event.stopPropagation();toggleFav('${esc(it.file)}','${esc(it.title||'')}')" title="${fav?'取消收藏（点序号）':'未收藏（点序号恢复收藏）'}">${isPlaying?'▶':i+1}</span>
 <span class="meta">
 <div class="t">${ext?'🔗 ':''}${esc(it.title||it.file.split('/').pop())}</div>
@@ -729,7 +731,7 @@ ${tag}${newTag}
       const total = g.groups.reduce((n,x)=>n+x.items.length,0);
       html += '<div class="group-title" id="sec-coll-'+g.label+'">'+g.label+'（'+total+'）</div>';
       g.groups.forEach(sub=>{
-        html += '<div class="sub-title" id="sec-coll-'+g.label+'·'+sub.tagText+'">'+sub.tagText+'（'+sub.items.length+'）</div>' + secItems(sub.items, sub.tagText, 'c');
+        html += '<div class="sub-title" id="sec-coll-'+g.label+'·'+sub.tagText+'">'+sub.tagText+'（'+sub.items.length+'）</div>' + secItems(sub.items, sub.tagText, 'c', false);
       });
     });
 secPlain.forEach(name=>{ html += sec(colls[name], '合集 · '+name, name, 'c', 'coll-'+name); });
@@ -945,8 +947,12 @@ document.addEventListener('click', e=>{
   e.stopPropagation();
 }, true);
 window.addEventListener('resize', syncMvLayout);
-function playAt(i){
+function playAt(i, favSec){
   if(i<0 || i>=shown.length) return;
+  // 从「收藏」区起播：之后的上一首/下一首/播完自动切歌都留在收藏列表内；
+  // 从其它分类起播：回到原有的全局顺序（各分类内顺序播放的既有行为不变）
+  if(favSec === 1){ playQueue = buildFavQueue(); }
+  else if(favSec === 0){ playQueue = null; }
   cur = i;
   const s = shown[i];
   const isVid = (s.type === 'mv') || /\.(webm|ogv)(\?|#|$)/i.test(s.file||'');
@@ -1062,6 +1068,7 @@ function syncControls(){
 }
 function stopSong(){
   cur = -1;
+  playQueue = null;
   stopMedia();
   exitMvMode();
   document.getElementById('nowTitle').textContent = '-- 未播放 --';
@@ -1086,12 +1093,28 @@ function collNextIdx(curIdx, dir){
   return same[(pos + dir + same.length) % same.length];
 }
 function isExternal(s){ return !!s && !/\.(mp3|mp4|m4a|aac|wav|flac|ogg|webm|ogv)(\?|#|$)/i.test(s.file||''); }
+// 收藏队列：与「收藏」区展示顺序一致（MV → 普通 → 外链，同级保持 shown 顺序），元素是 shown 下标
+function buildFavQueue(){
+  const rank = s => isExtFile(s) ? 2 : (s.type === 'mv' ? 0 : 1);
+  return shown.filter(inFav).sort((a,b)=>rank(a)-rank(b)).map(s=>shown.indexOf(s)).filter(i=>i>=0);
+}
+function activeQueue(){
+  return (playQueue && playQueue.length > 1 && playQueue.indexOf(cur) >= 0) ? playQueue : null;
+}
 function nextSong(auto){
   if(!shown.length) return;
+  const q = activeQueue();
   let next, from = cur, guard = 0;
   for(;;){
-    if(mode===3){ next = Math.floor(Math.random()*shown.length); }
+    if(mode===3){ next = q ? q[Math.floor(Math.random()*q.length)] : Math.floor(Math.random()*shown.length); }
     else if(mode===2){ next = from; }
+    else if(q){
+      // 收藏队列内顺序前进（不在合集内串场），到头按模式处理
+      const qp = q.indexOf(from);
+      const np = (qp < 0 ? 0 : qp) + 1;
+      if(np >= q.length){ next = (mode===1 || !auto) ? q[0] : -1; }
+      else { next = q[np]; }
+    }
     else {
       next = collNextIdx(from, 1);
       if(next < 0){
@@ -1103,7 +1126,7 @@ function nextSong(auto){
     // 外链条目（无媒体后缀）不进播放器，自动切换时跳过，避免弹窗打开网址
     if(mode===2){ if(isExternal(shown[next])){ next = -1; } break; }
     if(!isExternal(shown[next])) break;
-    if(++guard > shown.length){ next = -1; break; }
+    if(++guard > (q ? q.length : shown.length)){ next = -1; break; }
     from = next;
   }
   if(next<0){ curMedia.pause(); curMedia.currentTime = 0; return; }
@@ -1112,12 +1135,19 @@ function nextSong(auto){
 function prevSong(){
   if(cur<0 || !shown.length) return;
   if(curMedia.currentTime > 3){ curMedia.currentTime = 0; return; }
-  let p = collNextIdx(cur, -1);
-  if(p < 0){ p = (cur-1+shown.length) % shown.length; }
+  const q = activeQueue();
+  let p;
+  if(q){
+    p = q[(q.indexOf(cur)-1+q.length) % q.length];
+  } else {
+    p = collNextIdx(cur, -1);
+    if(p < 0){ p = (cur-1+shown.length) % shown.length; }
+  }
   let guard = 0;
+  const lim = q ? q.length : shown.length;
   while(isExternal(shown[p])){
-    if(++guard > shown.length){ p = cur; break; }
-    p = (p-1+shown.length) % shown.length;
+    if(++guard > lim){ p = cur; break; }
+    p = q ? q[(q.indexOf(p)-1+q.length) % q.length] : (p-1+shown.length) % shown.length;
   }
   playAt(p);
 }
