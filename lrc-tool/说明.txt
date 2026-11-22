@@ -1,0 +1,24 @@
+歌词配轴工具 备份（2026-11-22）
+================================
+用途：给视频打歌词时间轴 / 从视频画面提词 / 导出带歌词视频。
+
+怎么用（只用本地这一份，别从网页上打开）：
+1. 双击「打开歌词配轴工具.vbs」
+   它会静默启动本机提词服务（127.0.0.1:8094），然后用默认浏览器打开工具页面。
+2. 页面里「导入歌词」「导入 SRT」「🎬 从视频提词」「导出视频」都在这个页面里操作。
+
+为什么不能直接双击 html：
+   file:// 页面会被浏览器拦截对本机服务的请求（表现为“上传失败: Failed to fetch”）。
+   从 vbs 入口打开的是 http://127.0.0.1:8094/ ，与服务同源，不存在跨域。
+
+依赖（换电脑要装）：
+   - Python 3（装在 path 里），装 rapidocr / onnxruntime / opencv-python-headless / numpy / Pillow
+   - ffmpeg + ffprobe（在 PATH 里）
+   - 视频提词还需要提取器 lrc_from_video.py（默认找 C:\Users\<你>\Desktop\视频提歌词，
+     也可用环境变量 LRC_TOOL_DIR 指定别的目录）
+
+接口：
+   GET  /ping                健康检查
+   POST /extract?name=&fps=   提词（请求体=视频字节）
+   GET  /job/<id>            提词进度/结果
+   POST /remux?name=         导出后用 ffmpeg 补时长，存到桌面

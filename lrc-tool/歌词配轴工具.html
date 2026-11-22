@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>歌词配轴工具</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Microsoft YaHei", sans-serif; background: #1a1a2e; color: #eee; height: 100vh; display: flex; flex-direction: column; }
+  header { padding: 12px 16px; background: #16213e; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  header h1 { font-size: 18px; margin-right: auto; }
+  button { background: #0f3460; color: #eee; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 14px; }
+  button:hover { background: #1a5276; }
+  label.filebtn { display: inline-flex; align-items: center; gap: 4px; background: #0f3460; color: #eee; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 14px; }
+  label.filebtn:hover { background: #1a5276; }
+  button.active { background: #e94560; }
+  input[type=file], textarea { background: #0f3460; color: #eee; border: 1px solid #533483; border-radius: 6px; padding: 6px; }
+  main { flex: 1; display: flex; gap: 12px; padding: 12px; overflow: hidden; }
+  .panel { background: #16213e; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; }
+  #left { width: 480px; }
+  #right { flex: 1; }
+  #lyricInput { flex: 1; font-size: 14px; line-height: 1.6; resize: none; font-family: inherit; }
+  #lyricList { flex: 1; overflow-y: auto; list-style: none; }
+  #lyricList li { padding: 8px 10px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  #lyricList li:hover { background: #0f3460; }
+  #lyricList li.current { background: #e94560; color: #fff; }
+  #lyricList li.stamped { color: #2ecc71; }
+  .time { font-family: monospace; font-size: 13px; min-width: 70px; color: #f39c12; }
+  .text { flex: 1; }
+  .tune button { padding: 2px 8px; font-size: 12px; margin: 0 1px; }
+  #player { padding: 12px 16px; background: #16213e; }
+  audio { width: 100%; }
+  #videoWrap { display: none; position: relative; }
+  #videoWrap.on { display: block; }
+  #video { display: block; width: 100%; max-height: 48vh; background: #000; border-radius: 6px; }
+  #videoLyric {
+    position: absolute; left: 0; right: 0; bottom: 7%; padding: 0 4%;
+    text-align: center; font-size: 22px; font-weight: bold; color: #fff;
+    text-shadow: 0 0 6px #000, 0 0 14px #000; white-space: pre-wrap; pointer-events: none;
+  }
+  #exportVideo, #stopExport { display: none; }
+  .hint { color: #7f8c8d; font-size: 12px; }
+  kbd { background: #0f3460; border: 1px solid #533483; padding: 1px 6px; border-radius: 3px; font-size: 12px; }
+  /* ---- 视频去歌词 ---- */
+  #cleanPanel { margin-top: 10px; background: #0f3460; border-radius: 8px; padding: 8px 12px; }
+  #cleanPanel summary { cursor: pointer; font-size: 14px; padding: 4px 0; }
+  #cleanPanel .cleanRow { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 8px 0; font-size: 13px; }
+  #cleanPanel select { background: #16213e; color: #eee; border: 1px solid #533483; border-radius: 6px; padding: 5px; }
+  #cleanLayer { position: absolute; left: 0; top: 0; right: 0; bottom: 0; display: none; }
+  #cleanLayer.selecting { cursor: crosshair; }
+  #cleanBox { position: absolute; display: none; border: 2px dashed #e94560; background: rgba(233,69,96,.10); }
+  #cleanBox .rs { position: absolute; right: -7px; bottom: -7px; width: 14px; height: 14px; background: #e94560; cursor: nwse-resize; border-radius: 2px; }
+  #cleanBox.pv-crop { background: rgba(0,0,0,.85); border-color: #f39c12; }
+  /* ---- 从视频提词 ---- */
+  #extractBtn { background: #533483; }
+  #extractBtn.on { background: #e94560; }
+  #extractHint { color: #f39c12; font-size: 12px; }
+  #lrcJob {
+    position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+    background: #16213e; border: 1px solid #533483; border-radius: 10px;
+    padding: 12px 18px; min-width: 340px; display: none; z-index: 999;
+    box-shadow: 0 8px 24px rgba(0,0,0,.5);
+  }
+  #lrcJob.show { display: block; }
+  #lrcJobBarWrap { height: 8px; background: #0f3460; border-radius: 4px; overflow: hidden; margin-top: 8px; }
+  #lrcJobBar { height: 100%; width: 0%; background: linear-gradient(90deg,#e94560,#f39c12); transition: width .2s; }
+  #lrcJobText { font-size: 13px; line-height: 1.5; }
+  #lrcJobClose { float: right; background: none; border: none; color: #7f8c8d; cursor: pointer; font-size: 16px; padding: 0 0 0 12px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎵 歌词配轴工具</h1>
+  <label class="filebtn">📁 选择文件（音频/视频）<input type="file" id="mediaFile" accept="audio/*,video/*" hidden></label>
+  <button id="exportVideo">导出视频</button>
+  <button id="stopExport">停止录制</button>
+  <button id="loadText">粘贴歌词</button>
+  <button id="importLyrics">导入歌词</button>
+  <input type="file" id="lyricFile" accept=".lrc,.txt,.srt,text/plain" hidden>
+  <button id="exportLrc">导出 LRC</button>
+  <button id="copyLrc">复制 LRC</button>
+  <button id="previewBtn">预览</button>
+  <button id="importSrt">导入 SRT</button>
+  <button id="extractBtn" title="识别视频画面里烧录的歌词，自动填进歌词框并打好时间轴">🎬 从视频提词</button>
+  <input type="file" id="extractFile" accept="video/*" hidden>
+  <span id="extractHint"></span>
+  <button id="prevLine" title="上一句 (↑)">▲ 上一句</button>
+  <button id="nextLine" title="下一句 (↓)">▼ 下一句</button>
+  <span class="hint">快捷键：<kbd>空格</kbd> 播放/打轴 &nbsp; <kbd>↓</kbd> 打轴 &nbsp; <kbd>↑</kbd> 删时间 &nbsp; <kbd>Shift</kbd>+<kbd>↑</kbd>/<kbd>↓</kbd> 上/下一句 &nbsp; <kbd>←</kbd>/<kbd>→</kbd> 微调±0.1秒</span>
+</header>
+
+<main>
+  <div class="panel" id="left">
+    <strong style="margin-bottom:8px;">歌词文本（每行一句）</strong>
+    <textarea id="lyricInput" placeholder="把歌词粘贴到这里，每行一句..."></textarea>
+    <div style="display:flex; gap:8px; margin-top:8px;">
+      <button id="parseBtn">解析成歌词行</button>
+      <button id="stripTime" title="去掉每行开头的时间标签并清零重打轴">自动去除时间戳</button>
+    </div>
+  </div>
+  <div class="panel" id="right">
+    <strong style="margin-bottom:8px;">歌词行（点击选中，播放时按 空格 或 ↓ 打时间戳，Shift+↑/↓ 切行）</strong>
+    <ul id="lyricList"></ul>
+  </div>
+</main>
+
+<div id="lrcJob">
+  <button id="lrcJobClose" title="关闭">✕</button>
+  <div id="lrcJobText">准备中…</div>
+  <div id="lrcJobBarWrap"><div id="lrcJobBar"></div></div>
+</div>
+
+<div id="player">
+  <audio id="audio" controls></audio>
+  <div id="videoWrap">
+    <video id="video" controls playsinline></video>
+    <div id="videoLyric"></div>
+    <div id="cleanLayer"><div id="cleanBox"><div class="rs"></div></div></div>
+  </div>
+  <details id="cleanPanel">
+    <summary>🧹 去除画面上的歌词 / 水印（针对已烧进画面的文字或图标；若是独立的 .srt/.lrc 字幕文件，直接删文件即可）</summary>
+    <div class="cleanRow">
+      <button id="cleanSelectBtn">框选区域</button>
+      <button data-preset="bottom">底部条带</button>
+      <button data-preset="top">顶部条带</button>
+      <button data-preset="top-left">左上角</button>
+      <button data-preset="top-right">右上角</button>
+      <button data-preset="bottom-left">左下角</button>
+      <button data-preset="bottom-right">右下角</button>
+      <button data-preset="clear">清除选区</button>
+      <label>方式
+        <select id="cleanMode">
+          <option value="delogo" selected>插值修复（背景自然）</option>
+          <option value="blur">高斯模糊</option>
+          <option value="mosaic">马赛克</option>
+          <option value="crop">裁剪掉该区域</option>
+        </select>
+      </label>
+      <label id="cleanStrengthWrap">强度 <input type="range" id="cleanStrength" min="4" max="40" value="14"></label>
+      <label><input type="checkbox" id="cleanPreview" checked> 预览效果</label>
+      <label><input type="checkbox" id="cleanWithLyric" checked> 同时叠加新歌词</label>
+      <button id="cleanExport">导出处理后的视频</button>
+    </div>
+    <div class="hint">去歌词：点「框选区域」在视频上拖出歌词所在位置，或用「底部/顶部条带」一键选区。去水印：点「左上/右上/左下/右下角」快速定位，再拖框微调。方式默认「插值修复」，用四周边界像素把水印填成背景，最自然、不留模糊块（逐像素计算，框刚好盖住水印即可，太大导出会慢）；背景杂乱时可改「马赛克」并加大强度。插值修复无法实时预览，以导出为准；框内可拖动移动，右下角方块调大小。导出为实时录制，时长与视频相同，期间不要切换标签页。</div>
+  </details>
+</div>
+
+<script>
+const audioEl = document.getElementById('audio');
+const videoEl = document.getElementById('video');
+const videoWrap = document.getElementById('videoWrap');
+const videoLyric = document.getElementById('videoLyric');
+const exportVideoBtn = document.getElementById('exportVideo');
+const stopExportBtn = document.getElementById('stopExport');
+const lyricInput = document.getElementById('lyricInput');
+const lyricList = document.getElementById('lyricList');
+let audio = audioEl; // 当前使用的媒体元素：加载视频后指向 <video>，打轴/预览都以它的时间为准
+let videoLoaded = false;
+let videoName = 'lyrics-video';
+let lyrics = []; // [{text, time}]
+let currentVideoFile = null; // 当前加载的视频文件，供「从视频提词」复用
+let currentIdx = 0;
+let previewMode = false; // 预览模式：播放时自动高亮当前句
+
+function findCurrentIdx(t) {
+  let idx = -1;
+  // 逐行扫描全部已打轴的行，取最后一个时间 <= t 的行；
+  // 不再因为中途出现未打轴的行就 break（否则首行未打轴时预览永远不高亮）
+  for (let i = 0; i < lyrics.length; i++) {
+    if (lyrics[i].time != null && lyrics[i].time <= t) idx = i;
+  }
+  return idx;
+}
+
+function syncPreviewHighlight() {
+  const idx = findCurrentIdx(audio.currentTime);
+  if (idx >= 0 && idx !== currentIdx) {
+    currentIdx = idx;
+    render();
+  }
+}
+
+function onMediaTimeUpdate() {
+  if (videoLoaded) updateVideoLyric();
+  if (!previewMode) return;
+  syncPreviewHighlight();
+}
+
+audioEl.addEventListener('timeupdate', onMediaTimeUpdate);
+audioEl.addEventListener('seeked', onMediaTimeUpdate);
+videoEl.addEventListener('timeupdate', onMediaTimeUpdate);
+videoEl.addEventListener('seeked', onMediaTimeUpdate);
+
+// 切回音频模式
+function loadAudioFile(file) {
+  stopExport(true);
+  videoEl.pause();
+  videoEl.removeAttribute('src');
+  videoEl.load();
+  videoLoaded = false;
+  audio = audioEl;
+  videoWrap.classList.remove('on');
+  cleanLayer.style.display = 'none';
+  audioEl.style.display = '';
+  videoLyric.textContent = '';
+  exportVideoBtn.style.display = 'none';
+  audioEl.src = URL.createObjectURL(file);
+}
+
+// 视频成为时间轴来源，歌词实时叠加显示在视频上
+function loadVideoFile(file) {
+  cancelAnimationFrame(exportRaf);
+  currentVideoFile = file;
+  // 彻底卸载音频元素，避免两个播放器同时出声
+  audioEl.pause();
+  audioEl.removeAttribute('src');
+  audioEl.load();
+  videoName = file.name.replace(/\.[^.]+$/, '') || 'lyrics-video';
+  videoEl.src = URL.createObjectURL(file);
+  videoEl.load();
+  videoLoaded = true;
+  audio = videoEl;
+  audioEl.style.display = 'none';
+  videoWrap.classList.add('on');
+  cleanLayer.style.display = 'block';
+  cleanRect = null; // 换视频后重新框选歌词区域
+  updateCleanBox();
+  videoLyric.textContent = '';
+  exportVideoBtn.style.display = 'inline-block';
+  currentIdx = 0;
+  render();
+}
+
+// 一个入口同时支持音频和视频：按 MIME 或扩展名自动区分
+const VIDEO_EXT_RE = /\.(mp4|m4v|webm|mkv|mov|avi|flv|wmv|ts|m2ts|3gp|ogv)$/i;
+
+document.getElementById('mediaFile').addEventListener('change', e => {
+  const f = e.target.files[0];
+  e.target.value = '';
+  if (!f) return;
+  if (/^video\//i.test(f.type) || VIDEO_EXT_RE.test(f.name)) {
+    loadVideoFile(f);
+  } else {
+    loadAudioFile(f);
+  }
+});
+
+// 歌词文本 → 歌词行：[mm:ss.xx] 前缀解析为已打轴行，其余为未打轴行
+function parseLyricLines(text) {
+  const lines = text.split(/\r?\n/).map(s => s.trim()).filter(s => s);
+  return lines.map(line => {
+    const m = line.match(/^\[(\d{1,2}):(\d{1,2})\.(\d{1,3})\](.*)$/);
+    if (m) {
+      // 带时间戳的现成LRC：保留原始时间
+      const t = +m[1] * 60 + +m[2] + +m[3] / Math.pow(10, m[3].length);
+      return { text: m[4].trim(), time: t };
+    }
+    // 纯文本歌词：时间为空
+    return { text: line, time: null };
+  });
+}
+
+document.getElementById('parseBtn').onclick = () => {
+  lyrics = parseLyricLines(lyricInput.value);
+  currentIdx = 0;
+  render();
+};
+
+document.getElementById('loadText').onclick = () => {
+  const t = prompt('粘贴歌词文本（每行一句）：');
+  if (t) { lyricInput.value = t; document.getElementById('parseBtn').click(); }
+};
+
+function render(noScroll) {
+  lyricList.innerHTML = '';
+  lyrics.forEach((l, i) => {
+    const li = document.createElement('li');
+    li.className = (i === currentIdx ? 'current ' : '') + (l.time != null ? 'stamped' : '');
+    li.innerHTML = `<span class="time">${l.time != null ? fmt(l.time) : '--:--.--'}</span>
+      <span class="text">${l.text}</span>
+      <span class="tune"><button data-i="${i}" data-d="-0.5">-0.5</button><button data-i="${i}" data-d="-0.1">-</button><button data-i="${i}" data-d="0.1">+</button><button data-i="${i}" data-d="0.5">+0.5</button></span>`;
+    li.onclick = () => { currentIdx = i; render(); };
+    lyricList.appendChild(li);
+    if (!noScroll && i === currentIdx) li.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  });
+}
+
+function fmt(t) {
+  if (t == null) return '--:--.--';
+  const m = String(Math.floor(t / 60)).padStart(2, '0');
+  const s = (t % 60).toFixed(2).padStart(5, '0');
+  return `${m}:${s}`;
+}
+
+// ---------- 视频歌词叠加 ----------
+function updateVideoLyric() {
+  const idx = findCurrentIdx(videoEl.currentTime);
+  const text = idx >= 0 ? lyrics[idx].text.trim() : '';
+  if (videoLyric.textContent !== text) videoLyric.textContent = text;
+}
+
+// ---------- 导出带歌词的视频（canvas + MediaRecorder） ----------
+let exportRaf = 0;
+let exportRecorder = null;
+let exportCanvas = null;
+let exportCtx = null;
+let exportTracks = [];
+let exportMode = 'lyric'; // lyric=叠加歌词导出；clean=去歌词导出
+
+// 释放录制时建立的音频/画布轨道，否则浏览器会一直挂着采集，播放时容易出现爆音
+function releaseExportTracks() {
+  exportTracks.forEach(track => {
+    try { track.stop(); } catch (e) { /* 忽略 */ }
+  });
+  exportTracks = [];
+}
+
+function drawExportFrame() {
+  if (!exportCtx) return;
+  if (exportMode === 'clean') { drawCleanFrame(); return; }
+  const w = videoEl.videoWidth;
+  const h = videoEl.videoHeight;
+  if (!w || !h) return;
+  if (exportCanvas.width !== w) exportCanvas.width = w;
+  if (exportCanvas.height !== h) exportCanvas.height = h;
+  exportCtx.drawImage(videoEl, 0, 0, w, h);
+  drawLyricLine(exportCtx, w, Math.round(h * 0.9), Math.round(h * 0.055), 'bottom');
+}
+
+// 在画布上画当前句歌词。y / fontSize / baseline 由调用方决定：
+// 加歌词导出画在底部，去歌词导出画在选区中央（正好覆盖旧歌词带）
+function drawLyricLine(ctx, w, y, fontSize, baseline, maxWidth) {
+  const idx = findCurrentIdx(videoEl.currentTime);
+  const text = idx >= 0 ? lyrics[idx].text.trim() : '';
+  if (!text) return;
+  ctx.font = `bold ${fontSize}px "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = baseline || 'bottom';
+  ctx.lineJoin = 'round';
+  ctx.lineWidth = Math.max(2, Math.round(fontSize / 10));
+  ctx.strokeStyle = 'rgba(0, 0, 0, 0.85)';
+  ctx.fillStyle = '#fff';
+  const limit = maxWidth || Math.round(w * 0.9);
+  ctx.strokeText(text, w / 2, y, limit);
+  ctx.fillText(text, w / 2, y, limit);
+}
+
+// 统一字号：以最长的一句为准，把字号缩到它能放进 maxWidth，
+// 这样长句短句字号一致、都在模糊带内居中，不会有的超出有的偏小
+function unifiedLyricFontSize(ctx, maxWidth, baseSize) {
+  let size = baseSize;
+  const apply = s => { ctx.font = `bold ${s}px "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif`; };
+  apply(size);
+  let longest = 0;
+  lyrics.forEach(l => {
+    const w = ctx.measureText((l.text || '').trim()).width;
+    if (w > longest) longest = w;
+  });
+  if (longest > maxWidth) size = Math.max(12, Math.floor(size * maxWidth / longest));
+  return size;
+}
+
+let exportLastPct = -1;
+
+function fmtClock(t) {
+  if (!isFinite(t) || t < 0) t = 0;
+  const m = Math.floor(t / 60);
+  const s = Math.floor(t % 60);
+  return m + ':' + String(s).padStart(2, '0');
+}
+
+// 录制进度：导出就是按真实速度播一遍，进度 = 当前时间 / 总时长
+function exportProgress() {
+  if (!exportRecorder) return;
+  const d = videoEl.duration || 0;
+  const t = videoEl.currentTime || 0;
+  const pct = d ? Math.min(99, 100 * t / d) : 0;
+  if (Math.abs(pct - exportLastPct) < 1) return;      // 每 1% 刷一次，别抖
+  exportLastPct = pct;
+  jobShow(`导出中 ${pct.toFixed(0)}%　已录 ${fmtClock(t)} / ${fmtClock(d)}`
+    + '（正在真实播放录制，别切走窗口或最小化）', pct);
+}
+
+function exportTick() {
+  drawExportFrame();
+  updateVideoLyric();
+  exportProgress();
+  if (!videoEl.paused && !videoEl.ended) {
+    exportRaf = requestAnimationFrame(exportTick);
+  }
+}
+
+async function startVideoExport(mode) {
+  exportMode = mode || 'lyric';
+  if (!videoLoaded || !videoEl.src) { alert('请先加载视频文件'); return; }
+  if (exportMode === 'lyric' && lyrics.length === 0) { alert('请先导入歌词并打好时间轴'); return; }
+  if (!videoEl.duration) { alert('视频尚未加载完成，请稍等再试'); return; }
+
+  const capture = videoEl.captureStream || videoEl.mozCaptureStream;
+  if (typeof MediaRecorder === 'undefined' || typeof capture !== 'function') {
+    alert('当前浏览器不支持视频导出，请使用 Chrome 或 Edge');
+    return;
+  }
+
+  stopExport(true);
+  videoEl.pause();
+  videoEl.currentTime = 0;
+
+  exportCanvas = document.createElement('canvas');
+  let outW = videoEl.videoWidth || 1280;
+  let outH = videoEl.videoHeight || 720;
+  if (exportMode === 'clean' && getCleanMode() === 'crop') {
+    outH = Math.max(2, outH - Math.round(cleanRect.h)); // 裁剪模式：输出去掉条带后的高度
+  }
+  exportCanvas.width = outW;
+  exportCanvas.height = outH;
+  exportCtx = exportCanvas.getContext('2d');
+
+  const stream = exportCanvas.captureStream(30);
+  exportTracks = stream.getTracks();
+  try {
+    const sourceStream = capture.call(videoEl);
+    sourceStream.getAudioTracks().forEach(track => {
+      stream.addTrack(track);
+      exportTracks.push(track);
+    });
+  } catch (err) {
+    console.warn('视频声音捕获失败，导出的视频可能没有声音：', err);
+  }
+
+  const mimeType = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm', 'video/mp4']
+    .find(type => MediaRecorder.isTypeSupported(type));
+  if (!mimeType) { alert('当前浏览器不支持录制视频'); return; }
+
+  const chunks = [];
+  const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 8_000_000 });
+  exportRecorder = recorder;
+
+  recorder.ondataavailable = ev => {
+    if (ev.data.size > 0) chunks.push(ev.data);
+  };
+
+  recorder.onstop = () => {
+    if (exportRecorder === recorder) exportRecorder = null;
+    // 释放录制轨道，避免浏览器一直挂着采集（会导致播放爆音）
+    exportTracks.forEach(track => {
+      try { track.stop(); } catch (e) { /* 忽略 */ }
+    });
+    exportTracks = [];
+    if (recorder.discardRequested) {
+      jobShow('已取消导出', 0);
+      setTimeout(() => jobBox.classList.remove('show'), 2500);
+      return;
+    }
+
+    const blob = new Blob(chunks, { type: recorder.mimeType || 'video/webm' });
+    const extension = recorder.mimeType.includes('mp4') ? 'mp4' : 'webm';
+    const outName = exportMode === 'clean'
+      ? `${videoName}_${cleanWithLyricEl.checked ? '新歌词' : '去水印歌词'}.${extension}`
+      : `${videoName}.${extension}`;
+    jobShow('正在打包保存…', 100);
+    void saveExportBlob(blob, outName);
+  };
+
+  // 成片交给本机服务用 ffmpeg 重封装（补时长，PotPlayer 才能正计时/拖进度）并存到桌面；
+  // 服务不在就退回浏览器下载
+  async function saveExportBlob(blob, filename) {
+    try {
+      if (await svcAlive()) {
+        jobShow('成片已录完，正在让本机服务修时长…', 100);
+        const r = await fetch(SVC + '/remux?name=' + encodeURIComponent(filename), {
+          method: 'POST',
+          body: new Blob([blob], { type: 'text/plain' }),
+          cache: 'no-store'
+        });
+        const j = await r.json();
+        if (j && j.ok) {
+          const mb = (j.size / 1048576).toFixed(1);
+          jobShow(`已存到桌面：${j.name}（${mb} MB，时长 ${j.duration} 秒，可直接拖动）`, 100);
+          setTimeout(() => jobBox.classList.remove('show'), 12000);
+          return;
+        }
+        throw new Error((j && (j.reason || j.error)) || '服务重封装失败');
+      }
+      throw new Error('本机提词服务没启动');
+    } catch (e) {
+      console.warn('重封装没成，改走浏览器下载：', e.message || e);
+    }
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    jobShow(`已下载：${filename}（${(blob.size / 1048576).toFixed(1)} MB）`
+      + '　（本机服务没接上，时长可能不准；要用 PotPlayer 正常拖进度就双击桌面「歌词配轴工具」图标再导一次）', 100);
+    setTimeout(() => jobBox.classList.remove('show'), 12000);
+  }
+
+  drawExportFrame();
+  exportLastPct = -1;
+  jobShow(`导出中 0%　0:00 / ${fmtClock(videoEl.duration)}（正在真实播放录制，别切走窗口或最小化）`, 0);
+  recorder.start();
+  exportVideoBtn.style.display = 'none';
+  cleanExportBtn.style.display = 'none';
+  stopExportBtn.style.display = 'inline-block';
+  videoEl.muted = false;
+  try {
+    await videoEl.play();
+  } catch (err) {
+    console.warn('导出时播放被阻止：', err);
+    jobShow('导出时浏览器拦了播放：请先点一下视频区域，再重新点导出', 0);
+    stopExport(true);
+    return;
+  }
+  cancelAnimationFrame(exportRaf);
+  exportRaf = requestAnimationFrame(exportTick);
+}
+
+function stopExport(discard) {
+  cancelAnimationFrame(exportRaf);
+  exportVideoBtn.style.display = videoLoaded ? 'inline-block' : 'none';
+  cleanExportBtn.style.display = 'inline-block';
+  stopExportBtn.style.display = 'none';
+  const recorder = exportRecorder;
+  if (recorder && recorder.state !== 'inactive') {
+    recorder.discardRequested = discard === true;
+    recorder.stop();
+  } else {
+    releaseExportTracks();
+  }
+}
+
+exportVideoBtn.onclick = () => { void startVideoExport('lyric'); };
+stopExportBtn.onclick = () => { stopExport(); };
+
+// 自动语音识别打轴
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recog = null;
+let recogRunning = false;
+
+// 简单模糊匹配：歌词行去掉标点后取关键词，看识别结果是否包含
+function matchLyric(recognizedText) {
+  const clean = s => s.replace(/[，。！？、,.!?\s"'""''（）()【】\[\]《》\-—…]/g, '');
+  const rt = clean(recognizedText);
+  if (rt.length < 2) return -1;
+  let bestIdx = -1, bestScore = 0;
+  for (let i = 0; i < lyrics.length; i++) {
+    if (lyrics[i].time != null) continue; // 已打过的跳过
+    const lt = clean(lyrics[i].text);
+    if (lt.length < 2) continue;
+    // 取歌词行中连续的关键词片段去匹配
+    let score = 0;
+    for (let len = Math.min(6, lt.length); len >= 2; len--) {
+      for (let j = 0; j + len <= lt.length; j++) {
+        const sub = lt.slice(j, j + len);
+        if (rt.includes(sub)) { score = Math.max(score, len); }
+      }
+      if (score > 0) break;
+    }
+    if (score > bestScore) { bestScore = score; bestIdx = i; }
+  }
+  return bestScore >= 2 ? bestIdx : -1;
+}
+
+// 注：页面中已没有 #autoRecog 按钮，直接绑定会抛 TypeError 中断整个脚本，
+// 使后面的快捷键、预览、导入、导出等逻辑全部失效，故先做存在性判断。
+const autoRecogBtn = document.getElementById('autoRecog');
+if (autoRecogBtn) autoRecogBtn.onclick = function() {
+  if (!SR) { alert('当前浏览器不支持语音识别，请用 Chrome 或 Edge'); return; }
+  if (lyrics.length === 0) { alert('请先粘贴歌词并解析'); return; }
+  if (!audio.src) { alert('请先加载音频或视频'); return; }
+
+  if (recogRunning) {
+    recog.stop();
+    return;
+  }
+
+  recog = new SR();
+  recog.lang = 'zh-CN';
+  recog.continuous = true;
+  recog.interimResults = false;
+  recog.maxAlternatives = 1;
+
+  recog.onresult = e => {
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (!e.results[i].isFinal) continue;
+      const text = e.results[i][0].transcript;
+      const idx = matchLyric(text);
+      if (idx >= 0) {
+        lyrics[idx].time = audio.currentTime;
+        currentIdx = Math.min(idx + 1, lyrics.length - 1);
+        render();
+      }
+    }
+  };
+  recog.onerror = e => { console.warn('识别错误:', e.error); };
+  recog.onend = () => {
+    if (recogRunning && !audio.paused) recog.start(); // 断了自动续上
+  };
+
+  recogRunning = true;
+  this.textContent = '⏹ 停止识别';
+  this.classList.add('active');
+  recog.start();
+  audio.play();
+};
+
+// 监听播放结束
+function onMediaEnded() {
+  if (recog) { recogRunning = false; recog.stop(); }
+  const btn = document.getElementById('autoRecog');
+  if (btn) {
+    btn.textContent = '🎤 自动识别';
+    btn.classList.remove('active');
+  }
+  if (videoLoaded) stopExport();
+}
+
+audioEl.addEventListener('ended', onMediaEnded);
+videoEl.addEventListener('ended', onMediaEnded);
+
+// SRT 文本 → 歌词行（[{text, time}]）
+function parseSrtText(srt) {
+  const lines = srt.replace(/\r/g, '').split('\n');
+  const parsed = [];
+  let curTime = null;
+  let curText = [];
+  const timeRe = /(\d{1,2}):(\d{2}):(\d{2})[,.](\d{1,3})/;
+  const flush = () => {
+    if (curTime != null && curText.length > 0) {
+      parsed.push({ text: curText.join(' ').trim(), time: curTime });
+    }
+    curTime = null;
+    curText = [];
+  };
+  for (const line of lines) {
+    const tm = line.match(timeRe);
+    if (tm) {
+      flush();
+      curTime = +tm[1] * 3600 + +tm[2] * 60 + +tm[3] + +tm[4] / Math.pow(10, tm[4].length);
+    } else if (line.trim() === '') {
+      flush();
+    } else if (!/^\d+$/.test(line.trim())) {
+      if (curTime != null) curText.push(line.trim());
+    }
+  }
+  flush();
+  return parsed;
+}
+
+// 导入字幕（自动识别 LRC 或 SRT 格式）
+document.getElementById('importSrt').onclick = () => {
+  const srt = prompt('粘贴歌词内容（支持 LRC 或 SRT 格式）：');
+  if (!srt) return;
+  // 检测格式：含 [mm:ss.xx] 就是 LRC
+  if (/\[\d{1,2}:\d{2}\.\d{1,3}\]/.test(srt)) {
+    // LRC 格式：直接用解析逻辑
+    lyricInput.value = srt;
+    document.getElementById('parseBtn').click();
+    alert(`已导入 LRC 格式歌词`);
+    return;
+  }
+  // SRT 格式
+  const parsed = parseSrtText(srt);
+  if (parsed.length === 0) {
+    alert('没解析出字幕。\n请确认内容里有时间行（LRC：[00:00.65] 或 SRT：00:00:12,340）。\n\n你粘贴的内容前200字：\n' + srt.slice(0, 200));
+    return;
+  }
+  lyrics = parsed;
+  currentIdx = 0;
+  lyricInput.value = parsed.map(p => `[${fmt(p.time)}]${p.text}`).join('\n');
+  render();
+  alert(`已导入 SRT 格式，共 ${parsed.length} 句`);
+};
+
+// ---------- 导入歌词文件（.lrc / .txt / .srt） ----------
+// 清洗文本：去掉 BOM、空行，以及 [ti:]/[ar:]/[al:]/[by:] 等元信息行
+function cleanLyricLines(text) {
+  const metaRe = /^\[\s*(ti|ar|al|by|offset|re|ve|au|length|tool|encoding|title|artist|album)\s*:[^\]]*\]$/i;
+  return text.replace(/^\uFEFF/, '').split(/\r?\n/)
+    .map(s => s.trim())
+    .filter(s => s && !metaRe.test(s));
+}
+
+// 读文件：优先严格 UTF-8，失败则回退 GB18030（兼容 GBK/GB2312）；支持 BOM
+async function readLyricFileText(file) {
+  const buf = await file.arrayBuffer();
+  const bytes = new Uint8Array(buf);
+  const dec = (label, b) => { try { return new TextDecoder(label).decode(b); } catch (e) { return null; } };
+  if (bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF) return dec('utf-8', buf.slice(3)) || '';
+  if (bytes[0] === 0xFF && bytes[1] === 0xFE) return dec('utf-16le', buf.slice(2)) || '';
+  if (bytes[0] === 0xFE && bytes[1] === 0xFF) return dec('utf-16be', buf.slice(2)) || '';
+  try {
+    return new TextDecoder('utf-8', { fatal: true }).decode(buf); // 有非法字节会抛错
+  } catch (e) {
+    const gb = dec('gb18030', buf) || dec('gbk', buf);
+    if (gb == null) throw new Error('无法识别文件编码（非 UTF-8，且当前浏览器不支持 GBK 解码）');
+    return gb;
+  }
+}
+
+// 预览状态复位（退出预览并暂停）
+function resetPreview() {
+  if (!previewMode) return;
+  previewMode = false;
+  const btn = document.getElementById('previewBtn');
+  btn.textContent = '预览';
+  btn.classList.remove('active');
+  if (!audio.paused) audio.pause();
+}
+
+// ---------- 自动去除时间戳：清掉行首时间标签，回到可重新打点状态 ----------
+// 匹配行首一个或多个时间标签：[mm:ss.xx] / [mm:ss:xx] / [mm:ss] / [mm:ss.xxx]
+const TIME_TAG_RE = /^\s*(?:\[\s*\d{1,3}\s*:\s*\d{1,2}(?:\s*[.:]\s*\d{1,3})?\s*\]\s*)+/;
+function stripTimeTags(s) {
+  return s.replace(TIME_TAG_RE, '');
+}
+
+document.getElementById('stripTime').onclick = () => {
+  if (lyrics.length === 0 && !lyricInput.value.trim()) {
+    alert('还没有歌词，请先粘贴或导入歌词');
+    return;
+  }
+
+  // 以左栏文本为准清洗（保留手动改动），再重新解析，保证文本区与列表一致；
+  // 文本区被清空时退回用内部数组，避免误清掉已有歌词
+  const src = lyricInput.value.trim() ? lyricInput.value : lyrics.map(l => l.text).join('\n');
+  lyricInput.value = src.split(/\r?\n/).map(stripTimeTags).join('\n');
+  lyrics = parseLyricLines(lyricInput.value);
+  lyrics.forEach(l => { l.time = null; }); // 时间一并清掉，否则重新打轴会叠加
+
+  currentIdx = 0;       // 当前行索引归零
+  resetPreview();       // 退出预览（含暂停）
+  if (audio.src) {
+    try { audio.currentTime = 0; } catch (e) { /* 元数据未就绪时忽略 */ }
+    if (!audio.paused) audio.pause();
+  }
+  render(true);          // 不触发 scrollIntoView
+  lyricList.scrollTop = 0; // 列表回到顶部
+  lyricInput.scrollTop = 0;
+  lyricInput.selectionStart = lyricInput.selectionEnd = 0;
+};
+
+document.getElementById('importLyrics').onclick = () => document.getElementById('lyricFile').click();
+
+document.getElementById('lyricFile').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  e.target.value = ''; // 允许再次选择同一个文件
+  if (!file) return;
+  try {
+    const raw = await readLyricFileText(file);
+    if (!raw.trim()) { alert(`文件为空：${file.name}`); return; }
+
+    const isSrt = /^\s*\d{1,2}:\d{2}:\d{2}[,.]\d{1,3}\s*-->/m.test(raw);
+    let parsed, editorText;
+    if (isSrt) {
+      parsed = parseSrtText(raw);
+      if (parsed.length === 0) { alert(`SRT 解析失败：${file.name}\n未找到有效的字幕时间行`); return; }
+      editorText = parsed.map(p => `[${fmt(p.time)}]${p.text}`).join('\n');
+    } else {
+      const lines = cleanLyricLines(raw);
+      if (lines.length === 0) { alert(`未解析到歌词内容：${file.name}\n文件里只有空行或 [ti:]/[ar:] 等元信息`); return; }
+      parsed = parseLyricLines(lines.join('\n'));
+      editorText = lines.join('\n');
+    }
+
+    // 避免误覆盖：已有歌词先确认
+    if (lyrics.length > 0 && !confirm(`当前已有 ${lyrics.length} 行歌词，导入会替换，是否继续？`)) return;
+
+    lyricInput.value = editorText;
+    lyrics = parsed;
+    currentIdx = 0;
+    resetPreview();          // 预览状态复位（含暂停）
+    render(true);            // 不触发 scrollIntoView
+    lyricList.scrollTop = 0; // 列表回到顶部
+    lyricInput.scrollTop = 0;
+    lyricInput.selectionStart = lyricInput.selectionEnd = 0; // 光标回到文首
+  } catch (err) {
+    alert(`读取失败：${file.name}\n${err && err.message ? err.message : err}`);
+  }
+});
+
+// 预览模式开关：开启后自动播放，并让高亮随播放进度滚动
+document.getElementById('previewBtn').onclick = function() {
+  if (!previewMode) {
+    if (!audio.src) { alert('请先选择音频或视频文件再预览'); return; }
+    if (lyrics.length === 0) { alert('请先粘贴歌词并解析'); return; }
+  }
+  previewMode = !previewMode;
+  this.textContent = previewMode ? '预览中（点此退出）' : '预览';
+  this.classList.toggle('active', previewMode);
+  if (previewMode) {
+    syncPreviewHighlight(); // 进入预览立即同步一次高亮
+    if (audio.paused) audio.play().catch(err => console.warn('预览播放被阻止:', err));
+  } else if (!audio.paused) {
+    audio.pause();
+  }
+};
+
+// 判断事件目标是否为需要正常输入文本的控件（这些控件内不响应快捷键）
+function isTypingTarget(t) {
+  if (!t || !t.tagName) return false;
+  const tag = t.tagName.toUpperCase();
+  if (tag === 'TEXTAREA' || tag === 'SELECT') return true;
+  if (tag === 'INPUT') {
+    // 按钮类 input 不算输入框
+    const type = (t.type || 'text').toLowerCase();
+    return !['button', 'submit', 'reset', 'checkbox', 'radio', 'file'].includes(type);
+  }
+  return t.isContentEditable === true;
+}
+
+// 空格：未播放时起播，播放中打时间轴；左右方向键微调
+document.addEventListener('keydown', e => {
+  // 中文输入法组合输入期间（部分浏览器为 keyCode 229）不响应，避免空格被吞掉
+  if (e.isComposing || e.keyCode === 229) return;
+  // 带 Ctrl/Alt/Meta 的组合键交给浏览器，不拦截
+  if (e.ctrlKey || e.altKey || e.metaKey) return;
+  // 输入框/可编辑区域内正常打字，不触发快捷键
+  if (isTypingTarget(e.target)) return;
+
+  // 按钮获得焦点时浏览器会把空格当作“点击”，这里统一 preventDefault 避免冲突
+  if (e.code === 'Space' || e.key === ' ') {
+    e.preventDefault();
+    // 未在播放：空格先起播（还没加载音频时无事可做）
+    if (audio.paused || audio.ended) {
+      if (!audio.src) return;
+      audio.play().catch(err => console.warn('起播被阻止:', err));
+      return;
+    }
+    if (lyrics.length === 0) return;
+    lyrics[currentIdx].time = audio.currentTime;
+    currentIdx = Math.min(currentIdx + 1, lyrics.length - 1);
+    render();
+  } else if (e.code === 'ArrowDown') {
+    e.preventDefault();
+    if (lyrics.length === 0) return;
+    if (e.shiftKey) {
+      // Shift+↓ = 下一句
+      currentIdx = Math.min(lyrics.length - 1, currentIdx + 1);
+      render();
+    } else {
+      // ↓ = 打时间戳，打完自动跳到下一句
+      if (!audio.src) return;
+      lyrics[currentIdx].time = audio.currentTime;
+      currentIdx = Math.min(currentIdx + 1, lyrics.length - 1);
+      render();
+    }
+  } else if (e.code === 'ArrowUp') {
+    e.preventDefault();
+    if (lyrics.length === 0) return;
+    if (e.shiftKey) {
+      // Shift+↑ = 上一句
+      currentIdx = Math.max(0, currentIdx - 1);
+      render();
+    } else {
+      // ↑ = 删除当前行时间
+      lyrics[currentIdx].time = null;
+      render();
+    }
+  } else if (e.code === 'ArrowLeft') {
+    e.preventDefault();
+    const cur = lyrics[currentIdx];
+    if (cur && cur.time != null) { cur.time = Math.max(0, cur.time - 0.1); render(); }
+  } else if (e.code === 'ArrowRight') {
+    e.preventDefault();
+    const cur = lyrics[currentIdx];
+    if (cur && cur.time != null) { cur.time += 0.1; render(); }
+  }
+});
+
+// 上/下一句按钮
+document.getElementById('prevLine').onclick = () => {
+  if (lyrics.length === 0) return;
+  currentIdx = Math.max(0, currentIdx - 1);
+  render();
+};
+document.getElementById('nextLine').onclick = () => {
+  if (lyrics.length === 0) return;
+  currentIdx = Math.min(lyrics.length - 1, currentIdx + 1);
+  render();
+};
+
+// 微调按钮
+lyricList.addEventListener('click', e => {
+  if (e.target.dataset.i != null) {
+    const i = +e.target.dataset.i, d = +e.target.dataset.d;
+    if (lyrics[i].time == null) lyrics[i].time = audio.currentTime;
+    lyrics[i].time = Math.max(0, lyrics[i].time + d);
+    render();
+  }
+});
+
+// 复制 LRC 到剪贴板
+document.getElementById('copyLrc').onclick = () => {
+  const stamped = lyrics.filter(l => l.time != null).sort((a, b) => a.time - b.time);
+  const lrc = stamped.map(l => `[${fmt(l.time)}]${l.text}`).join('\n');
+  navigator.clipboard.writeText(lrc).then(() => {
+    const btn = document.getElementById('copyLrc');
+    const old = btn.textContent;
+    btn.textContent = '✅ 已复制';
+    setTimeout(() => btn.textContent = old, 1500);
+  }).catch(() => alert('复制失败，请用导出 LRC'));
+};
+
+// 导出 LRC
+document.getElementById('exportLrc').onclick = () => {
+  const stamped = lyrics.filter(l => l.time != null).sort((a, b) => a.time - b.time);
+  const lrc = stamped.map(l => `[${fmt(l.time)}]${l.text}`).join('\n');
+  const blob = new Blob([lrc], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'lyric.lrc';
+  a.click();
+};
+
+// ---------- 视频去歌词：框选区域 + 高斯模糊 / 马赛克 / 裁剪 ----------
+const cleanLayer = document.getElementById('cleanLayer');
+const cleanBox = document.getElementById('cleanBox');
+const cleanSelectBtn = document.getElementById('cleanSelectBtn');
+const cleanModeEl = document.getElementById('cleanMode');
+const cleanStrengthEl = document.getElementById('cleanStrength');
+const cleanStrengthWrap = document.getElementById('cleanStrengthWrap');
+const cleanPreviewEl = document.getElementById('cleanPreview');
+const cleanWithLyricEl = document.getElementById('cleanWithLyric');
+const cleanExportBtn = document.getElementById('cleanExport');
+let cleanRect = null;      // 选区（视频原始像素坐标）{x,y,w,h}
+let cleanSelecting = false;
+let cleanDrag = null;
+let mosaicCanvas = null;
+cleanLayer.style.pointerEvents = 'none'; // 平时不挡视频控制条，框选时才接管鼠标
+cleanBox.style.pointerEvents = 'none';
+
+function getCleanMode() { return cleanModeEl.value; }
+
+// 视频在元素内的实际显示区域（含 letterbox 偏移），用于屏幕坐标 ↔ 视频像素坐标换算
+function videoContentRect() {
+  const W = videoEl.clientWidth, H = videoEl.clientHeight;
+  const vw = videoEl.videoWidth, vh = videoEl.videoHeight;
+  if (!vw || !vh || !W || !H) return { x: 0, y: 0, w: W, h: H, scale: 1 };
+  const scale = Math.min(W / vw, H / vh);
+  const w = vw * scale, h = vh * scale;
+  return { x: (W - w) / 2, y: (H - h) / 2, w, h, scale };
+}
+
+function updateCleanBox() {
+  if (!cleanRect || !videoLoaded) { cleanBox.style.display = 'none'; return; }
+  const c = videoContentRect();
+  cleanBox.style.display = 'block';
+  cleanBox.style.left = (c.x + cleanRect.x * c.scale) + 'px';
+  cleanBox.style.top = (c.y + cleanRect.y * c.scale) + 'px';
+  cleanBox.style.width = (cleanRect.w * c.scale) + 'px';
+  cleanBox.style.height = (cleanRect.h * c.scale) + 'px';
+  const preview = cleanPreviewEl.checked;
+  const mode = getCleanMode();
+  cleanBox.classList.toggle('pv-crop', preview && mode === 'crop');
+  // 模糊/马赛克用 backdrop-filter 做近似实时预览；插值修复没有 CSS 近似，只显示选区，以导出为准
+  cleanBox.style.backdropFilter = (preview && (mode === 'blur' || mode === 'mosaic'))
+    ? `blur(${mode === 'mosaic' ? Math.round(cleanStrengthEl.value * 1.2) : cleanStrengthEl.value}px)` : '';
+}
+
+cleanSelectBtn.onclick = () => {
+  if (!videoLoaded) { alert('请先在上方「选择文件」加载视频'); return; }
+  cleanSelecting = !cleanSelecting;
+  cleanSelectBtn.textContent = cleanSelecting ? '完成框选' : '框选歌词区域';
+  cleanSelectBtn.classList.toggle('active', cleanSelecting);
+  cleanLayer.classList.toggle('selecting', cleanSelecting);
+  cleanLayer.style.pointerEvents = cleanSelecting ? 'auto' : 'none';
+  cleanBox.style.pointerEvents = cleanSelecting ? 'auto' : 'none';
+  if (!cleanRect && cleanSelecting) presetClean('bottom'); // 给个初始框，方便直接拖动
+};
+
+function layerPoint(e) {
+  const r = cleanLayer.getBoundingClientRect();
+  return { cx: e.clientX - r.left, cy: e.clientY - r.top };
+}
+function toVideoPoint(p) {
+  const c = videoContentRect();
+  return {
+    x: Math.min(Math.max((p.cx - c.x) / c.scale, 0), videoEl.videoWidth),
+    y: Math.min(Math.max((p.cy - c.y) / c.scale, 0), videoEl.videoHeight)
+  };
+}
+
+cleanLayer.addEventListener('mousedown', e => {
+  if (!cleanSelecting) return;
+  e.preventDefault();
+  const p = toVideoPoint(layerPoint(e));
+  if (e.target.classList.contains('rs')) {
+    cleanDrag = { type: 'resize' };
+  } else if (cleanRect && (e.target === cleanBox || cleanBox.contains(e.target))) {
+    cleanDrag = { type: 'move', start: p, orig: { ...cleanRect } };
+  } else {
+    cleanRect = { x: p.x, y: p.y, w: 0, h: 0 };
+    cleanDrag = { type: 'new', start: p };
+  }
+  updateCleanBox();
+});
+
+document.addEventListener('mousemove', e => {
+  if (!cleanDrag) return;
+  const p = toVideoPoint(layerPoint(e));
+  const vw = videoEl.videoWidth, vh = videoEl.videoHeight;
+  if (cleanDrag.type === 'new') {
+    const s = cleanDrag.start;
+    cleanRect = {
+      x: Math.min(s.x, p.x), y: Math.min(s.y, p.y),
+      w: Math.abs(p.x - s.x), h: Math.abs(p.y - s.y)
+    };
+  } else if (cleanDrag.type === 'move') {
+    const o = cleanDrag.orig, s = cleanDrag.start;
+    cleanRect.x = Math.min(Math.max(o.x + p.x - s.x, 0), vw - cleanRect.w);
+    cleanRect.y = Math.min(Math.max(o.y + p.y - s.y, 0), vh - cleanRect.h);
+  } else if (cleanDrag.type === 'resize') {
+    cleanRect.w = Math.max(4, Math.min(p.x - cleanRect.x, vw - cleanRect.x));
+    cleanRect.h = Math.max(4, Math.min(p.y - cleanRect.y, vh - cleanRect.y));
+  }
+  updateCleanBox();
+});
+document.addEventListener('mouseup', () => { cleanDrag = null; });
+
+function presetClean(kind) {
+  const vw = videoEl.videoWidth, vh = videoEl.videoHeight;
+  if (!vw || !vh) return;
+  if (kind === 'bottom') cleanRect = { x: 0, y: Math.round(vh * 0.85), w: vw, h: Math.round(vh * 0.15) };
+  else if (kind === 'top') cleanRect = { x: 0, y: 0, w: vw, h: Math.round(vh * 0.15) };
+  else if (kind === 'clear') cleanRect = null;
+  else if (kind === 'top-left' || kind === 'top-right' || kind === 'bottom-left' || kind === 'bottom-right') {
+    // 水印/署名一般在四角：给一个角上的小框，之后可拖动、可用右下角方块调大小
+    const w = Math.round(vw * 0.5), h = Math.round(vh * 0.09);
+    const x = kind.endsWith('right') ? vw - w : 0;
+    const y = kind.startsWith('bottom') ? vh - h : 0;
+    cleanRect = { x, y, w, h };
+  }
+  updateCleanBox();
+}
+
+document.querySelectorAll('#cleanPanel [data-preset]').forEach(btn => {
+  btn.onclick = () => {
+    if (!videoLoaded) { alert('请先加载视频文件'); return; }
+    if (btn.dataset.preset === 'clear') cleanRect = null;
+    else presetClean(btn.dataset.preset);
+    updateCleanBox();
+  };
+});
+cleanModeEl.onchange = () => {
+  // 插值修复和裁剪都不需要强度参数
+  cleanStrengthWrap.style.display = (getCleanMode() === 'crop' || getCleanMode() === 'delogo') ? 'none' : '';
+  updateCleanBox();
+};
+cleanModeEl.onchange(); // 初始化时同步一次（默认是插值修复，强度滑块应隐藏）
+cleanStrengthEl.oninput = updateCleanBox;
+cleanPreviewEl.onchange = updateCleanBox;
+videoEl.addEventListener('loadedmetadata', updateCleanBox);
+window.addEventListener('resize', updateCleanBox);
+
+cleanExportBtn.onclick = () => {
+  if (!videoLoaded) { alert('请先加载视频文件'); return; }
+  if (!cleanRect || cleanRect.w < 4 || cleanRect.h < 4) { alert('请先框选要处理的区域（或用条带/角落预设）'); return; }
+  if (cleanWithLyricEl.checked && !lyrics.length) {
+    alert('已勾选「同时叠加新歌词」，请先导入正确歌词并打好时间轴；只想去掉旧歌词或水印的话，取消这个勾选即可');
+    return;
+  }
+  if (getCleanMode() === 'crop') {
+    const vw = videoEl.videoWidth, vh = videoEl.videoHeight;
+    const fullWidth = Math.abs(cleanRect.w - vw) < 2;
+    const isBand = cleanRect.y < 2 || Math.abs(cleanRect.y + cleanRect.h - vh) < 2;
+    if (!fullWidth || !isBand) {
+      alert('裁剪模式要求选区是「整宽」的顶部或底部条带（可直接点对应预设按钮）。\n角落水印或中间区域请改用高斯模糊或马赛克，否则会裁掉过多画面。');
+      return;
+    }
+  }
+  if (cleanSelecting) cleanSelectBtn.click(); // 退出框选状态再录制
+  void startVideoExport('clean');
+};
+
+// 去歌词模式的逐帧绘制：模糊 / 马赛克 / 裁剪
+function drawCleanFrame() {
+  const w = videoEl.videoWidth, h = videoEl.videoHeight, r = cleanRect;
+  if (!w || !h || !r) return;
+  const mode = getCleanMode();
+  if (mode === 'crop') {
+    const oh = Math.max(2, h - Math.round(r.h));
+    if (exportCanvas.width !== w) exportCanvas.width = w;
+    if (exportCanvas.height !== oh) exportCanvas.height = oh;
+    const sy = r.y < 2 ? Math.round(r.h) : 0; // 顶部条带则从条带下方开始取画面
+    exportCtx.drawImage(videoEl, 0, sy, w, oh, 0, 0, w, oh);
+    if (cleanWithLyricEl.checked) { // 裁剪后旧歌词带已不存在，新歌词画在底部
+      drawLyricLine(exportCtx, w, Math.round(oh * 0.9), Math.round(oh * 0.055), 'bottom');
+    }
+    return;
+  }
+  if (exportCanvas.width !== w) exportCanvas.width = w;
+  if (exportCanvas.height !== h) exportCanvas.height = h;
+  exportCtx.drawImage(videoEl, 0, 0, w, h);
+  const strength = +cleanStrengthEl.value;
+  if (mode === 'delogo') {
+    delogoRegion(exportCtx, r);
+  } else if (mode === 'blur') {
+    exportCtx.save();
+    exportCtx.beginPath();
+    exportCtx.rect(r.x, r.y, r.w, r.h);
+    exportCtx.clip();
+    exportCtx.filter = `blur(${strength}px)`;
+    exportCtx.drawImage(videoEl, 0, 0, w, h);
+    exportCtx.restore();
+    exportCtx.filter = 'none';
+  } else { // 马赛克：选区先缩小再放大，关闭平滑得到像素块
+    const mw = Math.max(1, Math.round(r.w / strength));
+    const mh = Math.max(1, Math.round(r.h / strength));
+    if (!mosaicCanvas) mosaicCanvas = document.createElement('canvas');
+    mosaicCanvas.width = mw;
+    mosaicCanvas.height = mh;
+    const mctx = mosaicCanvas.getContext('2d');
+    mctx.drawImage(videoEl, r.x, r.y, r.w, r.h, 0, 0, mw, mh);
+    exportCtx.imageSmoothingEnabled = false;
+    exportCtx.drawImage(mosaicCanvas, 0, 0, mw, mh, r.x, r.y, r.w, r.h);
+    exportCtx.imageSmoothingEnabled = true;
+  }
+  // 模糊/马赛克只是把旧歌词盖住，这里把新歌词烧回选区中央
+  if (cleanWithLyricEl.checked && lyrics.length) {
+    const maxWidth = Math.round(r.w * 0.92); // 歌词不超出模糊带
+    const baseSize = Math.max(12, Math.min(Math.round(h * 0.055), Math.round(r.h * 0.55)));
+    const fontSize = unifiedLyricFontSize(exportCtx, maxWidth, baseSize);
+    drawLyricLine(exportCtx, w, Math.round(r.y + r.h / 2), fontSize, 'middle', maxWidth);
+  }
+}
+// 插值修复（等同 ffmpeg 的 delogo）：取选区左右、上下四条边界的像素向内部线性插值，
+// 让背景自然填补水印区域，不留模糊块。适合天空、墙面、水面等平缓背景。
+// 逐像素计算，选区越大越慢，框刚好盖住水印即可。
+function delogoRegion(ctx, rect) {
+  const vw = videoEl.videoWidth, vh = videoEl.videoHeight;
+  const x = Math.round(rect.x), y = Math.round(rect.y);
+  const w = Math.round(rect.w), h = Math.round(rect.h);
+  if (w < 4 || h < 4) return;
+  // 向外多取 1px，拿到四周边界像素；贴边的方向自动跳过
+  const sx = Math.max(0, x - 1), sy = Math.max(0, y - 1);
+  const sw = Math.min(vw, x + w + 1) - sx, sh = Math.min(vh, y + h + 1) - sy;
+  const img = ctx.getImageData(sx, sy, sw, sh);
+  const d = img.data;
+  const left = x - sx, top = y - sy, right = left + w - 1, bottom = top + h - 1;
+  const lb = left - 1, rb = right + 1, tb = top - 1, db = bottom + 1;
+  const hasL = lb >= 0, hasR = rb < sw, hasT = tb >= 0, hasB = db < sh;
+  if (!(hasL || hasR || hasT || hasB)) return;
+  const spanX = rb - lb, spanY = db - tb;
+  for (let j = top; j <= bottom; j++) {
+    const row = j * sw;
+    for (let i = left; i <= right; i++) {
+      let R = 0, G = 0, B = 0, n = 0;
+      if (hasL || hasR) { // 贴边时只剩一侧边界，就用那一侧的颜色铺开
+        const a = (row + lb) * 4, b = (row + rb) * 4;
+        if (hasL && hasR) {
+          const f = (i - lb) / spanX;
+          R += d[a] + (d[b] - d[a]) * f;
+          G += d[a + 1] + (d[b + 1] - d[a + 1]) * f;
+          B += d[a + 2] + (d[b + 2] - d[a + 2]) * f;
+        } else {
+          const s = hasL ? a : b;
+          R += d[s]; G += d[s + 1]; B += d[s + 2];
+        }
+        n++;
+      }
+      if (hasT || hasB) {
+        const a = (tb * sw + i) * 4, b = (db * sw + i) * 4;
+        if (hasT && hasB) {
+          const f = (j - tb) / spanY;
+          R += d[a] + (d[b] - d[a]) * f;
+          G += d[a + 1] + (d[b + 1] - d[a + 1]) * f;
+          B += d[a + 2] + (d[b + 2] - d[a + 2]) * f;
+        } else {
+          const s = hasT ? a : b;
+          R += d[s]; G += d[s + 1]; B += d[s + 2];
+        }
+        n++;
+      }
+      const o = (row + i) * 4;
+      d[o] = R / n; d[o + 1] = G / n; d[o + 2] = B / n;
+    }
+  }
+  ctx.putImageData(img, sx, sy);
+}
+
+// ================= 从视频画面提取歌词（本机提词服务） =================
+let SVC = 'http://127.0.0.1:8094';
+const extractBtn = document.getElementById('extractBtn');
+const extractFile = document.getElementById('extractFile');
+const extractHint = document.getElementById('extractHint');
+const jobBox = document.getElementById('lrcJob');
+const jobText = document.getElementById('lrcJobText');
+const jobBar = document.getElementById('lrcJobBar');
+document.getElementById('lrcJobClose').onclick = () => jobBox.classList.remove('show');
+
+function jobShow(msg, pct) {
+  jobBox.classList.add('show');
+  jobText.textContent = msg;
+  if (pct != null) jobBar.style.width = Math.max(0, Math.min(100, pct)) + '%';
+}
+function fmtLrcTime(t) {
+  const m = String(Math.floor(t / 60)).padStart(2, '0');
+  const s = (t % 60).toFixed(2).padStart(5, '0');
+  return `[${m}:${s}]`;
+}
+
+async function svcAlive() {
+  for (let p = 8094; p <= 8100; p++) {
+    const base = 'http://127.0.0.1:' + p;
+    try {
+      const r = await fetch(base + '/ping', { cache: 'no-store' });
+      const j = await r.json();
+      if (j && j.ok && j.extractor) { SVC = base; return true; }
+    } catch (e) { /* 端口没开，继续试下一个 */ }
+  }
+  return false;
+}
+
+// 页面本身就是服务托管的（http://127.0.0.1:809x）时，一定已经通了，且完全同源
+const SERVED = /^https?:$/.test(location.protocol);
+if (SERVED) SVC = location.origin;
+let svcUp = SERVED;          // 已知服务状态
+let svcTimer = null;
+
+function pollSvc() {
+  if (svcTimer || svcUp) return;
+  svcTimer = setInterval(async () => {
+    svcUp = await svcAlive();
+    if (svcUp && svcTimer) { clearInterval(svcTimer); svcTimer = null; }
+  }, 5000);
+}
+svcAlive().then(v => { svcUp = v; if (!v) pollSvc(); });
+
+// 直接双击 html（file://）打开时，浏览器会拦掉对本机服务的请求，这里直接把话说清楚
+if (location.protocol === 'file:') {
+  extractHint.textContent = '当前是直接打开的本地 html（file://），浏览器会拦截本机服务请求。请双击桌面上的「歌词配轴工具」图标打开本页（它会自动起服务、同源打开，不再有任何跨域拦截）。';
+  extractHint.style.color = '#e0a53a';
+}
+
+extractBtn.onclick = async (ev) => {
+  const useCurrent = currentVideoFile && !ev.shiftKey;
+  if (!useCurrent) { extractFile.click(); return; }
+  startExtract(currentVideoFile);
+};
+extractFile.onchange = e => {
+  const f = e.target.files[0];
+  e.target.value = '';
+  if (f) startExtract(f);
+};
+
+async function startExtract(file) {
+  extractHint.textContent = '';
+  jobShow('检查本机提词服务…', 5);
+  if (!await svcAlive()) {
+    // 服务没起：等它起来（用户可能刚双击图标），最多 20 秒
+    for (let i = 0; i < 20 && !SERVED; i++) {
+      jobShow(`正在等服务启动… ${i + 1}/20 秒`, 5);
+      await new Promise(r => setTimeout(r, 1000));
+      if (await svcAlive()) { svcUp = true; return startExtract(file); }
+    }
+    jobBox.classList.remove('show');
+    extractHint.textContent = '提词服务没启动：双击桌面上的「歌词配轴工具」图标，它会自动起服务并打开本工具';
+    return;
+  }
+  svcUp = true;
+  extractBtn.classList.add('on');
+  extractBtn.disabled = true;
+  jobShow('上传视频到本机服务…', 8);
+  let jobId = null;
+  // 用 text/plain 的 Blob 发裸字节：浏览器视为“简单请求”，不触发预检，
+  // file:// 打开时也不会被跨域预检/本地网络策略拦掉
+  const q = `?name=${encodeURIComponent(file.name)}&fps=1&offset=-1.2`;
+  const body = new Blob([file], { type: 'text/plain' });
+  let lastErr = '';
+  for (let attempt = 1; attempt <= 2 && !jobId; attempt++) {
+    try {
+      const r = await fetch(SVC + '/extract' + q, { method: 'POST', body, cache: 'no-store' });
+      const j = await r.json();
+      if (!j.job) throw new Error(j.error || ('服务返回 ' + r.status));
+      jobId = j.job;
+    } catch (e) {
+      lastErr = e.message || String(e);
+      console.warn('上传失败（第' + attempt + '次）：', lastErr);
+      if (attempt < 2) await new Promise(r => setTimeout(r, 1200));
+    }
+  }
+  if (!jobId) {
+    jobShow('上传失败：' + lastErr + '（可再点一次「从视频提词」重试）', 0);
+    extractBtn.classList.remove('on');
+    extractBtn.disabled = false;
+    return;
+  }
+  jobShow('识别中（每帧约 1 秒，长视频要等几分钟）…', 12);
+  const t0 = Date.now();
+  const timer = setInterval(async () => {
+    try {
+      const r = await fetch(`${SVC}/job/${jobId}`, { cache: 'no-store' });
+      const j = await r.json();
+      if (j.status === 'running') {
+        const pct = j.total ? 10 + 85 * (j.done / j.total) : 15;
+        const secs = Math.round((Date.now() - t0) / 1000);
+        jobShow(`识别中 ${j.done}/${j.total} 帧，已用 ${secs} 秒`, pct);
+        return;
+      }
+      clearInterval(timer);
+      extractBtn.classList.remove('on');
+      extractBtn.disabled = false;
+      if (j.status === 'error') {
+        jobShow('没提成：' + (j.reason || '识别失败（详见服务窗口日志）'), 100);
+        console.error(j.error);
+        setTimeout(() => jobBox.classList.remove('show'), 12000);
+        return;
+      }
+      applyExtractResult(j);
+    } catch (e) {
+      clearInterval(timer);
+      jobShow('查询进度失败：' + e.message, 100);
+      extractBtn.classList.remove('on');
+      extractBtn.disabled = false;
+    }
+  }, 1200);
+}
+
+function applyExtractResult(j) {
+  const lines = j.lines || [];
+  if (!lines.length) {
+    jobShow('画面里没找到成段的歌词字幕（只有人声的话要另走语音识别）', 100);
+    return;
+  }
+  const text = lines.map(l => fmtLrcTime(l.t) + l.text).join('\n');
+  lyricInput.value = text;
+  document.getElementById('parseBtn').click();
+  const meta = j.meta || {};
+  const secs = Math.round(meta.duration || 0);
+  jobShow(`已填入 ${lines.length} 句` + (secs ? `（${secs} 秒的视频）` : '') +
+          `，可以逐句微调；整首偏早/偏晚就全选歌词行一起 +/-`, 100);
+  setTimeout(() => jobBox.classList.remove('show'), 6000);
+}
+</script>
+</body>
+</html>
