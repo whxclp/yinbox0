@@ -1212,8 +1212,9 @@ async function svcAlive() {
   return false;
 }
 
-// 页面本身就是服务托管的（http://127.0.0.1:809x）时，一定已经通了，且完全同源
-const SERVED = /^https?:$/.test(location.protocol);
+// 只有页面就是本机服务托管的时候（http://127.0.0.1:809x），才算服务已经在跑
+const LOCAL_HOST = ['127.0.0.1', 'localhost', '[::1]'].includes(location.hostname);
+const SERVED = LOCAL_HOST && /^https?:$/.test(location.protocol);
 if (SERVED) SVC = location.origin;
 let svcUp = SERVED;          // 已知服务状态
 let svcTimer = null;
@@ -1225,11 +1226,14 @@ function pollSvc() {
     if (svcUp && svcTimer) { clearInterval(svcTimer); svcTimer = null; }
   }, 5000);
 }
-svcAlive().then(v => { svcUp = v; if (!v) pollSvc(); });
+svcAlive().then(v => { svcUp = v; if (!v && location.protocol === 'file:') pollSvc(); });
 
-// 直接双击 html（file://）打开时，浏览器会拦掉对本机服务的请求，这里直接把话说清楚
+// 不是本机入口打开时，把能干什么、不能干什么说清楚
 if (location.protocol === 'file:') {
-  extractHint.textContent = '当前是直接打开的本地 html（file://），浏览器会拦截本机服务请求。请双击桌面上的「歌词配轴工具」图标打开本页（它会自动起服务、同源打开，不再有任何跨域拦截）。';
+  extractHint.textContent = '当前是直接打开的本地 html（file://），浏览器会拦截本机服务请求。打轴、导入导出、导出视频都能用；要「从视频提词」请双击桌面上的「歌词配轴工具」图标打开本页（它会自动起服务、同源打开）。';
+  extractHint.style.color = '#e0a53a';
+} else if (!SERVED) {
+  extractHint.textContent = '现在是网上打开的版本：打轴、导入歌词/SRT、导出视频都能正常用；「从视频提词」和「导出后存桌面」要用本机入口（双击桌面「歌词配轴工具」图标）才连得上。';
   extractHint.style.color = '#e0a53a';
 }
 
@@ -1248,14 +1252,16 @@ async function startExtract(file) {
   extractHint.textContent = '';
   jobShow('检查本机提词服务…', 5);
   if (!await svcAlive()) {
-    // 服务没起：等它起来（用户可能刚双击图标），最多 20 秒
-    for (let i = 0; i < 20 && !SERVED; i++) {
+    // 只有本地 html 才有“等服务起来”的意义（网上打开的版本连不到本机服务）
+    for (let i = 0; i < 20 && location.protocol === 'file:'; i++) {
       jobShow(`正在等服务启动… ${i + 1}/20 秒`, 5);
       await new Promise(r => setTimeout(r, 1000));
       if (await svcAlive()) { svcUp = true; return startExtract(file); }
     }
     jobBox.classList.remove('show');
-    extractHint.textContent = '提词服务没启动：双击桌面上的「歌词配轴工具」图标，它会自动起服务并打开本工具';
+    extractHint.textContent = SERVED
+      ? '提词服务没响应，请确认桌面「歌词配轴工具」图标启动的窗口还在'
+      : '这个页面连不上本机提词服务：请双击桌面上的「歌词配轴工具」图标打开本页再点「从视频提词」';
     return;
   }
   svcUp = true;
