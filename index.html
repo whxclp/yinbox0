@@ -558,7 +558,7 @@ function toggleOnline(){
   el.style.display = el.style.display === 'block' ? 'none' : 'block';
   if(el.style.display === 'block'){ renderHist(); const ok=document.getElementById('okw'); ok.value = ok.value || localStorage.getItem('cloudSearchKw')||''; ok.focus(); }
 }
-document.getElementById('okw').addEventListener('keydown', e=>{ if(e.key==='Enter') searchOnline(); });
+document.getElementById('okw').addEventListener('keydown', e=>{ if(e.key==='Enter' && !e.isComposing && e.keyCode!==229) searchOnline(); });
 function searchOnline(){
   const kw = document.getElementById('okw').value.trim();
   const box = document.getElementById('oresults');
@@ -671,7 +671,7 @@ function renderHist(){
   const el = document.getElementById('ohist');
   if(!el) return;
   const h = JSON.parse(localStorage.getItem('cloudSearchHist')||'[]');
-  if(!h.length){ el.innerHTML=''; return; }
+  if(!h.length){ el.replaceChildren(); return; }
   el.innerHTML = '<span style="font-size:12px;color:var(--sub);margin-right:4px;">历史：</span>' + h.map(k=>
     '<span style="display:inline-block;background:var(--btn);border:1px solid var(--line);border-radius:12px;padding:3px 8px;font-size:13px;margin:2px;cursor:pointer;" onclick="histSearch(\''+escJs(k)+'\')">'+esc(k)+'<span style="margin-left:5px;color:#f66;cursor:pointer;" onclick="event.stopPropagation();histDel(\''+escJs(k)+'\')">×</span></span>'
   ).join('');
@@ -702,7 +702,7 @@ else { cats[classify(s)].push(s); }
 const sec = (items, label, tagText, tagClass, secId)=>{
 if(!items.length && secId !== 'fav') return '';   // 「收藏」分类空也保留显示（收藏（0））
 // 排序：MV 排最前，普通条目居中（保持原标题自然排序），网址条目排到末尾
-items = items.slice().sort((a,b)=>{
+items = items.toSorted((a,b)=>{
   const ra = isExtFile(a) ? 2 : (a.type === 'mv' ? 0 : 1);
   const rb = isExtFile(b) ? 2 : (b.type === 'mv' ? 0 : 1);
   return ra - rb;
