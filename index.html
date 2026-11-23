@@ -426,24 +426,61 @@ function inFav(s){
   if(favsBanned[s.file]) return false;
   return isHeldNew(s);
 }
-// ===== 一键把本机流畅版打开，并把收藏一起带过去（#fav=YINFAV1:...）=====
+// ===== 一键打开本机流畅版，并把收藏带过去 =====
+// 收藏不再塞进地址栏（以前是 #fav=YINFAV1%3A%7B... 那一长串）。
+// 现在先把收藏码 POST 给本机服务的 /favhandoff 暂存，再跳到干净地址，
+// 落地页进来后自己 GET /favhandoff 取走。老地址（带 #fav=）仍然认，兼容旧链接。
+const LOCAL_BASE = 'http://127.0.0.1:8093';
 function openLocal(){
   const payload = 'YINFAV1:' + JSON.stringify(favs);
-  window.location.href = 'http://127.0.0.1:8093/pc-player.html#fav=' + encodeURIComponent(payload);
+  let done = false;
+  const go = ()=>{
+    if(done) return; done = true;
+    window.location.href = LOCAL_BASE + '/pc-player.html';
+  };
+  let p = null;
+  try{
+    p = fetch(LOCAL_BASE + '/favhandoff', {
+      method:'POST', mode:'no-cors', cache:'no-store',
+      headers:{'Content-Type':'text/plain;charset=UTF-8'},
+      body: payload
+    });
+  }catch(e){ p = null; }
+  if(!p){ go(); return; }
+  // 最多等 1.2 秒，本机服务没起时也照常跳过去
+  Promise.race([p.catch(()=>{}), new Promise(r=>setTimeout(r,1200))]).then(go, go);
 }
-// 落地页接收：把线上页带过来的收藏并入本机收藏（并清掉对应的"取消收藏"标记）
+// 把收藏码并入本机收藏（并清掉对应的“取消收藏”标记）
+function applyFavPayload(raw){
+  try{
+    if(!raw || String(raw).indexOf('YINFAV1:') !== 0) return false;
+    const obj = JSON.parse(String(raw).slice(8));
+    if(!obj || typeof obj !== 'object') return false;
+    favs = Object.assign({}, favs, obj);
+    localStorage.setItem('cloudFavs', JSON.stringify(favs));
+    Object.keys(obj).forEach(k=>{ delete favsBanned[k]; });
+    localStorage.setItem('cloudFavsBanned', JSON.stringify(favsBanned));
+    return true;
+  }catch(e){ return false; }
+}
+// 落地页接收①：老式的 #fav= 长链接，取完顺手把地址洗干净
 (function importHashFavs(){
   try{
     const m = location.hash.match(/fav=([^&]+)/);
     if(!m) return;
     const raw = decodeURIComponent(m[1]);
-    if(raw.indexOf('YINFAV1:') !== 0) return;
-    const obj = JSON.parse(raw.slice(8));
-    favs = Object.assign({}, favs, obj);
-    localStorage.setItem('cloudFavs', JSON.stringify(favs));
-    Object.keys(obj).forEach(k=>{ delete favsBanned[k]; });
-    localStorage.setItem('cloudFavsBanned', JSON.stringify(favsBanned));
+    if(!applyFavPayload(raw)) return;
     history.replaceState(null, '', location.pathname + location.search);
+  }catch(e){}
+})();
+// 落地页接收②：本机服务 /favhandoff 里暂存的收藏
+(async function importHandoffFavs(){
+  try{
+    const r = await fetch('/favhandoff', {cache:'no-store'});
+    const j = await r.json();
+    if(j && j.payload && applyFavPayload(j.payload)){
+      if(typeof applyFilter === 'function' && songs && songs.length){ applyFilter(); }
+    }
   }catch(e){}
 })();
 
