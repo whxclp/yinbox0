@@ -727,6 +727,15 @@ const sec = (items, label, tagText, tagClass, secId)=>{
 if(!items.length && secId !== 'fav') return '';   // 「收藏」分类空也保留显示（收藏（0））
 // 排序：MV 排最前，普通条目居中（保持原标题自然排序），网址条目排到末尾
 items = items.toSorted((a,b)=>{
+  // 「收藏」里：还在「新」窗口内的新歌按入库日期倒序排最前（最新的先看到）
+  if(secId === 'fav'){
+    const na = isHeldNew(a) ? 1 : 0, nb = isHeldNew(b) ? 1 : 0;
+    if(na !== nb) return nb - na;
+    if(na === 1){
+      const ta = Date.parse(String(a.added)) || 0, tb = Date.parse(String(b.added)) || 0;
+      if(ta !== tb) return tb - ta;
+    }
+  }
   const ra = isExtFile(a) ? 2 : (a.type === 'mv' ? 0 : 1);
   const rb = isExtFile(b) ? 2 : (b.type === 'mv' ? 0 : 1);
   return ra - rb;
