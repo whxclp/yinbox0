@@ -432,27 +432,10 @@ function inFav(s){
 // 落地页进来后自己 GET /favhandoff 取走。老地址（带 #fav=）仍然认，兼容旧链接。
 const LOCAL_BASE = 'http://127.0.0.1:8093';
 function openLocal(){
+  // 用原来那套“必进”的写法：直接把收藏码放到 #fav= 跳过去。
+  // 落地页一进来就会把地址清洗成 /pc-player.html，所以地址栏只会闪一下长串，不会停留。
   const payload = 'YINFAV1:' + JSON.stringify(favs);
-  const enc = encodeURIComponent(payload);
-  if(enc.length <= 200000){
-    // 常规情况：收藏码交给本机服务暂存，由它 302 跳到干净的播放页
-    // 地址栏最终只有 /pc-player.html，不会再出现 #fav=YINFAV1%3A%7B... 那一长串
-    window.location.href = LOCAL_BASE + '/favgo?d=' + enc;
-    return;
-  }
-  // 收藏条数特别多（编码后过长）时才走 POST 交接
-  let done = false;
-  const go = ()=>{ if(done) return; done = true; window.location.href = LOCAL_BASE + '/pc-player.html'; };
-  let p = null;
-  try{
-    p = fetch(LOCAL_BASE + '/favhandoff', {
-      method:'POST', mode:'no-cors', cache:'no-store',
-      headers:{'Content-Type':'text/plain;charset=UTF-8'},
-      body: payload
-    });
-  }catch(e){ p = null; }
-  if(!p){ go(); return; }
-  Promise.race([p.catch(()=>{}), new Promise(r=>setTimeout(r,1500))]).then(go, go);
+  window.location.href = LOCAL_BASE + '/pc-player.html#fav=' + encodeURIComponent(payload);
 }
 // 把收藏码并入本机收藏（并清掉对应的“取消收藏”标记）
 function applyFavPayload(raw){
