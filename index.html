@@ -433,11 +433,16 @@ function inFav(s){
 const LOCAL_BASE = 'http://127.0.0.1:8093';
 function openLocal(){
   const payload = 'YINFAV1:' + JSON.stringify(favs);
+  const enc = encodeURIComponent(payload);
+  if(enc.length <= 200000){
+    // 常规情况：收藏码交给本机服务暂存，由它 302 跳到干净的播放页
+    // 地址栏最终只有 /pc-player.html，不会再出现 #fav=YINFAV1%3A%7B... 那一长串
+    window.location.href = LOCAL_BASE + '/favgo?d=' + enc;
+    return;
+  }
+  // 收藏条数特别多（编码后过长）时才走 POST 交接
   let done = false;
-  const go = ()=>{
-    if(done) return; done = true;
-    window.location.href = LOCAL_BASE + '/pc-player.html';
-  };
+  const go = ()=>{ if(done) return; done = true; window.location.href = LOCAL_BASE + '/pc-player.html'; };
   let p = null;
   try{
     p = fetch(LOCAL_BASE + '/favhandoff', {
@@ -447,8 +452,7 @@ function openLocal(){
     });
   }catch(e){ p = null; }
   if(!p){ go(); return; }
-  // 最多等 1.2 秒，本机服务没起时也照常跳过去
-  Promise.race([p.catch(()=>{}), new Promise(r=>setTimeout(r,1200))]).then(go, go);
+  Promise.race([p.catch(()=>{}), new Promise(r=>setTimeout(r,1500))]).then(go, go);
 }
 // 把收藏码并入本机收藏（并清掉对应的“取消收藏”标记）
 function applyFavPayload(raw){
