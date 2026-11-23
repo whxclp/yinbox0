@@ -272,7 +272,7 @@ document.getElementById('loadText').onclick = () => {
 };
 
 function render(noScroll) {
-  lyricList.innerHTML = '';
+  lyricList.replaceChildren();
   lyrics.forEach((l, i) => {
     const li = document.createElement('li');
     li.className = (i === currentIdx ? 'current ' : '') + (l.time != null ? 'stamped' : '');

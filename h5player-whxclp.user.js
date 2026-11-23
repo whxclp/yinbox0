@@ -2201,7 +2201,7 @@ async function initUiConfigManager () {
   if (!isUiConfigPage || !isUiConfigMode) return
 
   function init (pageWindow) {
-    const config = JSON.parse(JSON.stringify(configManager.getConfObj()));
+    const config = structuredClone(configManager.getConfObj());
     delete config.recommendList;
     if (Array.isArray(config.hotkeys)) {
       /* 给hotkeys的各自项添加disabled选项，以便在界面侧可以快速禁用或启用某个项 */
