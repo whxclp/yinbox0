@@ -16,40 +16,163 @@
   input[type=file], textarea { background: #0f3460; color: #eee; border: 1px solid #533483; border-radius: 6px; padding: 6px; }
   main { flex: 1; display: flex; gap: 12px; padding: 12px; overflow: hidden; }
   .panel { background: #16213e; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; }
-  #left { width: 480px; }
-  #right { flex: 1; }
-  #lyricInput { flex: 1; font-size: 14px; line-height: 1.6; resize: none; font-family: inherit; }
-  #lyricList { flex: 1; overflow-y: auto; list-style: none; }
+  #left { width: clamp(360px, 40%, 640px); min-width: 0; }
+  #right { flex: 1; overflow: hidden; min-height: 0; }
+  #rightBody { flex: 1; display: flex; gap: 12px; min-height: 0; overflow: hidden; }
+  #sideCol { flex: 1; display: flex; flex-direction: row; gap: 12px; min-height: 0; overflow: hidden; align-items: stretch; }
+  #picVideoPanel { flex: 1 1 56%; min-width: 0; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; }
+  #cleanPanel { flex: 1 1 44%; min-width: 0; min-height: 0; overflow-y: auto; }
+  #sideCol details { margin-top: 0; }
+  #picVideoPanel { flex: 0 0 auto; }
+  #cleanPanel { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+  .pvPreview { margin-top: 8px; flex: 1 1 auto; min-height: 150px; border-radius: 6px; background: #16213e; border: 1px dashed #533483;
+    display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .pvPreview img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .pvThumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(86px, 1fr)); gap: 6px; width: 100%; padding: 6px; box-sizing: border-box; }
+  .pvThumbWrap { display: flex; flex-direction: column; gap: 3px; }
+  .pvTimeInline { justify-content: center; font-size: 10px; gap: 2px; color: #9aa5b1; }
+  .pvTimeInline .pvTimeOne { width: 100%; max-width: 70px; padding: 2px 3px; font-size: 11px; text-align: center; font-family: monospace; }
+  .pvThumb .wmSel { position: absolute; left: 2px; bottom: 2px; font-size: 12px; padding: 0 3px; border-radius: 3px; background: rgba(0,0,0,.45); color: #9aa5b1; cursor: pointer; }
+  .pvThumb .wmSel.on { color: #2ecc71; background: rgba(0,0,0,.7); }
+  .wmSelInner { background: #16213e; border: 1px solid #533483; border-radius: 10px; padding: 14px; max-width: 92vw; max-height: 92vh; overflow: auto; }
+  .wmSelPic { position: relative; display: inline-block; max-width: 100%; margin: 8px 0; touch-action: none; user-select: none; cursor: crosshair; }
+  .wmSelPic img { display: block; max-width: 86vw; max-height: 70vh; }
+  .wmSelBox { position: absolute; border: 2px solid #e94560; background: rgba(233,69,96,.22); pointer-events: none;
+    color: #fff; font-size: 11px; font-weight: 700; padding: 1px 3px; box-shadow: 0 0 0 1px rgba(0,0,0,.35) inset; }
+  .wmSelBox.drawing { border-style: dashed; border-color: #ffd166; background: rgba(255,209,102,.18); }
+  .wmSelBar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .pvTimeInline { margin-top: 1px; }
+  .pvTimeInline input { width: 26px; padding: 1px 2px; font-size: 11px; text-align: center;
+    border: 1px solid #533483; background: #0f3460; color: #eee; border-radius: 3px; }
+  .pvTimeInline input::-webkit-outer-spin-button, .pvTimeInline input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .pvTimeInline .pvTimeOne { border-radius: 4px; }
+  .pvTimeInline.bad input { border-color: #ff6b6b; color: #ffb3b3; }
+  .pvThumb { position: relative; border-radius: 4px; overflow: hidden; background: #0d1626; aspect-ratio: 3/4; }
+  .pvThumb img { width: 100%; height: 100%; object-fit: contain; display: block; background: #0a1120; }
+  .pvThumb .idx { position: absolute; left: 3px; top: 3px; background: rgba(0,0,0,.65); color: #ffd166;
+    font-size: 11px; padding: 0 5px; border-radius: 8px; }
+  .pvThumb .x { position: absolute; right: 3px; top: 3px; width: 16px; height: 16px; line-height: 16px;
+    text-align: center; background: rgba(0,0,0,.65); color: #ff8080; font-size: 11px; border-radius: 50%;
+    cursor: pointer; font-weight: 400; }
+  .pvThumb .x:hover { background: #e94560; color: #fff; }
+  #lyricInput { width: 100%; height: 120px; flex: 0 0 auto; font-size: 14px; line-height: 1.6; resize: vertical; font-family: inherit; box-sizing: border-box; }
+  .lyricHead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px; }
+  .lyricHead strong { flex: 1 1 auto; min-width: 0; }
+  #srcBox { flex: 0 0 auto; }
+  .srcTools { display: flex; gap: 8px; margin-top: 6px; align-items: center; flex-wrap: wrap; }
+  #srcHint { color: #7f8ea3; }
+  #lyricList { flex: 1; min-height: 0; overflow-y: auto; list-style: none; margin: 8px 0 0; padding: 8px 0 0; border-top: 1px solid #263754; }
+  .axisTools { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px solid #263754; }
+  .axisTools button { background: #0f3460; border: 1px solid #533483; color: #e8eef7; }
+  .axisTools button:hover { background: #1a4a86; }
+  .axisTools #exportHint { margin-left: auto; font-size: 12px; color: #7f8ea3; }
   #lyricList li { padding: 8px 10px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer; }
   #lyricList li:hover { background: #0f3460; }
   #lyricList li.current { background: #e94560; color: #fff; }
   #lyricList li.stamped { color: #2ecc71; }
+  #lyricList li.empty { color: #6b7a8f; cursor: default; font-size: 13px; }
   .time { font-family: monospace; font-size: 13px; min-width: 70px; color: #f39c12; }
   .text { flex: 1; }
   .tune button { padding: 2px 8px; font-size: 12px; margin: 0 1px; }
-  #player { padding: 12px 16px; background: #16213e; }
+  #player { padding: 0 0 10px; background: transparent; border-bottom: 1px solid #24334d; margin-bottom: 10px; flex: 0 0 auto; }
+  .keyhint { font-size: 12px; color: #9aa5b1; line-height: 1.9; margin: -4px 0 8px; }
+  #mediaTitle { font-size: 15px; font-weight: 600; color: #ffd166; margin: 0 0 6px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   audio { width: 100%; }
   #videoWrap { display: none; position: relative; }
   #videoWrap.on { display: block; }
-  #video { display: block; width: 100%; max-height: 48vh; background: #000; border-radius: 6px; }
+  #video { display: block; width: 100%; max-height: 42vh; background: #000; border-radius: 6px; }
   #videoLyric {
     position: absolute; left: 0; right: 0; bottom: 7%; padding: 0 4%;
     text-align: center; font-size: 22px; font-weight: bold; color: #fff;
     text-shadow: 0 0 6px #000, 0 0 14px #000; white-space: pre-wrap; pointer-events: none;
   }
-  #exportVideo, #stopExport { display: none; }
+  #stopExport { display: none; }
+  #exportVideo { display: inline-block; }
   .hint { color: #7f8c8d; font-size: 12px; }
   kbd { background: #0f3460; border: 1px solid #533483; padding: 1px 6px; border-radius: 3px; font-size: 12px; }
   /* ---- 视频去歌词 ---- */
   #cleanPanel { margin-top: 10px; background: #0f3460; border-radius: 8px; padding: 8px 12px; }
   #cleanPanel summary { cursor: pointer; font-size: 14px; padding: 4px 0; }
-  #cleanPanel .cleanRow { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 8px 0; font-size: 13px; }
+  .pvBar { display: flex; align-items: center; gap: 8px; width: 100%; box-sizing: border-box;
+    background: linear-gradient(90deg, #533483, #35275c); border: 1px solid #7a4bd0; border-radius: 8px;
+    padding: 7px 9px; margin: 0 0 10px; }
+  .pvBar .t1 { font-size: 13px; font-weight: 700; color: #fff; flex: 1 1 auto; min-width: 0; }
+  .pvBarBtn { flex: 0 0 auto; background: #e94560; border: 1px solid #ff7a8f; color: #fff; border-radius: 6px;
+    padding: 4px 9px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .pvBarBtn:hover { background: #ff6b81; }
+  .pvBarBtn:disabled { opacity: .55; cursor: default; }
+  .cleanRow { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 8px 0; font-size: 12px; }
+  #cleanPanel .cleanGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(86px, 1fr)); gap: 6px; margin: 8px 0; }
+  #cleanPanel .cleanGrid button { padding: 7px 4px; font-size: 12px; white-space: nowrap; }
   #cleanPanel select { background: #16213e; color: #eee; border: 1px solid #533483; border-radius: 6px; padding: 5px; }
   #cleanLayer { position: absolute; left: 0; top: 0; right: 0; bottom: 0; display: none; }
   #cleanLayer.selecting { cursor: crosshair; }
   #cleanBox { position: absolute; display: none; border: 2px dashed #e94560; background: rgba(233,69,96,.10); }
   #cleanBox .rs { position: absolute; right: -7px; bottom: -7px; width: 14px; height: 14px; background: #e94560; cursor: nwse-resize; border-radius: 2px; }
   #cleanBox.pv-crop { background: rgba(0,0,0,.85); border-color: #f39c12; }
+  /* ---- 图片 + 音频 → 歌词视频 ---- */
+  #picVideoPanel { margin-top: 10px; background: #0f3460; border-radius: 8px; padding: 8px 12px; }
+  #picVideoPanel summary { cursor: pointer; font-size: 14px; padding: 4px 0; }
+  #picVideoPanel .pvRow { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 8px 0; font-size: 13px; }
+  #picVideoPanel select { background: #16213e; color: #eee; border: 1px solid #533483; border-radius: 6px; padding: 5px; }
+  .pvTitleBtn { display: flex; align-items: center; gap: 8px; width: 100%; box-sizing: border-box; text-align: left;
+    background: linear-gradient(90deg, #533483, #35275c); border: 1px solid #7a4bd0; border-radius: 8px;
+    color: #fff; cursor: pointer; padding: 9px 12px; margin: 0 0 10px; font: inherit; }
+  .pvTitleBtn:hover { background: linear-gradient(90deg, #e94560, #533483); border-color: #ff7a8f; }
+  .pvTitleBtn:disabled { opacity: .55; cursor: default; }
+  .pvTitleBtn .t1 { font-size: 15px; font-weight: 700; letter-spacing: .5px; }
+  .pvTitleBtn .t2 { margin-left: auto; font-size: 11px; font-weight: 400; color: #d8d0ef; }
+  #pvPaceSec, #pvFade { width: 44px; padding: 4px 4px; }
+  #pvImgClear { font-size: 12px; padding: 7px 10px; background: #0f3460; }
+  #pvImgClear:hover { background: #1a5276; }
+  .pvTimes { display: flex; flex-direction: column; gap: 4px; margin: 6px 0; max-height: 150px; overflow-y: auto; }
+  .pvTimeRow { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #9aa5b1; }
+  .pvTimeRow input { width: 50px; padding: 3px 5px; font-size: 12px; background: #0f3460; color: #eee;
+    border: 1px solid #533483; border-radius: 4px; }
+  .pvTimeRow .pvTimeM { width: 44px; }
+  .pvTimeRow .pvTimeS { width: 58px; }
+  .pvTimeOk { font-size: 11px; }
+  .pvPlan { font-size: 12px; color: #9aa5b1; margin: 4px 0 2px; }
+  .pvPlanHead { display: flex; align-items: center; gap: 8px; color: #cfd8e3; margin-bottom: 3px; }
+  .pvPlanList { margin: 0 0 0 16px; padding: 0; }
+  .pvPlanList li { margin: 1px 0; }
+  .pvPlanList li.first { color: #ffd166; }
+  .pvThumb .wmBadge { position: absolute; right: 3px; bottom: 3px; width: 18px; height: 18px;
+    line-height: 18px; text-align: center; font-size: 11px; border-radius: 50%;
+    background: rgba(0,0,0,.55); color: #7f8ea3; cursor: pointer; border: 1px solid transparent; }
+  .pvThumb .wmBadge.on { background: #f39c12; color: #10131a; border-color: #ffd166; }
+  .pvMini { font-size: 12px; padding: 5px 9px; background: #0f3460; border: 1px solid #533483;
+    border-radius: 5px; color: #cfd8e3; cursor: pointer; }
+  .pvMini:hover { background: #1a5276; }
+  .pvMini:disabled { opacity: .6; cursor: default; }
+  .pvSec { border: 1px solid rgba(83,52,131,.55); border-radius: 8px; padding: 6px 10px 4px;
+    margin: 10px 0; background: rgba(8,18,36,.38); }
+  .pvSecT { font-size: 13px; color: #ffd166; font-weight: 600; padding: 2px 0 5px;
+    border-bottom: 1px dashed rgba(255,209,102,.22); }
+  .segLab { color: #9aa5b1; font-size: 12px; }
+  .seg { display: flex; flex-wrap: wrap; gap: 4px; margin: 8px 0; }
+  .segItem { font-size: 12px; padding: 5px 9px; border-radius: 999px; background: #122a4a;
+    color: #cfd8e3; border: 1px solid #533483; cursor: pointer; line-height: 1.2; }
+  .segItem:hover { background: #1a5276; }
+  .segItem.on { background: #f39c12; color: #151018; border-color: #ffd166; font-weight: 600; }
+  .segItem.on::before { content: "\2713 "; }
+  .segSrc { display: none !important; }
+  .secHint { font-weight: 400; font-size: 11px; color: #9aa5b1; line-height: 1.5;
+    margin-left: 8px; }
+  #sideCol { min-width: 0; }
+  #picVideoPanel { flex: 1 1 0; min-width: 0; }
+  #cleanPanel { flex: 0 0 36%; min-width: 0; }
+  .pvLight { position: fixed; inset: 0; background: rgba(4,8,16,.88); z-index: 9999;
+    display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .pvLightInner { max-width: 94vw; max-height: 92vh; overflow: auto; background: #101a2b;
+    border: 1px solid #533483; border-radius: 8px; padding: 12px; }
+  .pvLightHead { font-size: 12px; color: #f39c12; margin-bottom: 8px; }
+  .pvLightPair { display: flex; gap: 10px; }
+  .pvLightPair figure { margin: 0; text-align: center; }
+  .pvLightPair img { max-height: 78vh; max-width: 44vw; display: block; border-radius: 4px; }
+  .pvLightPair figcaption { font-size: 11px; color: #9aa5b1; margin-top: 4px; }
+  #pvHint a { color: #f39c12; margin-left: 6px; }
   /* ---- 从视频提词 ---- */
   #extractBtn { background: #533483; }
   #extractBtn.on { background: #e94560; }
@@ -72,35 +195,218 @@
 <header>
   <h1>🎵 歌词配轴工具</h1>
   <label class="filebtn">📁 选择文件（音频/视频）<input type="file" id="mediaFile" accept="audio/*,video/*" hidden></label>
-  <button id="exportVideo">导出视频</button>
-  <button id="stopExport">停止录制</button>
   <button id="loadText">粘贴歌词</button>
   <button id="importLyrics">导入歌词</button>
   <input type="file" id="lyricFile" accept=".lrc,.txt,.srt,text/plain" hidden>
-  <button id="exportLrc">导出 LRC</button>
-  <button id="copyLrc">复制 LRC</button>
   <button id="previewBtn">预览</button>
   <button id="importSrt">导入 SRT</button>
   <button id="extractBtn" title="识别视频画面里烧录的歌词，自动填进歌词框并打好时间轴">🎬 从视频提词</button>
   <input type="file" id="extractFile" accept="video/*" hidden>
   <span id="extractHint"></span>
-  <button id="prevLine" title="上一句 (↑)">▲ 上一句</button>
-  <button id="nextLine" title="下一句 (↓)">▼ 下一句</button>
-  <span class="hint">快捷键：<kbd>空格</kbd> 播放/打轴 &nbsp; <kbd>↓</kbd> 打轴 &nbsp; <kbd>↑</kbd> 删时间 &nbsp; <kbd>Shift</kbd>+<kbd>↑</kbd>/<kbd>↓</kbd> 上/下一句 &nbsp; <kbd>←</kbd>/<kbd>→</kbd> 微调±0.1秒</span>
 </header>
 
 <main>
   <div class="panel" id="left">
-    <strong style="margin-bottom:8px;">歌词文本（每行一句）</strong>
-    <textarea id="lyricInput" placeholder="把歌词粘贴到这里，每行一句..."></textarea>
-    <div style="display:flex; gap:8px; margin-top:8px;">
-      <button id="parseBtn">解析成歌词行</button>
-      <button id="stripTime" title="去掉每行开头的时间标签并清零重打轴">自动去除时间戳</button>
+    <div class="lyricHead">
+      <strong>歌词（粘贴即解析 · 逐句打轴）</strong>
+      <button id="prevLine" class="pvMini" title="上一句 (Shift+↑)">▲ 上一句</button>
+      <button id="nextLine" class="pvMini" title="下一句 (Shift+↓)">▼ 下一句</button>
+      <button id="srcToggle" class="pvMini">收起原文</button>
+    </div>
+    <div class="keyhint">快捷键：<kbd>空格</kbd> 播放/打轴 &nbsp; <kbd>↓</kbd> 打轴 &nbsp; <kbd>↑</kbd> 删时间 &nbsp; <kbd>Shift</kbd>+<kbd>↑</kbd>/<kbd>↓</kbd> 上/下一句 &nbsp; <kbd>←</kbd>/<kbd>→</kbd> 微调±0.1秒</div>
+    <div id="srcBox">
+      <textarea id="lyricInput" placeholder="把歌词整段粘贴进来，每行一句，自动解析成下面的行…"></textarea>
+      <div class="srcTools">
+        <button id="parseBtn">解析成歌词行</button>
+        <button id="stripTime" title="去掉每行开头的时间标签并清零重打轴">自动去除时间戳</button>
+        <span id="srcHint" class="hint"></span>
+      </div>
+    </div>
+    <ul id="lyricList"></ul>
+    <div class="axisTools">
+      <button id="exportLrc" title="按歌曲名导出 .lrc 歌词文件">⬇ 导出歌词</button>
+      <button id="exportVideo" title="把左侧歌词烧进已加载的视频并导出（需先加载视频）">导出视频</button>
+      <button id="stopExport" title="中止正在进行的视频导出">停止录制</button>
+      <button id="exportSrt" title="导出 .srt 字幕（时间轴连续）">导出 SRT</button>
+      <button id="copyLrc" title="把已打轴的歌词复制到剪贴板">复制歌词</button>
+      <span id="exportHint" class="hint">尚未打轴</span>
     </div>
   </div>
   <div class="panel" id="right">
-    <strong style="margin-bottom:8px;">歌词行（点击选中，播放时按 空格 或 ↓ 打时间戳，Shift+↑/↓ 切行）</strong>
-    <ul id="lyricList"></ul>
+    <div id="player">
+      <div id="mediaTitle">未加载音频</div>
+      <audio id="audio" controls></audio>
+      <div id="videoWrap">
+        <video id="video" controls playsinline></video>
+        <div id="videoLyric"></div>
+        <div id="cleanLayer"><div id="cleanBox"><div class="rs"></div></div></div>
+      </div>
+    </div>
+    <div id="rightBody">
+      <div id="sideCol">
+        <div id="picVideoPanel" class="pvOpenPanel">
+          <button id="pvRender" class="pvTitleBtn" title="按下面①②③④的设置出片">
+            <span class="t1">🎬 生成歌词视频</span>
+            <span class="t2">图片 + 音频 → 视频 · 点这里出片</span>
+          </button>
+          <div class="pvSec">
+            <div class="pvSecT">① 选背景图 + 画面适配</div>
+            <div class="pvRow">
+              <label class="filebtn">🖼 选背景图<input type="file" id="pvImage" accept="image/*" multiple hidden></label>
+              <button id="pvImgClear" title="清空已选图片">清空</button>
+              <span id="pvImgHint" class="hint">未选图（深色纯底）</span>
+            </div>
+            <div class="pvRow">
+              <span class="segLab">画面适配</span>
+              <div class="seg" data-for="pvFit">
+                <button type="button" class="segItem" data-val="contain">整图完整（不裁边）</button>
+                <button type="button" class="segItem" data-val="cover">铺满（会裁边缘）</button>
+              </div>
+              <select id="pvFit" class="segSrc">
+                <option value="contain" selected>整图完整（不裁边）</option>
+                <option value="cover">铺满（会裁掉边缘）</option>
+              </select>
+            </div>
+            <div class="pvRow">
+              <label><input type="checkbox" id="pvTitleChk" checked> 显示歌名</label>
+              <label><input type="checkbox" id="pvZoomChk" checked> 轻微推镜</label>
+              <button id="pvNorm" class="pvMini">统一成标准图</button>
+            </div>
+            <div class="pvRow">
+              <span class="hint">「整图完整」＝整张图都留、边上补柔化环境色；「铺满」＝会裁掉两侧或上下</span>
+            </div>
+          </div>
+
+          <div class="pvSec">
+            <div class="pvSecT">② 图片比例</div>
+            <div class="seg" data-for="pvRatio">
+              <button type="button" class="segItem" data-val="auto">自动（横图走横版）</button>
+              <button type="button" class="segItem" data-val="9:16">竖屏 9:16</button>
+              <button type="button" class="segItem" data-val="16:9">横屏 16:9</button>
+              <button type="button" class="segItem" data-val="1:1">方形 1:1</button>
+            </div>
+            <select id="pvRatio" class="segSrc">
+              <option value="auto" selected>自动（横图走横版）</option>
+              <option value="9:16">竖屏 9:16</option>
+              <option value="16:9">横屏 16:9</option>
+              <option value="1:1">方形 1:1</option>
+            </select>
+            <div class="pvRow"><span class="hint" id="pvSizeHint">基准尺寸：1080×1920</span></div>
+          </div>
+
+          <div class="pvSec">
+            <div class="pvSecT">③ 出片节奏 + 换片顺序</div>
+            <div class="pvRow" style="align-items:center;">
+              <div class="seg" data-for="pvPace" style="margin:0;">
+                <button type="button" class="segItem" data-val="even">均分整首</button>
+                <button type="button" class="segItem" data-val="fixed">固定秒数</button>
+                <button type="button" class="segItem" data-val="lyric">跟歌词</button>
+                <button type="button" class="segItem" data-val="manual">手动时间</button>
+              </div>
+              <label id="pvSecWrap">每张 <input type="number" id="pvPaceSec" min="3" max="60" step="1" value="8"> 秒</label>
+              <label>切换 <input type="number" id="pvFade" min="0" max="2" step="0.1" value="0.6"> 秒</label>
+            </div>
+            <select id="pvPace" class="segSrc">
+              <option value="even" selected>均分整首</option>
+              <option value="fixed">固定秒数轮播</option>
+              <option value="lyric">跟着歌词换（每句一张）</option>
+              <option value="manual">手动指定每张出现时间</option>
+            </select>
+            <div id="pvPlan" class="pvPlan"></div>
+          </div>
+
+          <div class="pvSec">
+            <div class="pvSecT"><span>④ 水印处理</span>
+              <span class="secHint">默认选「不处理」（实际已经标准化）；要单张去水印，点缩略图右下 🧽 打开开关，点左下 ▣ 拖框选水印（一张图可框多处），都框完点弹窗里「保存全部」才生效</span>
+            </div>
+            <div class="pvRow"><span class="segLab">照片水印位置</span></div>
+            <div class="seg" data-for="pvWmWhere">
+              <button type="button" class="segItem" data-val="none">不处理</button>
+              <button type="button" class="segItem" data-val="br">右下角</button>
+              <button type="button" class="segItem" data-val="tr">右上角</button>
+              <button type="button" class="segItem" data-val="tl">左上角</button>
+              <button type="button" class="segItem" data-val="bl">左下角</button>
+              <button type="button" class="segItem" data-val="bottom">底部</button>
+              <button type="button" class="segItem" data-val="top">顶部</button>
+              <button type="button" class="segItem" data-val="manual">手动</button>
+            </div>
+            <select id="pvWmWhere" class="segSrc">
+              <option value="none" selected>不处理</option>
+              <option value="br">右下角</option>
+              <option value="tr">右上角</option>
+              <option value="tl">左上角</option>
+              <option value="bl">左下角</option>
+              <option value="bottom">底部条带</option>
+              <option value="top">顶部条带</option>
+              <option value="manual">手动填位置</option>
+            </select>
+            <div class="pvRow"><span class="segLab">处理方式</span></div>
+            <div class="seg" data-for="pvWmMode">
+              <button type="button" class="segItem" data-val="inpaint">智能修补（推荐·只补白字笔画）</button>
+              <button type="button" class="segItem" data-val="clone">上方借图</button>
+              <button type="button" class="segItem" data-val="delogo">插值修复（会出竖条）</button>
+              <button type="button" class="segItem" data-val="blur">模糊</button>
+              <button type="button" class="segItem" data-val="mosaic">马赛克</button>
+            </div>
+            <select id="pvWmMode" class="segSrc">
+              <option value="inpaint" selected>智能修补（推荐·只补白字笔画）</option>
+              <option value="clone">上方借图</option>
+              <option value="delogo">插值修复（会出竖条）</option>
+              <option value="blur">模糊</option>
+              <option value="mosaic">马赛克</option>
+            </select>
+            <div id="pvWmManual" class="pvRow" style="display:none;">
+              <label>X <input id="pvWmX" type="number" min="0" max="94" step="1" value="70">%</label>
+              <label>Y <input id="pvWmY" type="number" min="0" max="94" step="1" value="89">%</label>
+              <label>宽 <input id="pvWmW" type="number" min="4" max="100" step="1" value="26">%</label>
+              <label>高 <input id="pvWmH" type="number" min="3" max="100" step="1" value="8">%</label>
+            </div>
+            <div class="pvRow">
+              <button id="pvWmPreview" class="pvMini">预览去水印效果</button>
+            </div>
+            <div id="pvPreviewWrap" class="pvPreview">
+              <span class="hint">（选一张背景图，这里显示预览；不选就用深色纯底）</span>
+            </div>
+          </div>
+
+          <div id="pvHint" class="hint">音频用当前已打开的文件；歌词用左侧已打轴的行</div>
+        </div>
+        <div id="cleanPanel">
+          <div class="pvBar">
+            <span class="t1">🧹 视频去水印 / 去旧歌词</span>
+            <button id="cleanExport" class="pvBarBtn" title="按下面的选区与方式，导出去掉水印/旧歌词的视频">⬇ 导出视频</button>
+          </div>
+          <div class="cleanGrid">
+            <button id="cleanSelectBtn">框选区域</button>
+            <button data-preset="bottom">底部条带</button>
+            <button data-preset="top">顶部条带</button>
+            <button data-preset="top-left">左上角</button>
+            <button data-preset="top-right">右上角</button>
+            <button data-preset="bottom-left">左下角</button>
+            <button data-preset="bottom-right">右下角</button>
+            <button data-preset="clear">清除选区</button>
+          </div>
+          <div class="cleanRow">
+            <label>方式
+              <select id="cleanMode">
+                <option value="inpaint" selected>智能修补（推荐·只补白字笔画）</option>
+                <option value="clone">上方借图</option>
+                <option value="delogo">插值修复（会出竖条）</option>
+                <option value="blur">高斯模糊</option>
+                <option value="mosaic">马赛克</option>
+                <option value="crop">裁剪掉该区域</option>
+              </select>
+            </label>
+            <label id="cleanStrengthWrap">强度 <input type="range" id="cleanStrength" min="4" max="40" value="14"></label>
+          </div>
+          <div class="cleanRow">
+            <label><input type="checkbox" id="cleanPreview" checked> 预览效果</label>
+            <label><input type="checkbox" id="cleanWithLyric" checked> 叠新歌词</label>
+          </div>
+          <div class="hint">去歌词：点「框选区域」拖出歌词位置，或「底部/顶部条带」一键选区。去水印：点四角快速定位再拖框微调。默认「智能修补」：框里只挑白色字迹补，周围纹理基本不动（白字水印最容易干净）；彩色/半透明大logo会整块补，框刚好盖住水印即可。导出是实时录制，期间别切标签页。</div>
+        </div>
+      </div>
+    </div>
   </div>
 </main>
 
@@ -110,40 +416,7 @@
   <div id="lrcJobBarWrap"><div id="lrcJobBar"></div></div>
 </div>
 
-<div id="player">
-  <audio id="audio" controls></audio>
-  <div id="videoWrap">
-    <video id="video" controls playsinline></video>
-    <div id="videoLyric"></div>
-    <div id="cleanLayer"><div id="cleanBox"><div class="rs"></div></div></div>
-  </div>
-  <details id="cleanPanel">
-    <summary>🧹 去除画面上的歌词 / 水印（针对已烧进画面的文字或图标；若是独立的 .srt/.lrc 字幕文件，直接删文件即可）</summary>
-    <div class="cleanRow">
-      <button id="cleanSelectBtn">框选区域</button>
-      <button data-preset="bottom">底部条带</button>
-      <button data-preset="top">顶部条带</button>
-      <button data-preset="top-left">左上角</button>
-      <button data-preset="top-right">右上角</button>
-      <button data-preset="bottom-left">左下角</button>
-      <button data-preset="bottom-right">右下角</button>
-      <button data-preset="clear">清除选区</button>
-      <label>方式
-        <select id="cleanMode">
-          <option value="delogo" selected>插值修复（背景自然）</option>
-          <option value="blur">高斯模糊</option>
-          <option value="mosaic">马赛克</option>
-          <option value="crop">裁剪掉该区域</option>
-        </select>
-      </label>
-      <label id="cleanStrengthWrap">强度 <input type="range" id="cleanStrength" min="4" max="40" value="14"></label>
-      <label><input type="checkbox" id="cleanPreview" checked> 预览效果</label>
-      <label><input type="checkbox" id="cleanWithLyric" checked> 同时叠加新歌词</label>
-      <button id="cleanExport">导出处理后的视频</button>
-    </div>
-    <div class="hint">去歌词：点「框选区域」在视频上拖出歌词所在位置，或用「底部/顶部条带」一键选区。去水印：点「左上/右上/左下/右下角」快速定位，再拖框微调。方式默认「插值修复」，用四周边界像素把水印填成背景，最自然、不留模糊块（逐像素计算，框刚好盖住水印即可，太大导出会慢）；背景杂乱时可改「马赛克」并加大强度。插值修复无法实时预览，以导出为准；框内可拖动移动，右下角方块调大小。导出为实时录制，时长与视频相同，期间不要切换标签页。</div>
-  </details>
-</div>
+
 
 <script>
 const audioEl = document.getElementById('audio');
@@ -159,8 +432,27 @@ let videoLoaded = false;
 let videoName = 'lyrics-video';
 let lyrics = []; // [{text, time}]
 let currentVideoFile = null; // 当前加载的视频文件，供「从视频提词」复用
+let currentMediaFile = null; // 当前加载的音频/视频文件，供「出歌词视频」复用
 let currentIdx = 0;
 let previewMode = false; // 预览模式：播放时自动高亮当前句
+
+// 播放器上方显示当前文件歌名（去掉扩展名）+ 时长
+const mediaTitleEl = document.getElementById('mediaTitle');
+let mediaTitleName = '';
+function showMediaTitle(name, media) {
+  mediaTitleName = name || '未加载音频';
+  mediaTitleEl.textContent = mediaTitleName;
+  mediaTitleEl.title = mediaTitleName;
+  if (!media) return;
+  const upd = () => {
+    const d = media.duration;
+    if (isFinite(d) && d > 0) mediaTitleEl.textContent = mediaTitleName + '　' + fmtClock(d);
+  };
+  if (media._titleUpd) media.removeEventListener('durationchange', media._titleUpd);
+  media._titleUpd = upd;
+  if (media.readyState >= 1) upd();
+  media.addEventListener('durationchange', upd);
+}
 
 function findCurrentIdx(t) {
   let idx = -1;
@@ -194,6 +486,8 @@ videoEl.addEventListener('seeked', onMediaTimeUpdate);
 // 切回音频模式
 function loadAudioFile(file) {
   stopExport(true);
+  currentMediaFile = file;
+  showMediaTitle(file.name.replace(/\.[^.]+$/, '') || '未命名音频', audioEl);
   videoEl.pause();
   videoEl.removeAttribute('src');
   videoEl.load();
@@ -211,11 +505,13 @@ function loadAudioFile(file) {
 function loadVideoFile(file) {
   cancelAnimationFrame(exportRaf);
   currentVideoFile = file;
+  currentMediaFile = file;
   // 彻底卸载音频元素，避免两个播放器同时出声
   audioEl.pause();
   audioEl.removeAttribute('src');
   audioEl.load();
   videoName = file.name.replace(/\.[^.]+$/, '') || 'lyrics-video';
+  showMediaTitle(videoName + '（视频）', videoEl);
   videoEl.src = URL.createObjectURL(file);
   videoEl.load();
   videoLoaded = true;
@@ -266,13 +562,53 @@ document.getElementById('parseBtn').onclick = () => {
   render();
 };
 
+// 粘贴/编辑原文即自动解析成歌词行（按文字沿用已经打好的时间）
+const srcHint = document.getElementById('srcHint');
+let autoParseTimer = null;
+function autoParseLyrics() {
+  const prev = lyrics;
+  const next = parseLyricLines(lyricInput.value);
+  const used = new Set();
+  next.forEach(l => {
+    if (l.time != null) return;
+    for (let i = 0; i < prev.length; i++) {
+      if (used.has(i)) continue;
+      if (prev[i].text.trim() === l.text.trim()) { l.time = prev[i].time; used.add(i); break; }
+    }
+  });
+  lyrics = next;
+  if (currentIdx >= lyrics.length) currentIdx = Math.max(0, lyrics.length - 1);
+  render(true);
+  if (srcHint) srcHint.textContent = lyrics.length ? ('已解析 ' + lyrics.length + ' 句') : '还没检测到歌词';
+}
+lyricInput.addEventListener('input', () => {
+  clearTimeout(autoParseTimer);
+  autoParseTimer = setTimeout(autoParseLyrics, 500);
+});
+lyricInput.addEventListener('paste', () => setTimeout(autoParseLyrics, 60));
+
+document.getElementById('srcToggle').onclick = e => {
+  const box = document.getElementById('srcBox');
+  const hide = box.style.display !== 'none';
+  box.style.display = hide ? 'none' : '';
+  e.currentTarget.textContent = hide ? '展开原文' : '收起原文';
+};
+
 document.getElementById('loadText').onclick = () => {
   const t = prompt('粘贴歌词文本（每行一句）：');
   if (t) { lyricInput.value = t; document.getElementById('parseBtn').click(); }
 };
 
 function render(noScroll) {
-  lyricList.replaceChildren();
+  lyricList.innerHTML = '';
+  if (!lyrics.length) {
+    const ph = document.createElement('li');
+    ph.className = 'empty';
+    ph.textContent = '把歌词粘贴到上面的框里，这里会逐句列出来；点一句选中，播放时按空格打时间。';
+    lyricList.appendChild(ph);
+    refreshExportHint();
+    return;
+  }
   lyrics.forEach((l, i) => {
     const li = document.createElement('li');
     li.className = (i === currentIdx ? 'current ' : '') + (l.time != null ? 'stamped' : '');
@@ -283,6 +619,7 @@ function render(noScroll) {
     lyricList.appendChild(li);
     if (!noScroll && i === currentIdx) li.scrollIntoView({ block: 'center', behavior: 'smooth' });
   });
+  refreshExportHint();
 }
 
 function fmt(t) {
@@ -902,15 +1239,73 @@ document.getElementById('copyLrc').onclick = () => {
   }).catch(() => alert('复制失败，请用导出 LRC'));
 };
 
-// 导出 LRC
-document.getElementById('exportLrc').onclick = () => {
-  const stamped = lyrics.filter(l => l.time != null).sort((a, b) => a.time - b.time);
-  const lrc = stamped.map(l => `[${fmt(l.time)}]${l.text}`).join('\n');
-  const blob = new Blob([lrc], { type: 'text/plain;charset=utf-8' });
+// 当前歌曲名（导出文件用它命名）
+function lyricFileBase() {
+  let name = '';
+  try {
+    if (typeof currentMediaFile !== 'undefined' && currentMediaFile && currentMediaFile.name) {
+      name = currentMediaFile.name.replace(/\.[^.]+$/, '');
+    }
+  } catch (e) { /* 忽略 */ }
+  if (!name) {
+    const t = (document.getElementById('mediaTitle') || {}).textContent || '';
+    if (t && t.indexOf('未加载') < 0) name = t.trim();
+  }
+  return (name || '歌词').replace(/[\\/:*?"<>|]/g, '_');
+}
+
+function downloadText(filename, text) {
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'lyric.lrc';
+  a.download = filename;
   a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+function stampedLines() {
+  return lyrics.filter(l => l.time != null).sort((a, b) => a.time - b.time);
+}
+
+function refreshExportHint() {
+  const el = document.getElementById('exportHint');
+  if (!el) return;
+  const n = lyrics.filter(l => l.time != null).length;
+  if (!lyrics.length) el.textContent = '还没有歌词';
+  else if (!n) el.textContent = `共 ${lyrics.length} 句，尚未打轴`;
+  else if (n < lyrics.length) el.textContent = `已打轴 ${n}/${lyrics.length} 句`;
+  else el.textContent = `已打轴 ${n} 句，可导出`;
+}
+
+// 导出歌词（.lrc）
+document.getElementById('exportLrc').onclick = () => {
+  const stamped = stampedLines();
+  if (!stamped.length) { alert('还没有打轴，先给歌词行打上时间再导出。'); return; }
+  const name = lyricFileBase();
+  const head = `[ti:${name}]\n[by:歌词配轴工具]`;
+  const body = stamped.map(l => `[${fmt(l.time)}]${l.text}`).join('\n');
+  downloadText(`${name}.lrc`, head + '\n' + body);
+  const btn = document.getElementById('exportLrc');
+  const old = btn.textContent;
+  btn.textContent = '✅ 已导出 ' + name + '.lrc';
+  setTimeout(() => btn.textContent = '⬇ 导出歌词', 2200);
+};
+
+// 导出 SRT
+document.getElementById('exportSrt').onclick = () => {
+  const stamped = stampedLines();
+  if (!stamped.length) { alert('还没有打轴，先给歌词行打上时间再导出。'); return; }
+  const dur = (audioEl && isFinite(audioEl.duration)) ? audioEl.duration : 0;
+  const ts = (t) => {
+    t = Math.max(0, t);
+    const h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), sec = Math.floor(t % 60), ms = Math.round((t - Math.floor(t)) * 1000);
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')},${String(Math.min(999, ms)).padStart(3, '0')}`;
+  };
+  const blocks = stamped.map((l, i) => {
+    const end = (i + 1 < stamped.length) ? stamped[i + 1].time : (dur && dur > l.time ? dur : l.time + 3);
+    return `${i + 1}\n${ts(l.time)} --> ${ts(Math.max(l.time + 0.5, end))}\n${l.text}\n`;
+  }).join('\n');
+  downloadText(`${lyricFileBase()}.srt`, blocks);
 };
 
 // ---------- 视频去歌词：框选区域 + 高斯模糊 / 马赛克 / 裁剪 ----------
@@ -1338,6 +1733,602 @@ function applyExtractResult(j) {
           `，可以逐句微调；整首偏早/偏晚就全选歌词行一起 +/-`, 100);
   setTimeout(() => jobBox.classList.remove('show'), 6000);
 }
+// ================= 图片 + 音频 → 歌词视频（服务端 ffmpeg 出片） =================
+const pvImage = document.getElementById('pvImage');
+const pvImgHint = document.getElementById('pvImgHint');
+const pvPreviewWrap = document.getElementById('pvPreviewWrap');
+const pvRenderBtn = document.getElementById('pvRender');
+const pvHint = document.getElementById('pvHint');
+const pvImgClear = document.getElementById('pvImgClear');
+const pvPace = document.getElementById('pvPace');
+const pvPaceSec = document.getElementById('pvPaceSec');
+const pvSecWrap = document.getElementById('pvSecWrap');
+const pvFade = document.getElementById('pvFade');
+pvSecWrap.style.display = 'none';
+pvPace.addEventListener('change', () => {
+  pvSecWrap.style.display = pvPace.value === 'fixed' ? '' : 'none';
+  renderPvThumbs();
+});
+
+// ---- 照片去水印：预置区域 + 手动百分比 ----
+const WM_PRESETS = {
+  br:     [70, 89, 26, 8],
+  tr:     [70, 3, 26, 8],
+  tl:     [3, 3, 26, 8],
+  bl:     [3, 89, 26, 8],
+  bottom: [2, 90, 96, 9],
+  top:    [2, 2, 96, 9]
+};
+const pvWmWhere = document.getElementById('pvWmWhere');
+const pvWmMode = document.getElementById('pvWmMode');
+const pvWmManual = document.getElementById('pvWmManual');
+const pvWmX = document.getElementById('pvWmX');
+const pvWmY = document.getElementById('pvWmY');
+const pvWmW = document.getElementById('pvWmW');
+const pvWmH = document.getElementById('pvWmH');
+
+pvWmWhere.addEventListener('change', () => {  const v = pvWmWhere.value;
+  pvWmManual.style.display = v === 'manual' ? '' : 'none';
+  const p = WM_PRESETS[v];
+  if (p) { pvWmX.value = p[0]; pvWmY.value = p[1]; pvWmW.value = p[2]; pvWmH.value = p[3]; }
+});
+
+// 取第 i 张图的去水印矩形列表：这张自己框的（可能多处），否则用统一预设（一处）
+function pvWmRectsFor(i) {
+  const own = pvWmRects[i];
+  if (own && own.length) return own.map(r => r.map(n => Math.round(n * 1000) / 1000).join(','));
+  const g = pvWmRect();
+  return g ? [g] : [];
+}
+
+// 一张图上有多处要去，就按顺序串行修补（每处一次 /clean-image）
+async function pvCleanChain(id, rects, mode) {
+  for (const rect of rects) {
+    const r = await fetch(SVC + '/clean-image?img=' + id + '&mode=' + mode +
+      '&rect=' + encodeURIComponent(rect), { method: 'POST', cache: 'no-store' });
+    const j = await r.json();
+    if (!j || !j.id) throw new Error((j && j.error) || '去水印失败');
+    id = j.id;
+  }
+  return id;
+}
+
+function pvWmRect() {
+  if (pvWmWhere.value === 'none') return null;
+  const x = Math.max(0, Math.min(94, Number(pvWmX.value) || 0));
+  const y = Math.max(0, Math.min(94, Number(pvWmY.value) || 0));
+  const w = Math.max(3, Math.min(100 - x, Number(pvWmW.value) || 20));
+  const h = Math.max(2, Math.min(100 - y, Number(pvWmH.value) || 8));
+  return [x / 100, y / 100, w / 100, h / 100].map(n => Math.round(n * 1000) / 1000).join(',');
+}
+let pvImageFiles = [];        // 可多选，顺序即上传顺序
+let pvThumbUrls = [];
+let pvWmOn = [];              // 每张图是否去水印，默认关
+let pvWmRects = [];           // 每张图自己的去水印区域（0-1 归一化），空＝用上面的统一区域
+let pvStartVals = [];         // 每张图的起始秒（图下的时间框）
+
+function pvFmtClock(t) {
+  t = Math.max(0, t);
+  const m = Math.floor(t / 60), s = Math.round(t - m * 60);
+  return m + ':' + String(s).padStart(2, '0');
+}
+
+function ensureStartVals() {
+  if (pvStartVals.length === pvImageFiles.length) return;
+  const total = audioEl.duration > 0 ? audioEl.duration : 0;
+  const step = total ? total / pvImageFiles.length : 30;
+  const old = pvStartVals.slice();
+  pvStartVals = pvImageFiles.map((f, i) => (old[i] !== undefined ? old[i] : Math.round(i * step * 10) / 10));
+}
+
+function renderPvThumbs() {
+  pvThumbUrls.forEach(u => URL.revokeObjectURL(u));
+  pvThumbUrls = [];
+  ensureStartVals();
+  if (!pvImageFiles.length) {
+    pvPreviewWrap.innerHTML = '<span class="hint">（选一张或多张背景图，这里显示预览；不选就用深色纯底）</span>';
+    pvImgHint.textContent = '未选图（深色纯底）';
+    if (pvPlan) pvPlan.innerHTML = '';
+    return;
+  }
+  const manual = pvPace.value === 'manual';
+  const parts = pvImageFiles.map((f, i) => {
+    const u = URL.createObjectURL(f);
+    pvThumbUrls.push(u);
+    const on = !!pvWmOn[i];
+    const v = Number(pvStartVals[i]) || 0;
+    const m = Math.floor(v / 60);
+    const s = Math.round((v - m * 60) * 10) / 10;
+    return '<div class="pvThumbWrap">' +
+      '<div class="pvThumb" data-i="' + i + '"><img src="' + u + '" alt="背景图' + (i + 1) + '">' +
+      '<span class="idx">' + (i + 1) + '</span>' +
+      '<b class="wmBadge' + (on ? ' on' : '') + '" title="点一下：这张要不要去水印">🧽</b>' +
+      '<b class="x" title="移除这张">✕</b>' +
+      '<b class="wmSel' + ((pvWmRects[i] && pvWmRects[i].length) ? ' on' : '') + '" data-i="' + i + '" title="框选这张图的去水印区域（可框多处）">▣</b></div>' +
+      '<div class="pvTimeRow pvTimeInline" data-i="' + i + '"' + (manual ? '' : ' style="display:none"') + '>' +
+      '<input type="text" inputmode="decimal" class="pvTimeOne" data-i="' + i + '" value="' + fmt(pvStartVals[i]) + '" title="与歌词时间轨同格式 分:秒.百分秒；也可只填秒数（如 13.1）">' +
+      '</div></div>';
+  });
+  pvPreviewWrap.innerHTML = '<div class="pvThumbs">' + parts.join('') + '</div>';
+  pvImgHint.textContent = !manual
+    ? ('已选 ' + pvImageFiles.length + ' 张（按顺序轮播，切换 0.6 秒淡入淡出）')
+    : ('已选 ' + pvImageFiles.length + ' 张；图下时间＝这张从第几秒开始出现（与上面歌词时间同格式 00:05.30，也可只填 13.1）');
+  refreshPvSizeHint();
+  pvReadTimes();
+}
+
+// 只显示秒数：13.1（整数就不带小数）
+function pvFmtSec(sec) {
+  const v = Math.round((Number(sec) || 0) * 10) / 10;
+  return Number.isInteger(v) ? String(v) : v.toFixed(1);
+}
+
+// 紧凑写法：0:13.1（分:秒.十分之一）
+function pvFmtShort(sec) {
+  const v = Math.max(0, Number(sec) || 0);
+  const m = Math.floor(v / 60);
+  const s = (v % 60).toFixed(1);
+  return m + ':' + (s.length < 4 ? '0' + s : s);
+}
+
+// 接受 13.1 / 0:13.1 / 0:13 三种写法
+function pvParseTime(str) {
+  let t = String(str == null ? '' : str).trim().replace(/：/g, ':').replace(/,/g, '.');
+  if (!t) return 0;
+  if (t.indexOf(':') >= 0) {
+    const parts = t.split(':');
+    const m = Number(parts[0]) || 0;
+    const sec = Number(parts[1]) || 0;
+    return m * 60 + sec;
+  }
+  return Number(t) || 0;
+}
+
+// 从图下的时间框读回秒数，返回第一个超范围的序号（-1 表示都正常）
+function pvReadTimes() {
+  const dur = audioEl.duration > 0 ? audioEl.duration : 0;
+  let bad = -1;
+  pvPreviewWrap.querySelectorAll('.pvTimeInline').forEach(row => {
+    const i = Number(row.getAttribute('data-i'));
+    const one = row.querySelector('.pvTimeOne');
+    if (!one) return;
+    const t = pvParseTime(one.value);
+    pvStartVals[i] = t;
+    const over = dur > 0 && t > dur - 0.8;
+    row.classList.toggle('bad', over);
+    if (over && bad < 0) bad = i;
+  });
+  renderPvPlan(dur);
+  return bad;
+}
+
+// 出片顺序表：谁先谁后、各占多久，一眼看出开头是哪张
+function renderPvPlan(dur) {
+  if (!pvPlan) return;
+  if (pvPace.value !== 'manual' || !pvImageFiles.length) { pvPlan.innerHTML = ''; return; }
+  const pairs = pvImageFiles.map((f, i) => [Number(pvStartVals[i]) || 0, i]).sort((a, b) => a[0] - b[0]);
+  const rows = [];
+  for (let k = 0; k < pairs.length; k++) {
+    const start = k === 0 ? 0 : pairs[k][0];
+    const end = (k + 1 < pairs.length) ? pairs[k + 1][0] : (dur || start + 30);
+    const i = pairs[k][1];
+    const nm = (pvImageFiles[i].name || '').replace(/\.[^.]+$/, '').slice(0, 12);
+    rows.push('<li' + (k === 0 ? ' class="first"' : '') + '>#' + (i + 1) + ' ' + pvFmtClock(start) + '–' +
+      pvFmtClock(end) + '　' + nm + (k === 0 ? '　← 开头' : '') + '</li>');
+  }
+  pvPlan.innerHTML = '<div class="pvPlanHead">出片顺序（按时间排）　' +
+    '<button id="pvPlanEven" class="pvMini">按选图顺序均分</button></div>' +
+    '<ol class="pvPlanList">' + rows.join('') + '</ol>';
+  const ev = document.getElementById('pvPlanEven');
+  if (ev) ev.onclick = () => {
+    const total = dur || 0;
+    pvStartVals = pvImageFiles.map((f, i) => Math.round((total ? total / pvImageFiles.length : 30) * i * 10) / 10);
+    renderPvThumbs();
+  };
+}
+
+pvImage.addEventListener('change', e => {
+  const files = Array.from(e.target.files || []);
+  e.target.value = '';
+  if (!files.length) return;
+  pvImageFiles = pvImageFiles.concat(files);
+  while (pvWmOn.length < pvImageFiles.length) pvWmOn.push(false);
+  while (pvWmRects.length < pvImageFiles.length) pvWmRects.push(null);
+  renderPvThumbs();
+});
+
+const pvPlan = document.getElementById('pvPlan');
+
+
+pvImgClear.addEventListener('click', () => {
+  pvImageFiles = [];
+  pvWmOn = [];
+  pvWmRects = [];
+  renderPvThumbs();
+});
+
+// ---- 尺寸体检 + 一键统一成标准图 ----
+const pvNorm = document.getElementById('pvNorm');
+const pvSizeHint = document.getElementById('pvSizeHint');
+
+// 自动比例：横图走 16:9、竖图走 9:16、方图走 1:1
+let pvAutoRatio = '9:16';
+function pvPickRatio(w, h) {
+  if (!w || !h) return '9:16';
+  const a = w / h;
+  if (a >= 1.15) return '16:9';
+  if (a <= 0.87) return '9:16';
+  return '1:1';
+}
+function pvRatioValue() {
+  const v = document.getElementById('pvRatio').value;
+  return v === 'auto' ? pvAutoRatio : v;
+}
+
+function pvTargetSize() {
+  const r = pvRatioValue();
+  return r === '16:9' ? [1920, 1080] : (r === '1:1' ? [1080, 1080] : [1080, 1920]);
+}
+
+function pvImgDims(file) {
+  return new Promise(res => {
+    const u = URL.createObjectURL(file);
+    const im = new Image();
+    im.onload = () => { res([im.naturalWidth, im.naturalHeight]); URL.revokeObjectURL(u); };
+    im.onerror = () => { res([0, 0]); URL.revokeObjectURL(u); };
+    im.src = u;
+  });
+}
+
+async function refreshPvSizeHint() {
+  const isAuto = document.getElementById('pvRatio').value === 'auto';
+  const dims = pvImageFiles.length ? await Promise.all(pvImageFiles.map(pvImgDims)) : [];
+  if (isAuto && dims.length) {
+    // 自动比例：按多数图定，避免混排时整片都套小图
+    const votes = {};
+    dims.forEach(dd => { if (dd[0] && dd[1]) { const k = pvPickRatio(dd[0], dd[1]); votes[k] = (votes[k] || 0) + 1; } });
+    let best = null, bc = 0;
+    Object.keys(votes).forEach(k => { if (votes[k] > bc) { bc = votes[k]; best = k; } });
+    pvAutoRatio = best || (dims[0][0] ? pvPickRatio(dims[0][0], dims[0][1]) : pvAutoRatio);
+  }
+  const [W, H] = pvTargetSize();
+  const target = W / H;
+  if (!pvImageFiles.length) { pvSizeHint.textContent = '基准尺寸：' + W + '×' + H; return; }
+  const odd = dims.filter(d => {
+    if (!d[0]) return false;
+    return Math.abs(d[0] / d[1] - target) / target > 0.02;
+  });
+  const txt = '基准 ' + W + '×' + H + '；';
+  if (!odd.length) pvSizeHint.textContent = txt + '图片比例都合适';
+  else {
+    const names = dims.map((d, i) => (Math.abs(d[0] / d[1] - target) / target > 0.02
+      ? '#' + (i + 1) + ' ' + d[0] + '×' + d[1] : '')).filter(Boolean);
+    pvSizeHint.textContent = txt + names.join('、') + ' 比例不合，' +
+      (document.getElementById('pvFit').value === 'contain' ? '会补柔化底（内容不裁）' : '会被裁边');
+  }
+}
+
+pvNorm.addEventListener('click', async () => {
+  if (!pvImageFiles.length) { pvSizeHint.textContent = '先选图片'; return; }
+  const [W, H] = pvTargetSize();
+  const old = pvNorm.textContent;
+  pvNorm.disabled = true;
+  try {
+    for (let i = 0; i < pvImageFiles.length; i++) {
+      pvNorm.textContent = '统一中 ' + (i + 1) + '/' + pvImageFiles.length;
+      let id = await pvUpload(pvImageFiles[i], 'img');
+      const rects = pvWmRectsFor(i);
+      if (rects.length && pvWmOn[i]) {
+        id = await pvCleanChain(id, rects, pvWmMode.value);
+      }
+      const r = await fetch(SVC + '/normalize-image?img=' + id + '&ratio=' +
+        encodeURIComponent(pvRatioValue()), { method: 'POST', cache: 'no-store' });
+      const j = await r.json();
+      if (!j || !j.id) throw new Error((j && j.error) || '转换失败');
+      const blob = await (await fetch(SVC + '/img/' + j.id, { cache: 'no-store' })).blob();
+      const nm = pvImageFiles[i].name.replace(/\.[^.]+$/, '') + '_' + W + 'x' + H + '.png';
+      pvImageFiles[i] = new File([blob], nm, { type: 'image/png' });
+      pvWmOn[i] = false;   // 标准图里已按需去过水印，出片时不再重复处理
+    }
+    renderPvThumbs();
+    pvSizeHint.textContent = '已统一成 ' + W + '×' + H + '，整图完整放中间；副本在 桌面\\歌词视频\\标准图\\';
+  } catch (err) {
+    pvSizeHint.textContent = '统一失败：' + (err.message || err);
+  } finally {
+    pvNorm.disabled = false; pvNorm.textContent = old;
+    refreshPvSizeHint();
+  }
+});
+
+document.getElementById('pvRatio').addEventListener('change', refreshPvSizeHint);
+
+// 分段按钮：点哪块高亮哪块，同时改隐藏的 select，保持原有逻辑不变
+document.querySelectorAll('.seg').forEach(seg => {
+  const sel = document.getElementById(seg.getAttribute('data-for'));
+  if (!sel) return;
+  const items = Array.from(seg.querySelectorAll('.segItem'));
+  const sync = () => items.forEach(b => b.classList.toggle('on', b.dataset.val === sel.value));
+  items.forEach(b => b.addEventListener('click', () => {
+    if (sel.value === b.dataset.val) return;
+    sel.value = b.dataset.val;
+    sel.dispatchEvent(new Event('change', { bubbles: true }));
+    sync();
+  }));
+  sel.addEventListener('change', sync);
+  sync();
+});
+document.getElementById('pvFit').addEventListener('change', refreshPvSizeHint);
+
+pvPreviewWrap.addEventListener('input', e => {
+  if (!e.target.classList.contains('pvTimeOne')) return;
+  pvReadTimes();
+});
+
+// 填完（失焦）统一改写成秒数，省得框里留着 0:13.1 这种长写法
+pvPreviewWrap.addEventListener('change', e => {
+  if (!e.target.classList.contains('pvTimeOne')) return;
+  const t = pvParseTime(e.target.value);
+  e.target.value = fmt(t);
+  pvReadTimes();
+});
+
+pvPreviewWrap.addEventListener('click', e => {
+  const sel = e.target.closest('.wmSel');
+  if (sel) {
+    const i = Number(sel.getAttribute('data-i'));
+    if (isFinite(i)) openPvWmSelect(i);
+    return;
+  }
+  const wm = e.target.closest('.wmBadge');
+  if (wm) {
+    const i = Number(wm.closest('.pvThumb').getAttribute('data-i'));
+    if (isFinite(i)) {
+      pvWmOn[i] = !pvWmOn[i];
+      wm.classList.toggle('on', !!pvWmOn[i]);
+      pvImgHint.textContent = pvWmOn.some(v => v) ? '🧽 亮起的图会在出片前自动去水印' : '🧽 点缩略图决定哪张去水印';
+    }
+    return;
+  }
+  const x = e.target.closest('.x');
+  if (!x) return;
+  const i = Number(x.parentElement.getAttribute('data-i'));
+  if (isFinite(i)) { pvImageFiles.splice(i, 1); pvWmOn.splice(i, 1); pvWmRects.splice(i, 1); renderPvThumbs(); }
+});
+
+// 预览去水印效果（看区域有没有压到图上的字）
+const pvWmPreview = document.getElementById('pvWmPreview');
+pvWmPreview.addEventListener('click', async () => {
+  if (!pvImageFiles.length) { pvImgHint.textContent = '先选图片'; return; }
+  const idx = Math.max(0, pvWmOn.findIndex(v => v));
+  const rects = pvWmRectsFor(idx);
+  if (!rects.length) { pvImgHint.textContent = '先把「照片水印」选成某个位置，或在这张图上点 ▣ 框一块'; return; }
+  const old = pvWmPreview.textContent;
+  pvWmPreview.disabled = true; pvWmPreview.textContent = '处理中…';
+  try {
+    let id = await pvUpload(pvImageFiles[idx], 'img');
+    id = await pvCleanChain(id, rects, pvWmMode.value);
+    showPvWmCompare(URL.createObjectURL(pvImageFiles[idx]), SVC + '/img/' + id, idx + 1);
+  } catch (err) {
+    pvImgHint.textContent = '预览失败：' + (err.message || err);
+  } finally {
+    pvWmPreview.disabled = false; pvWmPreview.textContent = old;
+  }
+});
+
+// ---- 每张图单独框选去水印区域 ----
+function openPvWmSelect(i) {
+  if (!pvImageFiles[i]) return;
+  const old = document.getElementById('pvWmSel');
+  if (old) old.remove();
+  const layer = document.createElement('div');
+  layer.id = 'pvWmSel';
+  layer.className = 'pvLight';
+  layer.innerHTML = '<div class="wmSelInner"><div class="pvLightHead">第 ' + (i + 1) +
+    ' 张：框出要去水印的地方（一处一个框，可以框多处；图上的字别框进来）</div>' +
+    '<div class="wmSelPic"><img id="wmSelImg" src="' + (pvThumbUrls[i] || '') + '"><div id="wmSelBoxes"></div></div>' +
+    '<div class="wmSelBar"><button id="wmSelSave">保存全部</button>' +
+    '<button id="wmSelUndo">撤销上一个框</button>' +
+    '<button id="wmSelClear">清除（改用统一区域）</button>' +
+    '<button id="wmSelClose">关闭</button>' +
+    '<span id="wmSelHint" class="hint">在图上按住拖一个框，松手就是一个选区</span></div></div>';
+  document.body.appendChild(layer);
+
+  const pic = layer.querySelector('.wmSelPic');
+  const img = layer.querySelector('#wmSelImg');
+  const boxes = layer.querySelector('#wmSelBoxes');
+  const hint = layer.querySelector('#wmSelHint');
+  let rects = (pvWmRects[i] || []).map(r => r.slice());
+  let drag = null, cur = null;
+
+  function paintAll() {
+    let html = rects.map((r, k) =>
+      '<div class="wmSelBox" style="left:' + (r[0] * 100) + '%;top:' + (r[1] * 100) +
+      '%;width:' + (r[2] * 100) + '%;height:' + (r[3] * 100) + '%">' + (k + 1) + '</div>').join('');
+    if (cur) html += '<div class="wmSelBox drawing" style="left:' + (cur[0] * 100) + '%;top:' + (cur[1] * 100) +
+      '%;width:' + (cur[2] * 100) + '%;height:' + (cur[3] * 100) + '%">' + (rects.length + 1) + '</div>';
+    boxes.innerHTML = html;
+  }
+
+  pic.addEventListener('pointerdown', e => {
+    const b = img.getBoundingClientRect();
+    if (!b.width) return;
+    const x = (e.clientX - b.left) / b.width, y = (e.clientY - b.top) / b.height;
+    if (x < 0 || y < 0 || x > 1 || y > 1) return;
+    drag = { x0: x, y0: y };
+    try { pic.setPointerCapture(e.pointerId); } catch (err) { /* 忽略 */ }
+    e.preventDefault();
+  });
+  pic.addEventListener('pointermove', e => {
+    if (!drag) return;
+    const b = img.getBoundingClientRect();
+    const x = Math.max(0, Math.min(1, (e.clientX - b.left) / b.width));
+    const y = Math.max(0, Math.min(1, (e.clientY - b.top) / b.height));
+    cur = [Math.min(drag.x0, x), Math.min(drag.y0, y), Math.abs(x - drag.x0), Math.abs(y - drag.y0)];
+    paintAll();
+    hint.textContent = '正在画第 ' + (rects.length + 1) + ' 个框：' + Math.round(cur[2] * 100) +
+      '% 宽 × ' + Math.round(cur[3] * 100) + '% 高';
+  });
+  pic.addEventListener('pointerup', () => {
+    if (!drag) return;
+    drag = null;
+    if (cur && (cur[2] < 0.02 || cur[3] < 0.02)) { cur = null; paintAll(); hint.textContent = '框太小了，重画一个'; return; }
+    if (cur) {
+      rects.push(cur);
+      if (rects.length >= 8) hint.textContent = '已框 8 处（上限），点「保存全部」生效';
+      else hint.textContent = '已框 ' + rects.length + ' 处；还要框别处就继续拖，都框完点「保存全部」';
+    }
+    cur = null;
+    paintAll();
+  });
+  paintAll();
+
+  layer.querySelector('#wmSelSave').onclick = () => {
+    if (!rects.length) { hint.textContent = '先在图上拖一个框'; return; }
+    pvWmRects[i] = rects.map(r => r.map(n => Math.round(n * 1000) / 1000));
+    pvWmOn[i] = true;
+    renderPvThumbs();
+    pvImgHint.textContent = '第 ' + (i + 1) + ' 张已用单独选区（' + pvWmRects[i].length + ' 处，▣ 亮着），其它图仍用上面的统一区域';
+    layer.remove();
+  };
+  layer.querySelector('#wmSelUndo').onclick = () => {
+    if (!rects.length) { hint.textContent = '还没有框'; return; }
+    rects.pop();
+    cur = null; paintAll();
+    hint.textContent = rects.length ? ('还剩 ' + rects.length + ' 处：点「保存全部」生效') : '框都撤销了，重新拖';
+  };
+  layer.querySelector('#wmSelClear').onclick = () => {
+    pvWmRects[i] = null;
+    renderPvThumbs();
+    layer.remove();
+    pvImgHint.textContent = '第 ' + (i + 1) + ' 张已改回统一区域';
+  };
+  layer.querySelector('#wmSelClose').onclick = () => layer.remove();
+}
+
+function showPvWmCompare(beforeUrl, afterUrl, no) {
+  let box = document.getElementById('pvWmLight');
+  if (box) box.remove();
+  box = document.createElement('div');
+  box.id = 'pvWmLight';
+  box.className = 'pvLight';
+  box.innerHTML = '<div class="pvLightInner"><div class="pvLightHead">第 ' + no +
+    ' 张：左＝原图，右＝去水印后（点任意处关闭）</div>' +
+    '<div class="pvLightPair"><figure><img src="' + beforeUrl + '"><figcaption>原图</figcaption></figure>' +
+    '<figure><img src="' + afterUrl + '"><figcaption>去水印后</figcaption></figure></div></div>';
+  box.addEventListener('click', () => { URL.revokeObjectURL(beforeUrl); box.remove(); });
+  document.body.appendChild(box);
+}
+
+async function pvUpload(file, kind) {
+  const r = await fetch(SVC + '/upload?kind=' + kind + '&name=' + encodeURIComponent(file.name),
+    { method: 'POST', body: new Blob([file], { type: 'text/plain' }), cache: 'no-store' });
+  const j = await r.json();
+  if (!j || !j.id) throw new Error((j && j.error) || ('上传失败 ' + r.status));
+  return j.id;
+}
+
+pvRenderBtn.onclick = async () => {
+  if (!currentMediaFile) { pvHint.textContent = '先点顶部「选择文件」加载音频（或视频，会取其中的声音）'; return; }
+  if (!lyrics.length) { pvHint.textContent = '先在左边粘贴歌词，点「解析成歌词行」'; return; }
+  const timed = lyrics.filter(l => l.time != null).length;
+  const payload = [];
+  let last = 0;
+  for (const l of lyrics) {
+    let t = l.time;
+    if (t == null && timed > 0) t = last + 0.8;   // 没打轴的行接在上一句后面
+    if (t != null) last = t;
+    payload.push({ t: t == null ? null : t, text: l.text });
+  }
+  pvRenderBtn.disabled = true;
+  pvHint.textContent = '';
+  jobShow('检查本机服务…', 3);
+  if (!await svcAlive()) {
+    pvRenderBtn.disabled = false;
+    jobShow('连不上本机提词服务：请双击桌面「歌词配轴工具」图标打开本页再试', 0);
+    return;
+  }
+  try {
+    let cutsQ = '';
+    if (pvPace.value === 'manual') {
+      const badIdx = pvReadTimes();
+      const dur = audioEl.duration > 0 ? audioEl.duration : 0;
+      if (badIdx >= 0) {
+        const msg = '第 ' + (badIdx + 1) + ' 张的时间 ' + pvStartVals[badIdx].toFixed(1) +
+          ' 秒 超出音频时长 ' + dur.toFixed(1) + ' 秒，请改小';
+        jobShow(msg, 0); pvHint.textContent = msg;
+        pvRenderBtn.disabled = false;
+        return;
+      }
+      const pairs = pvImageFiles.map((f, i) => [Number(pvStartVals[i]) || 0, i]);
+      pairs.sort((a, b) => a[0] - b[0]);
+      cutsQ = '&cuts=' + encodeURIComponent(pairs.map(p => p[0].toFixed(2)).join(',')) +
+        '&ords=' + encodeURIComponent(pairs.map(p => p[1]).join(','));
+    }
+    jobShow('上传素材到本机服务…', 6);
+    const audId = await pvUpload(currentMediaFile, 'aud');
+    const imgIds = [];
+    for (let i = 0; i < pvImageFiles.length; i++) {
+      let id = await pvUpload(pvImageFiles[i], 'img');
+      const wmRects = pvWmRectsFor(i);
+      if (wmRects.length && pvWmOn[i]) {
+        try {
+          id = await pvCleanChain(id, wmRects, pvWmMode.value);
+        } catch (e2) {
+          jobShow('照片去水印失败：' + (e2.message || e2), 0);
+          throw e2;
+        }
+      }
+      imgIds.push(id);
+      jobShow('上传素材到本机服务… ' + (i + 1) + '/' + pvImageFiles.length, 6);
+    }
+    await refreshPvSizeHint();
+    const stem = currentMediaFile.name.replace(/\.[^.]+$/, '') || '歌词视频';
+    const q = '?aud=' + audId + imgIds.map(id => '&img=' + id).join('') + cutsQ +
+      '&pace=' + encodeURIComponent(pvPace.value) +
+      '&sec=' + encodeURIComponent(pvPaceSec.value || '8') +
+      '&fade=' + encodeURIComponent(pvFade.value || '0.6') +
+      '&ratio=' + encodeURIComponent(pvRatioValue()) +
+      '&title=' + encodeURIComponent(document.getElementById('pvTitleChk').checked ? stem : '') +
+      '&artist=' + encodeURIComponent('') +
+      '&zoom=' + (document.getElementById('pvZoomChk').checked ? '1' : '0') +
+      '&fit=' + encodeURIComponent(document.getElementById('pvFit').value);
+    const r = await fetch(SVC + '/render' + q, {
+      method: 'POST',
+      body: new Blob([JSON.stringify({ lines: payload })], { type: 'text/plain' }),
+      cache: 'no-store'
+    });
+    const j = await r.json();
+    if (!j || !j.job) throw new Error((j && j.error) || ('提交失败 ' + r.status));
+    let s = null;
+    for (;;) {
+      await new Promise(r2 => setTimeout(r2, 1200));
+      s = await (await fetch(SVC + '/job/' + j.job, { cache: 'no-store' })).json();
+      if (s.status === 'error') throw new Error(s.reason || s.error || '渲染出错');
+      if (s.status === 'done') break;
+      const pct = s.total ? Math.min(98, 8 + 90 * ((s.done || 0) / s.total)) : 8;
+      jobShow(`渲染中 ${pct.toFixed(0)}%（服务端 ffmpeg，比实时快）　${(s.done || 0).toFixed(0)}s / ${(s.total || 0).toFixed(0)}s`, pct);
+    }
+    jobShow(`已出片：${s.name}（${(s.size / 1048576).toFixed(1)} MB，${s.duration} 秒），保存在 桌面\\歌词视频\\`, 100);
+    let planTxt = '';
+    if (s.plan && s.plan.length) {
+      let t0 = 0;
+      planTxt = '实际出片顺序：' + s.plan.map(p => {
+        const a = t0; t0 += p.sec || 0;
+        return '第' + p.img + '张 ' + pvFmtClock(a) + '–' + pvFmtClock(t0);
+      }).join(' → ');
+    }
+    pvHint.innerHTML = '已保存：桌面\\歌词视频\\' + s.name +
+      '　<a href="' + SVC + s.url + '" target="_blank">下载 / 播放</a>' +
+      (planTxt ? '<br>' + planTxt : '');
+  } catch (e) {
+    jobShow('出片失败：' + (e.message || e), 0);
+    pvHint.textContent = '出片失败：' + (e.message || e);
+  } finally {
+    pvRenderBtn.disabled = false;
+  }
+};
+
+render();
 </script>
 </body>
 </html>
