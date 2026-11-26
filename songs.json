@@ -6931,14 +6931,6 @@
    "new": true
   },
   {
-   "title": "捡棉花动感版（完整版）",
-   "artist": "李君 / 贾磊",
-   "file": "https://whxclp.github.io/yinbox3/捡棉花动感版（完整版）.mp4",
-   "coll": "戏曲曲艺",
-   "new": true,
-   "type": "mv"
-  },
-  {
    "title": "阿哥阿妹对歌来",
    "file": "https://whxclp.github.io/yinbox13/阿哥阿妹对歌来.mp4",
    "coll": [
@@ -7451,16 +7443,6 @@
    "noLyric": true
   },
   {
-   "title": "捡棉花（动感版）",
-   "artist": "李君 / 贾磊",
-   "type": "mv",
-   "file": "https://whxclp.github.io/yinbox3/%E6%8D%A1%E6%A3%89%E8%8A%B1%EF%BC%88%E5%8A%A8%E6%84%9F%E7%89%88%EF%BC%89.mp4",
-   "new": true,
-   "added": "2026-11-22",
-   "coll": "戏曲曲艺",
-   "noLyric": true
-  },
-  {
    "title": "格桑梅朵（草原风舞曲）",
    "artist": "",
    "type": "song",
@@ -7966,6 +7948,16 @@
    "new": true,
    "added": "2026-11-24",
    "coll": "红歌民歌",
+   "noLyric": true
+  },
+  {
+   "title": "捡棉花动感版（完整版）",
+   "artist": "李君 / 贾磊",
+   "type": "mv",
+   "coll": "戏曲曲艺",
+   "file": "https://whxclp.github.io/yinbox3/%E6%8D%A1%E6%A3%89%E8%8A%B1%E5%8A%A8%E6%84%9F%E7%89%88%EF%BC%88%E5%AE%8C%E6%95%B4%E7%89%88%EF%BC%89.mp4",
+   "new": true,
+   "added": "2026-11-26",
    "noLyric": true
   }
  ]
